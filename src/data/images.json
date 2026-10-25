@@ -1,0 +1,407 @@
+{
+ "fan-install-1": {
+  "alt": "Technician installing a ceiling fan in a flat in Uttara",
+  "w": 960,
+  "h": 1280,
+  "widths": [
+   480,
+   960
+  ],
+  "altBn": "উত্তরার একটি ফ্ল্যাটে সিলিং ফ্যান লাগাচ্ছেন টেকনিশিয়ান"
+ },
+ "fan-install-2": {
+  "alt": "Electrician fitting a ceiling fan canopy",
+  "w": 960,
+  "h": 1280,
+  "widths": [
+   480,
+   960
+  ],
+  "altBn": "ইলেকট্রিশিয়ান সিলিং ফ্যানের ক্যানোপি লাগাচ্ছেন"
+ },
+ "fan-install-3": {
+  "alt": "Ceiling fan being installed and balanced",
+  "w": 3024,
+  "h": 4032,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "সিলিং ফ্যান লাগানো ও ব্যালান্স করা হচ্ছে"
+ },
+ "socket-1": {
+  "alt": "Electrician replacing a switch board in a flat",
+  "w": 3024,
+  "h": 4032,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "ফ্ল্যাটে সুইচ বোর্ড বদলাচ্ছেন ইলেকট্রিশিয়ান"
+ },
+ "socket-2": {
+  "alt": "Technician drilling to fit a new power socket",
+  "w": 3024,
+  "h": 4032,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "নতুন পাওয়ার সকেটের জন্য ড্রিল করছেন টেকনিশিয়ান"
+ },
+ "socket-3": {
+  "alt": "Our technician at a customer's flat in uniform",
+  "w": 3024,
+  "h": 4032,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "গ্রাহকের ফ্ল্যাটে ইউনিফর্ম পরা আমাদের টেকনিশিয়ান"
+ },
+ "kitchen-sink": {
+  "alt": "Plumber repairing the water line under a kitchen sink",
+  "w": 3024,
+  "h": 4032,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "কিচেন সিংকের নিচে পানির লাইন মেরামত করছেন প্লাম্বার"
+ },
+ "chandelier-1": {
+  "alt": "Electrician installing a chandelier on a wooden ceiling",
+  "w": 3123,
+  "h": 4160,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "কাঠের সিলিংয়ে ঝাড়বাতি লাগাচ্ছেন ইলেকট্রিশিয়ান"
+ },
+ "chandelier-2": {
+  "alt": "Chandelier installation on a ladder",
+  "w": 3123,
+  "h": 4160,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "মই ব্যবহার করে ঝাড়বাতি লাগানো"
+ },
+ "chandelier-3": {
+  "alt": "Technician connecting a decorative ceiling light",
+  "w": 3123,
+  "h": 4160,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "সাজসজ্জার সিলিং লাইট সংযোগ দিচ্ছেন টেকনিশিয়ান"
+ },
+ "light-1": {
+  "alt": "Ceiling light installation in a living room",
+  "w": 3120,
+  "h": 4160,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "বসার ঘরে সিলিং লাইট লাগানো"
+ },
+ "wall-clock-1": {
+  "alt": "Hanging a wall clock at the right height",
+  "w": 3123,
+  "h": 4160,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "সঠিক উচ্চতায় দেয়াল ঘড়ি লাগানো"
+ },
+ "wall-clock-2": {
+  "alt": "Technician fixing a wall clock on a painted wall",
+  "w": 3123,
+  "h": 4160,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "রং করা দেয়ালে ঘড়ি লাগাচ্ছেন টেকনিশিয়ান"
+ },
+ "drilling-1": {
+  "alt": "Drilling into a wall to mount a fitting",
+  "w": 3120,
+  "h": 4160,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "ফিটিং লাগাতে দেয়ালে ড্রিল করা হচ্ছে"
+ },
+ "drilling-2": {
+  "alt": "Technician drilling for a wall mount",
+  "w": 3120,
+  "h": 4160,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "ওয়াল মাউন্টের জন্য ড্রিল করছেন টেকনিশিয়ান"
+ },
+ "drilling-3": {
+  "alt": "Wall drilling for a shelf installation",
+  "w": 3123,
+  "h": 4160,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "শেলফ লাগানোর জন্য দেয়ালে ড্রিল"
+ },
+ "panel-room-1": {
+  "alt": "Engineer servicing a large main distribution board in a commercial building",
+  "w": 3024,
+  "h": 4032,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "কমার্শিয়াল বিল্ডিংয়ে বড় মেইন ডিস্ট্রিবিউশন বোর্ড সার্ভিস করছেন ইঞ্জিনিয়ার"
+ },
+ "panel-room-2": {
+  "alt": "Technician working on an MDB panel room",
+  "w": 3024,
+  "h": 4032,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "এমডিবি প্যানেল রুমে কাজ করছেন টেকনিশিয়ান"
+ },
+ "panel-room-3": {
+  "alt": "Electrical panel installation in a commercial building",
+  "w": 3024,
+  "h": 4032,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "কমার্শিয়াল বিল্ডিংয়ে ইলেকট্রিক্যাল প্যানেল লাগানো"
+ },
+ "panel-room-4": {
+  "alt": "Commercial electrical panel maintenance",
+  "w": 3024,
+  "h": 4032,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "কমার্শিয়াল ইলেকট্রিক্যাল প্যানেল রক্ষণাবেক্ষণ"
+ },
+ "panel-1": {
+  "alt": "Neatly dressed busbars and breakers in a distribution board",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "ডিস্ট্রিবিউশন বোর্ডে গোছানো বাসবার ও ব্রেকার"
+ },
+ "panel-2": {
+  "alt": "Distribution board with breakers and cable dressing",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "ব্রেকার ও কেবল ড্রেসিং করা ডিস্ট্রিবিউশন বোর্ড"
+ },
+ "panel-3": {
+  "alt": "MDB panel with MCCB and busbars after servicing",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "সার্ভিসিংয়ের পর এমসিসিবি ও বাসবারসহ এমডিবি প্যানেল"
+ },
+ "panel-4": {
+  "alt": "Distribution board wiring with labelled breakers",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "লেবেল করা ব্রেকারসহ ডিস্ট্রিবিউশন বোর্ডের ওয়্যারিং"
+ },
+ "panel-5": {
+  "alt": "MCB and MCCB breakers installed in a DB box",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "ডিবি বক্সে লাগানো এমসিবি ও এমসিসিবি ব্রেকার"
+ },
+ "panel-6": {
+  "alt": "Distribution board with MCCB for AC and power lines",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "এসি ও পাওয়ার লাইনের জন্য এমসিসিবিসহ ডিস্ট্রিবিউশন বোর্ড"
+ },
+ "panel-7": {
+  "alt": "Phase-balanced distribution board with indicator lights",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "ইন্ডিকেটর লাইটসহ ফেজ-ব্যালান্সড ডিস্ট্রিবিউশন বোর্ড"
+ },
+ "panel-8": {
+  "alt": "HRC fuses replaced after an electrical fault",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "ইলেকট্রিক্যাল ত্রুটির পর বদলানো এইচআরসি ফিউজ"
+ },
+ "panel-9": {
+  "alt": "Rewired distribution board with new breakers",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "নতুন ব্রেকারসহ নতুন করে ওয়্যারিং করা ডিস্ট্রিবিউশন বোর্ড"
+ },
+ "panel-10": {
+  "alt": "Commercial electrical panel wiring and contactors",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "কমার্শিয়াল ইলেকট্রিক্যাল প্যানেলের ওয়্যারিং ও কন্টাক্টর"
+ },
+ "supershop-1": {
+  "alt": "Technician working at a super shop",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "সুপার শপে কাজ করছেন টেকনিশিয়ান"
+ },
+ "supershop-2": {
+  "alt": "Installing a distribution board at a super shop in Uttara",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "উত্তরার একটি সুপার শপে ডিস্ট্রিবিউশন বোর্ড লাগানো"
+ },
+ "supershop-3": {
+  "alt": "Commercial maintenance work in a retail store",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "রিটেইল দোকানে কমার্শিয়াল রক্ষণাবেক্ষণের কাজ"
+ },
+ "pipe-1": {
+  "alt": "Water pipe and valve connection by our plumber",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "আমাদের প্লাম্বারের করা পানির পাইপ ও ভালভ সংযোগ"
+ },
+ "commode-1": {
+  "alt": "New commode installed in a bathroom",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "বাথরুমে নতুন কমোড লাগানো হয়েছে"
+ },
+ "commode-2": {
+  "alt": "Commode installation with flush tank fitting",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "ফ্লাশ ট্যাংক ফিটিংসহ কমোড লাগানো"
+ },
+ "tap-1": {
+  "alt": "New basin tap installed by our plumber",
+  "w": 6000,
+  "h": 8000,
+  "widths": [
+   480,
+   960,
+   1600
+  ],
+  "altBn": "আমাদের প্লাম্বারের লাগানো নতুন বেসিন ট্যাপ"
+ }
+}

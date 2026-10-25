@@ -1,0 +1,121 @@
+---
+// Industry landing page (e.g. /commercial/restaurants-hotels/), written from this site's trade angle.
+import Base from "../layouts/Base.astro";
+import Img from "../components/Img.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import ServiceList from "../components/ServiceList.astro";
+import BusinessForm from "../components/BusinessForm.astro";
+import { company } from "../data/company";
+import { site, sister } from "../data/sites";
+import { findService } from "../data/services";
+import { industries, findIndustry, businessBenefits } from "../data/industries";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, pick, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang; slug: string }
+const { lang, slug } = Astro.props;
+const bn = lang === "bn";
+const ind = findIndustry(slug)!;
+const name = pick(lang, ind.name, ind.nameBn);
+const path = `/commercial/${ind.slug}/`;
+const url = site.url + lp(lang, path);
+const needs = site.key === "electric" ? (bn ? ind.needs.electricBn : ind.needs.electric) : (bn ? ind.needs.plumbingBn : ind.needs.plumbing);
+const sisterNeeds = sister.key === "electric" ? (bn ? ind.needs.electricBn : ind.needs.electric) : (bn ? ind.needs.plumbingBn : ind.needs.plumbing);
+const svc = ind.services.map(findService).filter(Boolean) as NonNullable<ReturnType<typeof findService>>[];
+const own = svc.filter((s) => s.site === site.key);
+const other = svc.filter((s) => s.site === sister.key);
+const others = industries.filter((i) => i.slug !== ind.slug);
+const h1 = bn ? `${ind.nameBn}-এর জন্য ${site.workBn} সার্ভিস` : `${site.trade} services for ${ind.name}`;
+const title = bn ? `${ind.nameBn} — ${site.workBn} সার্ভিস ও রক্ষণাবেক্ষণ | ${company.nameBn}` : `${site.trade} for ${ind.name} in Dhaka | ${company.name}`;
+const description = (bn ? ind.introBn : ind.intro).slice(0, 155);
+const crumbs = [
+  { name: t(lang, "breadcrumbHome"), href: lp(lang, "/") },
+  { name: t(lang, "business"), href: lp(lang, "/commercial/") },
+  { name, href: lp(lang, path) },
+];
+const msg = bn ? `হ্যালো, আমাদের ${ind.nameBn} প্রতিষ্ঠানের জন্য ${site.workBn} কাজের সাইট সার্ভে চাই।` : `Hi, we'd like a site survey for ${site.work} work at our ${ind.name.toLowerCase()} business.`;
+const ld = {
+  "@type": "Service",
+  "@id": `${url}#service`,
+  name: h1,
+  serviceType: `${site.trade} – ${ind.name}`,
+  audience: { "@type": "BusinessAudience", name: ind.name },
+  provider: { "@id": `${site.url}/#business` },
+  areaServed: { "@type": "City", name: "Dhaka" },
+  url,
+};
+---
+<Base lang={lang} title={title} description={description} path={path} image={ind.image[site.key]}
+  schema={[ld, breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap hero" style="padding-top:0">
+    <div class="hero-img"><Img name={ind.image[site.key]} priority /></div>
+    <div>
+      <p class="muted small" style="margin:0 0 6px"><span aria-hidden="true">{ind.icon}</span> {t(lang, "corporate")}</p>
+      <h1>{h1}</h1>
+      <p class="answer">{bn ? ind.introBn : ind.intro}</p>
+      <CallButtons lang={lang} message={msg} label={t(lang, "surveyWhatsapp")} />
+    </div>
+  </section>
+
+  <section class="section soft">
+    <div class="wrap grid2">
+      <div>
+        <h2>{bn ? "যা আমরা সামলাই" : "What we take care of"}</h2>
+        <ul class="checks">{needs.map((n) => <li>{n}</li>)}</ul>
+      </div>
+      <div class="card">
+        <h3>{sister.icon} {t(lang, "fromSister", { division: bn ? sister.divisionBn : sister.division })}</h3>
+        <ul class="checks">{sisterNeeds.map((n) => <li>{n}</li>)}</ul>
+        <a href={sister.url + lp(lang, path)}>{sister.domain} — {name} →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>{t(lang, "servicesForIndustry", { industry: name })}</h2>
+      {own.length > 0 && <ServiceList items={own} lang={lang} />}
+      {other.length > 0 && (
+        <>
+          <h3 style="margin-top:28px">{t(lang, "fromSister", { division: bn ? sister.divisionBn : sister.division })}</h3>
+          <ServiceList items={other} lang={lang} external />
+        </>
+      )}
+    </div>
+  </section>
+
+  <section class="section biz">
+    <div class="wrap">
+      <h2>{t(lang, "whyBusiness")}</h2>
+      <ul class="benefits">
+        {businessBenefits.map((b) => <li><span class="ic" aria-hidden="true">{b.icon}</span><b>{bn ? b.bn : b.en}</b><p>{bn ? b.bnD : b.enD}</p></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section soft">
+    <div class="wrap grid2">
+      <div>
+        <h2>{t(lang, "requestSurvey")}</h2>
+        <p class="lead">{bn ? "ফর্মটি পূরণ করে হোয়াটসঅ্যাপে পাঠান — আমরা সাইট সার্ভের সময় ঠিক করে লিখিত প্রস্তাব দেব।" : "Fill in the form and send it on WhatsApp — we'll schedule a site survey and send a written proposal."}</p>
+        <div class="card accent">
+          <h3>{t(lang, "amc")}</h3>
+          <p>{t(lang, "amcShort")}</p>
+          <a href={lp(lang, "/commercial/maintenance-contract/")}>{t(lang, "readMore")} →</a>
+        </div>
+      </div>
+      <div><BusinessForm lang={lang} industry={ind.slug} /></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>{bn ? "অন্যান্য প্রতিষ্ঠান" : "Other industries"}</h2>
+      <ul class="tiles light">
+        {others.map((i) => <li><a href={lp(lang, `/commercial/${i.slug}/`)}><span class="ic" aria-hidden="true">{i.icon}</span>{pick(lang, i.name, i.nameBn)}</a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>

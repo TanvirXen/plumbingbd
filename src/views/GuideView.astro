@@ -1,0 +1,69 @@
+---
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import ServiceList from "../components/ServiceList.astro";
+import Img from "../components/Img.astro";
+import { company } from "../data/company";
+import { site } from "../data/sites";
+import { findService } from "../data/services";
+import { findGuide, guideVersion } from "../lib/guides";
+import { ORG_ID, breadcrumbLd } from "../lib/schema";
+import { lp, num, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang; slug: string }
+const { lang, slug } = Astro.props;
+const bn = lang === "bn";
+const g = findGuide(slug)!;
+const v = guideVersion(slug, lang)!;
+const path = `/guides/${slug}/`;
+const url = site.url + lp(lang, path);
+type Svc = NonNullable<ReturnType<typeof findService>>;
+const related = (v.related ?? []).map(findService).filter(Boolean) as Svc[];
+const sisterRelated = (v.sisterRelated ?? []).map(findService).filter(Boolean) as Svc[];
+const crumbs = [
+  { name: t(lang, "breadcrumbHome"), href: lp(lang, "/") },
+  { name: t(lang, "guides"), href: lp(lang, "/guides/") },
+  { name: v.title, href: lp(lang, path) },
+];
+const article = {
+  "@type": "Article",
+  headline: v.title,
+  description: v.description,
+  datePublished: v.date,
+  dateModified: v.date,
+  url,
+  image: v.image ? `${site.url}/img/${v.image}-1600.webp` : undefined,
+  author: { "@type": "Person", name: company.expert.name, jobTitle: company.expert.title },
+  publisher: { "@id": ORG_ID },
+  inLanguage: bn ? "bn-BD" : "en-BD",
+};
+const { Content } = v;
+---
+<Base lang={lang} title={`${v.title} | ${bn ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`}`} description={v.description} path={path} hasAlt={!!(g.en && g.bn)} image={v.image}
+  schema={[article, breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <article class="wrap prose" style="padding-bottom:48px">
+    <h1 style="text-transform:none">{v.title}</h1>
+    <p class="muted small">{bn ? "লিখেছেন" : "By"} {company.expert.name}, {bn ? company.expert.titleBn : company.expert.title} · {bn ? num(lang, v.date) : v.date}</p>
+    {v.image && <Img name={v.image} sizes="(min-width: 760px) 720px, 100vw" />}
+    <Content />
+    {related.length > 0 && (
+      <>
+        <h2>{bn ? "সংশ্লিষ্ট সার্ভিস" : "Related services"}</h2>
+        <ServiceList items={related} lang={lang} two={false} />
+      </>
+    )}
+    {sisterRelated.length > 0 && (
+      <>
+        <h3 style="margin-top:24px">{bn ? "আমাদের অন্য বিভাগ থেকে" : "From our other division"}</h3>
+        <ServiceList items={sisterRelated} lang={lang} two={false} external />
+      </>
+    )}
+    <div class="card accent" style="margin-top:32px">
+      <h3>{bn ? "এখনই সাহায্য দরকার?" : "Need help now?"}</h3>
+      <p>{t(lang, "noPriceNote")}</p>
+      <CallButtons lang={lang} />
+    </div>
+  </article>
+</Base>

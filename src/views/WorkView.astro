@@ -1,0 +1,65 @@
+---
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import Img from "../components/Img.astro";
+import YouTube from "../components/YouTube.astro";
+import images from "../data/images.json";
+import { company } from "../data/company";
+import { site, sister } from "../data/sites";
+import { servicesFor } from "../data/services";
+import { videos } from "../data/videos";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+// Photos used by this site's services come first; the rest are shown as sister-division work.
+const own = [...new Set(servicesFor(site.key).flatMap((s) => s.images))];
+const others = Object.keys(images).filter((k) => !own.includes(k));
+const myVideos = videos.filter((v) => v.site === site.key);
+const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name: t(lang, "work"), href: lp(lang, "/work/") }];
+const title = bn ? `আমাদের কাজের ছবি ও ভিডিও | ইমার্জেন্সি ${site.tradeBn}` : `Our ${site.trade} Work — Photos & Videos | ${company.name}`;
+const description = bn
+  ? `উত্তরা ও আশেপাশে আমাদের টিমের আসল কাজের ছবি — বাসা, অফিস, দোকান ও সুপার শপ।`
+  : `Real photos from our jobs in Uttara and nearby — homes, offices, shops and super shops.`;
+---
+<Base lang={lang} title={title} description={description} path="/work/"
+  schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap">
+    <h1>{t(lang, "work")}</h1>
+    <p class="lead">{description}</p>
+  </section>
+  {myVideos.length > 0 && (
+    <section class="section">
+      <div class="wrap">
+        <h2>{bn ? "ভিডিও" : "Videos"}</h2>
+        <div class="gallery big">{myVideos.map((v) => <YouTube video={v} />)}</div>
+      </div>
+    </section>
+  )}
+  <section class="section">
+    <div class="wrap">
+      <div class="gallery big">
+        {own.map((k) => (
+          <figure><Img name={k} sizes="(min-width: 760px) 33vw, 50vw" /><figcaption>{bn && (images as any)[k].altBn ? (images as any)[k].altBn : (images as any)[k].alt}</figcaption></figure>
+        ))}
+      </div>
+    </div>
+  </section>
+  {others.length > 0 && (
+    <section class="section soft">
+      <div class="wrap">
+        <h2>{bn ? `আমাদের ${sister.divisionBn}ের কাজ` : `Work by our ${sister.division}`}</h2>
+        <p><a href={sister.url + lp(lang, "/work/")}>{sister.domain}/work →</a></p>
+        <div class="gallery">
+          {others.slice(0, 9).map((k) => <Img name={k} sizes="33vw" />)}
+        </div>
+      </div>
+    </section>
+  )}
+  <section class="section"><div class="wrap center"><CallButtons lang={lang} /></div></section>
+</Base>
+<style>.section .btn-row { justify-content: center; }</style>

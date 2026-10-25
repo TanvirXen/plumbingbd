@@ -1,0 +1,24 @@
+{
+  "name": "plumbingbd",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "plumbingbd.com — Emergency Electric and Plumbing Service (Plumbing Division)",
+  "scripts": {
+    "dev": "node node_modules/astro/bin/astro.mjs dev --port 4322",
+    "build": "node node_modules/astro/bin/astro.mjs build",
+    "preview": "node scripts/serve.mjs dist 4322",
+    "local": "node scripts/local.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "images": "python -I scripts/process_images.py"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@fontsource/hind-siliguri": "^5.3.0",
+    "astro": "^7.4.2"
+  }
+}

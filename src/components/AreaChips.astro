@@ -1,0 +1,11 @@
+---
+import { areas, type Area } from "../data/areas";
+import { lp, pick, type Lang } from "../i18n";
+interface Props { lang: Lang; items?: Area[]; base?: string }
+const { lang, items = areas, base = "" } = Astro.props;
+---
+<ul class="chips">
+  {items.map((a) => (
+    <li><a href={base ? `${base}${lp(lang, `/areas/${a.slug}/`)}` : lp(lang, `/areas/${a.slug}/`)}>{pick(lang, a.name, a.nameBn)}</a></li>
+  ))}
+</ul>

@@ -1,0 +1,98 @@
+---
+// Free calculators (link magnets). Results are rough guides; the page says so.
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import { site, sister } from "../data/sites";
+import { findService, servicePath } from "../data/services";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang; path: string }
+const { lang, path } = Astro.props;
+const bn = lang === "bn";
+const ips = site.key === "electric";
+const appliances = bn
+  ? [["সিলিং ফ্যান", 75, 2], ["এলইডি লাইট", 12, 4], ["টিউব লাইট (এলইডি)", 20, 2], ["টিভি", 80, 1], ["ওয়াইফাই রাউটার", 12, 1], ["ল্যাপটপ", 65, 0], ["ডেস্কটপ কম্পিউটার", 200, 0], ["ফ্রিজ", 150, 0]]
+  : [["Ceiling fan", 75, 2], ["LED light", 12, 4], ["LED tube light", 20, 2], ["TV", 80, 1], ["Wi-Fi router", 12, 1], ["Laptop", 65, 0], ["Desktop computer", 200, 0], ["Fridge", 150, 0]];
+const name = ips
+  ? (bn ? "আইপিএস সাইজ ক্যালকুলেটর" : "IPS Size & Battery Calculator")
+  : (bn ? "পানির পাম্প সাইজ ক্যালকুলেটর" : "Water Pump Size Calculator");
+const description = ips
+  ? (bn ? "কোন কোন ফ্যান-লাইট চালাবেন বেছে নিন — কত VA-এর আইপিএস ও কত Ah ব্যাটারি লাগবে দেখুন।" : "Pick the fans and lights you want on backup and see what IPS size (VA) and battery (Ah) you need during load-shedding.")
+  : (bn ? "বিল্ডিংয়ের তলা ও ফ্ল্যাট সংখ্যা দিন — কত HP পাম্প লাগবে তার ধারণা নিন।" : "Enter floors and flats to estimate the pump size (HP) your building needs.");
+const svc = findService(ips ? "ips-installation" : "water-pump-installation")!;
+const pairSvc = findService(ips ? "water-pump-installation" : "mcb-installation");
+const crumbs = [
+  { name: t(lang, "breadcrumbHome"), href: lp(lang, "/") },
+  { name: t(lang, "guides"), href: lp(lang, "/guides/") },
+  { name, href: lp(lang, path) },
+];
+const L = bn
+  ? { item: "যন্ত্র", watt: "ওয়াট", qty: "সংখ্যা", hours: "কত ঘণ্টা ব্যাকআপ চান", floors: "তলা সংখ্যা", flats: "প্রতি তলায় ফ্ল্যাট", people: "প্রতি ফ্ল্যাটে মানুষ", suction: "সাকশন গভীরতা (মিটার)", fill: "ট্যাংক ভরতে চান (ঘণ্টায়)", note: "এটি আনুমানিক হিসাব। সঠিক সাইজের জন্য আমাদের টেকনিশিয়ান সরেজমিনে দেখে দেবেন।", book: "লাগানোর জন্য বুক করুন" }
+  : { item: "Appliance", watt: "Watts", qty: "Qty", hours: "Backup hours needed", floors: "Number of floors", flats: "Flats per floor", people: "People per flat", suction: "Suction depth (metres)", fill: "Hours to fill the tank", note: "This is an estimate. Our technician confirms the right size on site.", book: "Book installation" };
+const labels = bn
+  ? { load: "মোট লোড", ips: "প্রস্তাবিত আইপিএস", battery: "ব্যাটারি", water: "দৈনিক পানি", head: "মোট হেড", pump: "প্রস্তাবিত পাম্প" }
+  : { load: "Total load", ips: "Suggested IPS", battery: "Battery", water: "Daily water", head: "Total head", pump: "Suggested pump" };
+---
+<Base lang={lang} title={`${name} | ${bn ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`}`} description={description} path={path}
+  schema={[{ "@type": "WebApplication", name, applicationCategory: "UtilitiesApplication", operatingSystem: "Any", isAccessibleForFree: true }, breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap" style="max-width:720px;padding-bottom:48px">
+    <h1 style="text-transform:none">{name}</h1>
+    <p class="lead">{description}</p>
+    {ips ? (
+      <form class="tool" id="calc" data-kind="ips">
+        <div class="rowi small muted"><span>{L.item}</span><span>{L.watt}</span><span>{L.qty}</span></div>
+        {appliances.map(([n, w, q]) => (
+          <div class="rowi"><span>{n}</span><input type="number" min="0" name="w" value={w} aria-label={`${n} ${L.watt}`} /><input type="number" min="0" name="q" value={q} aria-label={`${n} ${L.qty}`} /></div>
+        ))}
+        <label class="rowi" style="grid-template-columns:1fr 80px"><span>{L.hours}</span><input type="number" min="1" max="12" name="hours" value="3" /></label>
+      </form>
+    ) : (
+      <form class="tool" id="calc" data-kind="pump">
+        <label class="rowi" style="grid-template-columns:1fr 100px"><span>{L.floors}</span><input type="number" min="1" max="30" name="floors" value="6" /></label>
+        <label class="rowi" style="grid-template-columns:1fr 100px"><span>{L.flats}</span><input type="number" min="1" max="10" name="flats" value="2" /></label>
+        <label class="rowi" style="grid-template-columns:1fr 100px"><span>{L.people}</span><input type="number" min="1" max="15" name="people" value="5" /></label>
+        <label class="rowi" style="grid-template-columns:1fr 100px"><span>{L.suction}</span><input type="number" min="0" max="10" name="suction" value="4" /></label>
+        <label class="rowi" style="grid-template-columns:1fr 100px"><span>{L.fill}</span><input type="number" min="0.5" max="6" step="0.5" name="fill" value="1.5" /></label>
+      </form>
+    )}
+    <div class="result" id="result" aria-live="polite" style="margin:20px 0"></div>
+    <p class="small muted">{L.note}</p>
+    <p><a class="btn btn-accent" href={lp(lang, servicePath(svc))}>{L.book} →</a></p>
+    {pairSvc && <p class="small">{bn ? "সংশ্লিষ্ট: " : "Related: "}<a href={sister.url + lp(lang, servicePath(pairSvc))}>{bn ? pairSvc.nameBn : pairSvc.name}</a> ({sister.domain})</p>}
+    <CallButtons lang={lang} ghost />
+  </section>
+  <script type="application/json" id="calc-labels" set:html={JSON.stringify(labels)} />
+</Base>
+<script>
+  const form = document.getElementById("calc") as HTMLFormElement;
+  const out = document.getElementById("result")!;
+  const L = JSON.parse(document.getElementById("calc-labels")!.textContent!);
+  const n = (name: string) => Number((form.elements.namedItem(name) as HTMLInputElement)?.value) || 0;
+  const pickSize = (v: number, sizes: number[]) => sizes.find((s) => s >= v) ?? sizes[sizes.length - 1];
+
+  function ips() {
+    const w = [...form.querySelectorAll<HTMLInputElement>('input[name="w"]')].map((i) => Number(i.value) || 0);
+    const q = [...form.querySelectorAll<HTMLInputElement>('input[name="q"]')].map((i) => Number(i.value) || 0);
+    const load = w.reduce((s, x, i) => s + x * q[i], 0);
+    const va = pickSize(load / 0.7, [650, 1000, 1500, 2000, 2500, 3000, 3500, 5000]);
+    const volts = va <= 1000 ? 12 : 24;
+    const ah = Math.ceil((load * n("hours")) / (volts * 0.75));
+    const batteries = volts / 12;
+    out.innerHTML = `${L.load}: ${load} W<br>${L.ips}: ${va} VA (${volts}V)<br>${L.battery}: ${batteries} × 12V ${Math.max(ah, 50)} Ah`;
+  }
+  function pump() {
+    const litres = n("floors") * n("flats") * n("people") * 135;
+    const head = n("floors") * 3 + 3 + n("suction");
+    const totalHead = head * 1.2; // + pipe losses
+    const q = litres / 2 / (n("fill") * 3600) / 1000; // m³/s, tank filled twice a day
+    const kw = (1000 * 9.81 * q * totalHead) / 0.5 / 1000;
+    const hp = pickSize(kw / 0.746, [0.5, 1, 1.5, 2, 3, 5, 7.5, 10, 15]);
+    out.innerHTML = `${L.water}: ${litres.toLocaleString()} L<br>${L.head}: ${Math.round(totalHead)} m<br>${L.pump}: ${hp} HP`;
+  }
+  const run = form.dataset.kind === "ips" ? ips : pump;
+  form.addEventListener("input", run);
+  run();
+</script>

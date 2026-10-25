@@ -1,0 +1,72 @@
+---
+// Corporate enquiry → opens WhatsApp with a structured message. All fields optional.
+import { company } from "../data/company";
+import { industries } from "../data/industries";
+import { areas } from "../data/areas";
+import { site } from "../data/sites";
+import { pick, t, type Lang } from "../i18n";
+interface Props { lang: Lang; industry?: string }
+const { lang, industry } = Astro.props;
+const bn = lang === "bn";
+const L = bn
+  ? { title: "ব্যবসার জন্য সাইট সার্ভে / প্রস্তাব চান", company: "প্রতিষ্ঠানের নাম", type: "প্রতিষ্ঠানের ধরন", person: "যোগাযোগকারীর নাম", phone: "ফোন", area: "এলাকা", need: "কী দরকার", details: "বিস্তারিত (জায়গার আকার, সমস্যা ইত্যাদি)", pick: "বেছে নিন", el: "ইলেকট্রিক্যাল", pl: "প্লাম্বিং", amc: "মাসিক রক্ষণাবেক্ষণ চুক্তি", urgent: "জরুরি সমস্যা", send: "হোয়াটসঅ্যাপে পাঠান", hi: "হ্যালো, আমাদের প্রতিষ্ঠানের জন্য সাইট সার্ভে / প্রস্তাব চাই।" }
+  : { title: "Request a site survey / proposal", company: "Company name", type: "Type of business", person: "Contact person", phone: "Phone", area: "Area", need: "What you need", details: "Details (size of space, problem, etc.)", pick: "Choose", el: "Electrical", pl: "Plumbing", amc: "Monthly maintenance contract", urgent: "Urgent problem", send: "Send on WhatsApp", hi: "Hi, we'd like a site survey / proposal for our business." };
+const labels = bn
+  ? { company: "প্রতিষ্ঠান", type: "ধরন", person: "যোগাযোগ", phone: "ফোন", area: "এলাকা", need: "প্রয়োজন", details: "বিস্তারিত" }
+  : { company: "Company", type: "Type", person: "Contact", phone: "Phone", area: "Area", need: "Needs", details: "Details" };
+const cfg = { wa: company.whatsapp, hi: L.hi, labels, division: bn ? site.divisionBn : site.division };
+const pre = industries.find((i) => i.slug === industry);
+---
+<form class="form bizform" data-bizform novalidate>
+  <h3>{L.title}</h3>
+  <div class="row2">
+    <label>{L.company}<input name="company" autocomplete="organization" maxlength="100" /></label>
+    <label>{L.type}
+      <select name="type">
+        <option value="">{L.pick}</option>
+        {industries.map((i) => <option selected={pre?.slug === i.slug}>{pick(lang, i.name, i.nameBn)}</option>)}
+      </select>
+    </label>
+  </div>
+  <div class="row2">
+    <label>{L.person}<input name="person" autocomplete="name" maxlength="80" /></label>
+    <label>{L.phone}<input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" /></label>
+  </div>
+  <label>{L.area}
+    <select name="area"><option value="">{L.pick}</option>{areas.map((a) => <option>{pick(lang, a.name, a.nameBn)}</option>)}</select>
+  </label>
+  <fieldset style="border:0;padding:0;margin:0">
+    <legend style="font-weight:600;margin-bottom:6px">{L.need}</legend>
+    <div class="checks-row">
+      <label><input type="checkbox" name="need" value={L.el} checked={site.key === "electric"} /> {L.el}</label>
+      <label><input type="checkbox" name="need" value={L.pl} checked={site.key === "plumbing"} /> {L.pl}</label>
+      <label><input type="checkbox" name="need" value={L.amc} /> {L.amc}</label>
+      <label><input type="checkbox" name="need" value={L.urgent} /> {L.urgent}</label>
+    </div>
+  </fieldset>
+  <label>{L.details}<textarea name="details" maxlength="600"></textarea></label>
+  <a class="btn btn-wa" href="#" data-send target="_blank" rel="noopener" data-track="whatsapp_business">{L.send}</a>
+  <script type="application/json" data-cfg set:html={JSON.stringify(cfg)} />
+</form>
+<script>
+  document.querySelectorAll<HTMLFormElement>("form[data-bizform]").forEach((form) => {
+    const cfg = JSON.parse(form.querySelector("[data-cfg]")!.textContent!);
+    const send = form.querySelector<HTMLAnchorElement>("[data-send]")!;
+    const build = () => {
+      const d = new FormData(form);
+      const lines = [`${cfg.hi} (${cfg.division})`];
+      for (const f of ["company", "type", "person", "phone", "area"]) {
+        const v = String(d.get(f) ?? "").trim();
+        if (v) lines.push(`${cfg.labels[f]}: ${v}`);
+      }
+      const needs = d.getAll("need").map(String);
+      if (needs.length) lines.push(`${cfg.labels.need}: ${needs.join(", ")}`);
+      const det = String(d.get("details") ?? "").trim();
+      if (det) lines.push(`${cfg.labels.details}: ${det}`);
+      send.href = `https://wa.me/${cfg.wa}?text=${encodeURIComponent(lines.join("\n"))}`;
+    };
+    form.addEventListener("input", build);
+    form.addEventListener("change", build);
+    build();
+  });
+</script>

@@ -1,0 +1,67 @@
+---
+import { company, telLink, waLink } from "../data/company";
+import { site, sister } from "../data/sites";
+import { servicesFor, servicePath } from "../data/services";
+import { areas, topAreas } from "../data/areas";
+import { industries } from "../data/industries";
+import { lp, num, pick, t, type Lang } from "../i18n";
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+const popular = servicesFor(site.key).filter((s) => s.group !== "commercial").slice(0, 6);
+const areaList = areas.filter((a) => topAreas.includes(a.slug));
+const socialNames: Record<string, string> = {
+  googleBusiness: "Google", facebook: "Facebook", youtube: "YouTube", instagram: "Instagram", tiktok: "TikTok",
+};
+const socials = Object.entries(company.social).filter(([k, v]) => v && k in socialNames);
+const year = new Date().getFullYear();
+const place = bn ? `${company.address.localityBn}, ${company.address.regionBn}` : `${company.address.locality}, ${company.address.region}`;
+---
+<footer class="footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h3>{bn ? company.nameBn : company.name}</h3>
+        <p>{bn ? site.divisionBn : site.division} · {site.domain}</p>
+        <p>
+          {t(lang, "whatsapp")}: <a href={waLink(bn ? "হ্যালো" : "Hi")} target="_blank" rel="noopener">{company.phone}</a><br />
+          {t(lang, "phone")}: <a href={telLink}>{company.phone}</a><br />
+          {t(lang, "hours")}: {bn ? company.hours.labelBn : company.hours.label}<br />
+          {company.address.street ? `${company.address.street}, ` : ""}{place}
+        </p>
+        <p>{t(lang, "payments")}: {(bn ? company.paymentsBn : company.payments).join(" · ")}</p>
+        <p>
+          {t(lang, "otherDivision", { division: bn ? sister.divisionBn : sister.division })}:
+          <a href={sister.url + lp(lang, "/")}>{sister.domain}</a>
+        </p>
+      </div>
+      <div>
+        <h3>{t(lang, "services")}</h3>
+        <ul>
+          {popular.map((s) => <li><a href={lp(lang, servicePath(s))}>{pick(lang, s.name, s.nameBn)}</a></li>)}
+          <li><a href={lp(lang, "/services/")}>{t(lang, "allServices")} →</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>{t(lang, "business")}</h3>
+        <ul>
+          {industries.map((i) => <li><a href={lp(lang, `/commercial/${i.slug}/`)}>{pick(lang, i.name, i.nameBn)}</a></li>)}
+          <li><a href={lp(lang, "/commercial/maintenance-contract/")}>{t(lang, "amc")}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>{t(lang, "areas")}</h3>
+        <ul>
+          {areaList.map((a) => <li><a href={lp(lang, `/areas/${a.slug}/`)}>{pick(lang, a.name, a.nameBn)}</a></li>)}
+          <li><a href={lp(lang, "/areas/")}>{t(lang, "viewAllAreas")} →</a></li>
+        </ul>
+        <ul style="margin-top:16px">
+          <li><a href={lp(lang, "/guides/")}>{t(lang, "guides")}</a></li>
+          <li><a href={lp(lang, "/order/")}>{t(lang, "order")}</a></li>
+          {socials.map(([k, v]) => <li><a href={v} rel="noopener">{socialNames[k]}</a></li>)}
+        </ul>
+      </div>
+    </div>
+    <div class="base">© {num(lang, String(year))} {bn ? company.nameBn : company.name}{bn ? "।" : "."} {t(lang, "copyright")}</div>
+  </div>
+</footer>

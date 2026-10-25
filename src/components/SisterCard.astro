@@ -1,0 +1,25 @@
+---
+import Img from "./Img.astro";
+import { sister } from "../data/sites";
+import { company } from "../data/company";
+import { lp, t, type Lang } from "../i18n";
+interface Props { lang: Lang; path?: string; text?: string }
+const { lang, path = "/", text } = Astro.props;
+const href = sister.url + lp(lang, path);
+const trade = lang === "bn" ? sister.tradeBn : sister.trade.toLowerCase();
+const body = text ?? (lang === "bn"
+  ? `${company.nameBn}ের ${sister.divisionBn} — একই টিম, একই হোয়াটসঅ্যাপ। এক ভিজিটে দুই কাজ করিয়ে নিন।`
+  : `${company.name} also has a ${sister.division}. Same team, same WhatsApp — get both jobs done in one visit.`);
+---
+<aside class="sister">
+  <div>
+    <span class="badge">{sister.icon} {t(lang, "sisterBadge")}</span>
+    <h2 style="margin-top:12px">{t(lang, "needOther", { trade })}</h2>
+    <p>{body}</p>
+    <a class="btn btn-ghost" style="border-color:#fff;color:#fff" href={href}>{sister.domain} →</a>
+  </div>
+  <Img name={sister.heroImage} sizes="(min-width: 760px) 400px, 100vw" class="sister-img" />
+</aside>
+<style>
+  .sister :global(.sister-img) { border-radius: 10px; aspect-ratio: 4/3; object-fit: cover; width: 100%; }
+</style>

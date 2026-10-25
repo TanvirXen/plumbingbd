@@ -1,0 +1,149 @@
+---
+import Base from "../layouts/Base.astro";
+import Img from "../components/Img.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import ServiceList from "../components/ServiceList.astro";
+import SisterCard from "../components/SisterCard.astro";
+import BusinessForm from "../components/BusinessForm.astro";
+import Faq from "../components/Faq.astro";
+import { company } from "../data/company";
+import { site, sister } from "../data/sites";
+import { servicesFor } from "../data/services";
+import { industries, businessBenefits } from "../data/industries";
+import { breadcrumbLd, faqLd } from "../lib/schema";
+import { lp, pick, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang; kind: "all" | "home" | "commercial"; path: string }
+const { lang, kind, path } = Astro.props;
+const bn = lang === "bn";
+const all = servicesFor(site.key);
+const by = (g: string) => all.filter((s) => s.group === g);
+const brand = bn ? company.nameBn : company.name;
+const bizMsg = bn ? "হ্যালো, আমাদের প্রতিষ্ঠানের জন্য সাইট সার্ভে / প্রস্তাব চাই।" : "Hi, we'd like a site survey / proposal for our business.";
+
+const copy = {
+  all: {
+    h1: bn ? `আমাদের ${site.workBn} সার্ভিস` : `Our ${site.work} services`,
+    intro: bn
+      ? `উত্তরা, বসুন্ধরা ও আশেপাশে বাসা ও প্রতিষ্ঠানের সব ${site.workBn} কাজ। যেকোনো সার্ভিসের পাশে "বুক" চাপুন — হোয়াটসঅ্যাপে মেসেজ তৈরি হয়ে যাবে।`
+      : `Every ${site.work} job for homes and businesses in Uttara, Bashundhara and nearby. Tap "Book" next to any service — your WhatsApp message is ready.`,
+    title: bn ? `${site.workBn} সার্ভিস — উত্তরা ও বসুন্ধরা | ${brand}` : `${site.trade} Services in Uttara & Bashundhara | ${company.name}`,
+    image: site.heroImage,
+  },
+  home: {
+    h1: bn ? "হোম সার্ভিস" : "Home services",
+    intro: bn
+      ? "ঘরের ছোট-বড় ফিটিং ও ইনস্টলেশনের কাজ — অভিজ্ঞ টেকনিশিয়ান, পরিষ্কার কাজ। হোয়াটসঅ্যাপে বুক করুন।"
+      : "Fitting and installation jobs around the home — experienced technicians and clean work. Book on WhatsApp.",
+    title: bn ? `হোম সার্ভিস উত্তরা | ${brand}` : `Home Services in Uttara & Bashundhara | ${company.name}`,
+    image: site.stepImages[1],
+  },
+  commercial: {
+    h1: bn ? `কর্পোরেট ও কমার্শিয়াল ${site.workBn} সার্ভিস` : `Corporate & commercial ${site.work} services`,
+    intro: bn
+      ? `অফিস, দোকান, রেস্টুরেন্ট, সুপার শপ, ক্লিনিক, স্কুল ও অ্যাপার্টমেন্ট বিল্ডিংয়ের জন্য ${site.workBn} কাজ ও মাসিক রক্ষণাবেক্ষণ — সাইট সার্ভে, লিখিত প্রস্তাব ও অফিস সময়ের পরে কাজ।`
+      : `${site.work[0].toUpperCase() + site.work.slice(1)} work and monthly maintenance for offices, shops, restaurants, super shops, clinics, schools and apartment buildings — with site surveys, written proposals and after-hours work.`,
+    title: bn ? `কর্পোরেট ${site.tradeBn} সার্ভিস ঢাকা | ${brand}` : `Corporate & Commercial ${site.trade} Services in Dhaka | ${company.name}`,
+    image: site.commercialImage,
+  },
+}[kind];
+
+const bizFaqs = bn
+  ? [
+      { q: "আপনারা কি কোম্পানির সাথে চুক্তিতে কাজ করেন?", a: "হ্যাঁ। এককালীন প্রজেক্ট ও মাসিক/বার্ষিক রক্ষণাবেক্ষণ চুক্তি — দুটোই করি। কাজের আগে লিখিত প্রস্তাব দিই।" },
+      { q: "অফিস সময়ের পরে কি কাজ করেন?", a: "হ্যাঁ। সকালে, রাতে বা ছুটির দিনে কাজ করি, যাতে আপনার ব্যবসা চালু থাকে।" },
+      { q: "ইলেকট্রিক্যাল ও প্লাম্বিং কি এক চুক্তিতে হয়?", a: "হ্যাঁ। একই প্রতিষ্ঠানের দুই বিভাগ একসাথে কাজ করে — একজন যোগাযোগকারী, এক ইনভয়েস।" },
+      { q: "কীভাবে শুরু করব?", a: "নিচের ফর্মটি পূরণ করে হোয়াটসঅ্যাপে পাঠান, অথবা সরাসরি মেসেজ দিন। আমরা সাইট সার্ভের সময় ঠিক করব।" },
+    ]
+  : [
+      { q: "Do you work on contract with companies?", a: "Yes. One-off projects as well as monthly or yearly maintenance contracts, with a written proposal before work starts." },
+      { q: "Can you work outside business hours?", a: "Yes. Early morning, night or weekend work so your business keeps running." },
+      { q: "Can electrical and plumbing be under one contract?", a: "Yes. Our two divisions work together — one contact person, one invoice." },
+      { q: "How do we get started?", a: "Fill in the form below and send it on WhatsApp, or message us directly. We'll schedule a site survey." },
+    ];
+
+const label = kind === "all" ? t(lang, "services") : kind === "home" ? t(lang, "homeServices") : t(lang, "business");
+const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name: label, href: lp(lang, path) }];
+const schema: object[] = [breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))];
+if (kind === "commercial") schema.push(faqLd(bizFaqs));
+const sisterCom = servicesFor(sister.key).filter((s) => s.group === "commercial");
+---
+<Base lang={lang} title={copy.title} description={copy.intro.slice(0, 155)} path={path} image={copy.image} schema={schema}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap hero" style="padding-top:0">
+    <div class="hero-img"><Img name={copy.image} priority /></div>
+    <div>
+      <h1>{copy.h1}</h1>
+      <p class="sub">{copy.intro}</p>
+      <CallButtons lang={lang} message={kind === "commercial" ? bizMsg : undefined} label={kind === "commercial" ? t(lang, "surveyWhatsapp") : undefined} />
+    </div>
+  </section>
+
+  {kind === "commercial" && (
+    <>
+      <section class="section biz">
+        <div class="wrap">
+          <h2>{t(lang, "industries")}</h2>
+          <ul class="tiles">
+            {industries.map((i) => <li><a href={lp(lang, `/commercial/${i.slug}/`)}><span class="ic" aria-hidden="true">{i.icon}</span>{pick(lang, i.name, i.nameBn)}</a></li>)}
+          </ul>
+          <h2 style="margin-top:32px">{t(lang, "whyBusiness")}</h2>
+          <ul class="benefits">
+            {businessBenefits.map((b) => <li><span class="ic" aria-hidden="true">{b.icon}</span><b>{bn ? b.bn : b.en}</b><p>{bn ? b.bnD : b.enD}</p></li>)}
+          </ul>
+        </div>
+      </section>
+      <section class="section">
+        <div class="wrap">
+          <h2>{bn ? `${site.divisionBn}-এর কর্পোরেট সার্ভিস` : `${site.division}: corporate services`}</h2>
+          <ServiceList items={by("commercial")} lang={lang} />
+          <h3 style="margin-top:32px">{t(lang, "fromSister", { division: bn ? sister.divisionBn : sister.division })}</h3>
+          <ServiceList items={sisterCom} lang={lang} external />
+          <div class="card accent" style="margin-top:32px">
+            <h3>{t(lang, "amc")}</h3>
+            <p>{t(lang, "amcShort")}</p>
+            <a href={lp(lang, "/commercial/maintenance-contract/")}>{t(lang, "readMore")} →</a>
+          </div>
+        </div>
+      </section>
+      <section class="section soft">
+        <div class="wrap grid2">
+          <div><Faq items={bizFaqs} title={t(lang, "faqs")} /></div>
+          <div><BusinessForm lang={lang} /></div>
+        </div>
+      </section>
+    </>
+  )}
+
+  {kind !== "commercial" && (
+    <section class="section" style="padding-top:0">
+      <div class="wrap">
+        {kind === "all" && (
+          <>
+            <h2>{bn ? site.tradeBn : site.trade}</h2>
+            <ServiceList items={by("residential")} lang={lang} />
+            <h2 style="margin-top:40px">{t(lang, "homeServices")}</h2>
+            <ServiceList items={by("home")} lang={lang} />
+            <h2 style="margin-top:40px">{t(lang, "corporate")}</h2>
+            <ServiceList items={by("commercial")} lang={lang} />
+            <p style="margin-top:16px"><a href={lp(lang, "/commercial/")}>{t(lang, "business")} →</a></p>
+          </>
+        )}
+        {kind === "home" && (
+          <>
+            <ServiceList items={by("home")} lang={lang} />
+            <p style="margin-top:24px">
+              {bn ? `${sister.workBn} হোম সার্ভিস (যেমন ` : `Looking for ${sister.work} home services (like `}
+              {sister.key === "plumbing"
+                ? (bn ? "ওয়াশিং মেশিন, গ্যাসের চুলা, আয়না" : "washing machine, gas stove, mirrors")
+                : (bn ? "টিভি মাউন্ট, শেলফ, কিচেন হুড" : "TV mount, shelves, kitchen hood")}
+              )? <a href={sister.url + lp(lang, "/home-services/")}>{sister.domain} →</a>
+            </p>
+          </>
+        )}
+      </div>
+    </section>
+  )}
+  <section class="section"><div class="wrap"><SisterCard lang={lang} /></div></section>
+</Base>

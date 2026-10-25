@@ -1,0 +1,24 @@
+---
+// Responsive photo. Alt text switches to Bangla automatically on /bn/ pages.
+import images from "../data/images.json";
+interface Props { name: string; sizes?: string; priority?: boolean; class?: string; alt?: string }
+const { name, sizes = "(min-width: 960px) 50vw, 100vw", priority = false, class: cls, alt } = Astro.props;
+const meta = (images as Record<string, { alt: string; altBn?: string; w: number; h: number; widths: number[] }>)[name];
+if (!meta) throw new Error(`Unknown image "${name}" — add it to scripts/process_images.py`);
+const bn = Astro.url.pathname.startsWith("/bn/");
+const largest = meta.widths[meta.widths.length - 1];
+const srcset = meta.widths.map((w) => `/img/${name}-${w}.webp ${w}w`).join(", ");
+const height = Math.round((meta.h * largest) / meta.w);
+---
+<img
+  src={`/img/${name}-${meta.widths[Math.min(1, meta.widths.length - 1)]}.webp`}
+  srcset={srcset}
+  sizes={sizes}
+  width={largest}
+  height={height}
+  alt={alt ?? (bn && meta.altBn ? meta.altBn : meta.alt)}
+  loading={priority ? "eager" : "lazy"}
+  decoding={priority ? "sync" : "async"}
+  fetchpriority={priority ? "high" : undefined}
+  class={cls}
+/>

@@ -1,0 +1,26 @@
+---
+// Click-to-load Google Map: saves ~600 KB until the visitor asks for it.
+import Icon from "./Icon.astro";
+import { company } from "../data/company";
+import { t, type Lang } from "../i18n";
+interface Props { lang: Lang; query: string }
+const { lang, query } = Astro.props;
+const embed = `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
+const open = company.social.googleBusiness || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+---
+<div class="map" data-map={embed}>
+  <button class="btn btn-accent" type="button"><Icon name="pin" />{t(lang, "showMap")}</button>
+</div>
+<p class="small" style="margin-top:8px"><a href={open} rel="noopener" target="_blank">{t(lang, "openInMaps")} ↗</a></p>
+<script>
+  document.querySelectorAll<HTMLElement>(".map[data-map]").forEach((box) => {
+    box.querySelector("button")?.addEventListener("click", () => {
+      const f = document.createElement("iframe");
+      f.src = box.dataset.map!;
+      f.loading = "lazy";
+      f.title = "Map";
+      f.referrerPolicy = "no-referrer-when-downgrade";
+      box.replaceChildren(f);
+    });
+  });
+</script>

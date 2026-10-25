@@ -1,0 +1,42 @@
+---
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import AreaChips from "../components/AreaChips.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import { company } from "../data/company";
+import { site } from "../data/sites";
+import { areas } from "../data/areas";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, num, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name: t(lang, "areas"), href: lp(lang, "/areas/") }];
+const title = bn ? `সার্ভিস এলাকা — উত্তরা, বসুন্ধরা ও আশেপাশে | ইমার্জেন্সি ${site.tradeBn}` : `${site.trade} Service Areas — Uttara, Bashundhara & North Dhaka`;
+const description = bn
+  ? `উত্তরা থেকে ${num(lang, areas.length)}টি এলাকায় ${site.tradeBn} সার্ভিস: উত্তরা, বসুন্ধরা, দিয়াবাড়ি, উত্তরখান, দক্ষিণখান, আশকোনা ও আরও।`
+  : `We send ${site.tradePlural} from Uttara to ${areas.length} areas: Uttara, Bashundhara, Diabari, Uttarkhan, Dakkhinkhan, Ashkona and more.`;
+---
+<Base lang={lang} title={title} description={description} path="/areas/"
+  schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap">
+    <h1>{t(lang, "areas")}</h1>
+    <p class="lead">{description}</p>
+    <CallButtons lang={lang} />
+  </section>
+  <section class="section">
+    <div class="wrap grid2">
+      <div>
+        <h2>{bn ? "এলাকা বেছে নিন" : "Choose your area"}</h2>
+        <AreaChips lang={lang} items={areas} />
+        <p class="muted small" style="margin-top:16px">
+          {bn ? "আপনার এলাকা তালিকায় নেই? কল করুন — কাছাকাছি হলে আমরা আসি।" : "Your area isn't listed? Call us — if it's nearby, we'll come."}
+        </p>
+      </div>
+      <div><MapEmbed lang={lang} query="Uttara, Dhaka" /></div>
+    </div>
+  </section>
+</Base>

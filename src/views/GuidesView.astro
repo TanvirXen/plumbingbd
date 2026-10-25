@@ -1,0 +1,36 @@
+---
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { company } from "../data/company";
+import { site, sister } from "../data/sites";
+import { guidesFor } from "../lib/guides";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, num, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+const list = guidesFor(site.key).filter((g) => (bn ? g.bn : g.en));
+const tool = site.key === "electric"
+  ? { href: "/tools/ips-load-calculator/", name: bn ? "আইপিএস সাইজ ক্যালকুলেটর" : "IPS size calculator" }
+  : { href: "/tools/water-pump-calculator/", name: bn ? "পানির পাম্প সাইজ ক্যালকুলেটর" : "Water pump size calculator" };
+const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name: t(lang, "guides"), href: lp(lang, "/guides/") }];
+const title = bn ? `${site.workBn} গাইড ও টিপস | ইমার্জেন্সি ${site.tradeBn}` : `${site.trade} Guides & Tips for Dhaka Homes | ${company.name}`;
+const description = bn ? `বাসা ও অফিসের ${site.workBn} সমস্যা ও নিরাপত্তা নিয়ে সহজ গাইড।` : `Simple guides on ${site.work} problems and safety for homes and offices in Dhaka.`;
+---
+<Base lang={lang} title={title} description={description} path="/guides/"
+  schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap" style="max-width:820px;padding-bottom:48px">
+    <h1>{t(lang, "guides")}</h1>
+    <p class="lead">{description}</p>
+    <ul class="slist">
+      <li><a class="sname" href={lp(lang, tool.href)}>🧮 {tool.name}</a><span class="tag">{t(lang, "tools")}</span></li>
+      {list.map((g) => {
+        const v = (bn ? g.bn : g.en)!;
+        return <li><a class="sname" href={lp(lang, `/guides/${g.slug}/`)}>{v.title}</a><span class="tag">{bn ? num(lang, v.date) : v.date}</span></li>;
+      })}
+    </ul>
+    <p style="margin-top:24px">{bn ? `${sister.workBn} গাইড: ` : `${sister.trade} guides: `}<a href={sister.url + lp(lang, "/guides/")}>{sister.domain}/guides →</a></p>
+  </section>
+</Base>

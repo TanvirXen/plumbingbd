@@ -1,0 +1,67 @@
+---
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import Img from "../components/Img.astro";
+import { company } from "../data/company";
+import { site, sister, sites } from "../data/sites";
+import { areas } from "../data/areas";
+import { servicesFor } from "../data/services";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, num, t, type Lang } from "../i18n";
+
+// TODO: add founding year, team size and certifications once confirmed (see company.ts).
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name: t(lang, "about"), href: lp(lang, "/about/") }];
+const title = bn ? `আমাদের সম্পর্কে | ${company.nameBn}` : `About Us | ${company.name}`;
+const description = bn
+  ? `${company.nameBn} — উত্তরাভিত্তিক ইলেকট্রিক্যাল ও প্লাম্বিং সার্ভিস, বাসা ও কমার্শিয়াল কাজের জন্য দুই বিশেষজ্ঞ বিভাগ।`
+  : `${company.name} is an Uttara-based electrical and plumbing service with two specialist divisions for homes and businesses.`;
+const count = servicesFor("electric").length + servicesFor("plumbing").length;
+---
+<Base lang={lang} title={title} description={description} path="/about/" image="panel-room-2"
+  schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap hero" style="padding-top:0">
+    <div class="hero-img"><Img name="panel-room-2" priority /></div>
+    <div>
+      <h1>{t(lang, "about")}</h1>
+      <p class="lead">{description}</p>
+      {bn ? (
+        <>
+          <p>আমরা একটি প্রতিষ্ঠান, দুটি বিশেষজ্ঞ টিম: <a href={sites.electric.url + "/bn/"}>ইলেকট্রিক্যাল বিভাগ</a> ও <a href={sites.plumbing.url + "/bn/"}>প্লাম্বিং বিভাগ</a>। এক কলে বাসা বা অফিসের দুই ধরনের কাজ করিয়ে নিতে পারেন।</p>
+          <p>আমাদের টিম {company.expert.name}-এর ({company.expert.titleBn}) নেতৃত্বে কাজ করে। সব টেকনিশিয়ান ইউনিফর্ম পরে আসে, কাজের আগে সব বুঝিয়ে বলে এবং নিরাপদ উপকরণ ব্যবহার করে।</p>
+        </>
+      ) : (
+        <>
+          <p>We are one company with two specialist teams: our <a href={sites.electric.url + "/"}>Electrical Division</a> and our <a href={sites.plumbing.url + "/"}>Plumbing Division</a>. One call gets both kinds of work done at your home or business.</p>
+          <p>Our team is led by {company.expert.name} ({company.expert.title}). Every technician wears our uniform, agrees the work with you before starting and uses safe, quality materials.</p>
+        </>
+      )}
+      <CallButtons lang={lang} />
+    </div>
+  </section>
+  <section class="section soft">
+    <div class="wrap grid2">
+      <div class="card"><h3>{num(lang, count)}+</h3><p>{bn ? "ইলেকট্রিক্যাল, প্লাম্বিং ও কমার্শিয়াল সার্ভিস" : "electrical, plumbing and commercial services"}</p></div>
+      <div class="card"><h3>{num(lang, areas.length)}</h3><p>{bn ? "উত্তরা থেকে সার্ভিস এলাকা" : "service areas around Uttara"}</p></div>
+      <div class="card"><h3>{bn ? "বাসা + কমার্শিয়াল" : "Home + Commercial"}</h3><p>{bn ? "ফ্ল্যাট, অফিস, দোকান, রেস্টুরেন্ট, সুপার শপ, বিল্ডিং" : "Flats, offices, shops, restaurants, super shops, buildings"}</p></div>
+      <div class="card"><h3>{bn ? company.hours.labelBn : company.hours.label}</h3><p>{bn ? "হোয়াটসঅ্যাপ" : "WhatsApp"} {company.phone}</p></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <h2>{bn ? "আমাদের দুই বিভাগ" : "Our two divisions"}</h2>
+      <div class="grid2">
+        {[sites.electric, sites.plumbing].map((d) => (
+          <a class="card" href={d.url + lp(lang, "/")} style="text-decoration:none;color:inherit">
+            <h3>{d.icon} {bn ? d.divisionBn : d.division}</h3>
+            <p class="muted">{d.domain}{d.key === site.key ? (bn ? " (এই সাইট)" : " (this site)") : ""}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

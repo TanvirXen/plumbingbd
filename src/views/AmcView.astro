@@ -1,0 +1,70 @@
+---
+// Main AMC page lives on electricianbd.com; plumbingbd.com shows a short version that links to it.
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import Img from "../components/Img.astro";
+import Faq from "../components/Faq.astro";
+import { company } from "../data/company";
+import { site, sites } from "../data/sites";
+import { breadcrumbLd, faqLd } from "../lib/schema";
+import { lp, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+const main = site.key === "electric";
+const path = "/commercial/maintenance-contract/";
+const crumbs = [
+  { name: t(lang, "breadcrumbHome"), href: lp(lang, "/") },
+  { name: t(lang, "commercial"), href: lp(lang, "/commercial/") },
+  { name: t(lang, "amc"), href: lp(lang, path) },
+];
+const h1 = bn ? "ইলেকট্রিক্যাল ও প্লাম্বিং রক্ষণাবেক্ষণ চুক্তি" : "Electrical & Plumbing Maintenance Contract";
+const intro = bn
+  ? "অফিস, দোকান, রেস্টুরেন্ট, সুপার শপ ও অ্যাপার্টমেন্ট বিল্ডিংয়ের জন্য এক টিম, এক চুক্তি — নির্ধারিত মাসিক চেক, জরুরি কলে অগ্রাধিকার এবং নির্দিষ্ট মাসিক ফি।"
+  : "One team, one contract for offices, shops, restaurants, super shops and apartment buildings — scheduled monthly checks, priority emergency response and a fixed monthly fee.";
+const items = bn
+  ? ["প্যানেল, ডিবি ও ব্রেকার চেক", "লাইট, সুইচ ও সকেট মেরামত", "পানির পাম্প, ট্যাংক ও লাইন চেক", "ড্রেন ও গ্রিজ ট্র্যাপ পরিষ্কার", "ওয়াশরুম ফিটিং রক্ষণাবেক্ষণ", "জরুরি কলে অগ্রাধিকার", "প্রতি ভিজিটের লগ ও রিপোর্ট"]
+  : ["Panel, DB and breaker checks", "Lights, switches and sockets", "Water pump, tank and line checks", "Drain and grease trap cleaning", "Washroom fittings upkeep", "Priority emergency call-outs", "Visit log and report every month"];
+const faqs = bn
+  ? [
+      { q: "মাসিক ফি কীভাবে ঠিক হয়?", a: "জায়গার আকার, যন্ত্রপাতি ও মাসে কতবার ভিজিট লাগবে তার উপর। ফ্রি সার্ভের পর লিখিত কোটেশন দিই।" },
+      { q: "পার্টস কি চুক্তিতে থাকে?", a: "মজুরি চুক্তিতে থাকে; কোনো পার্টস বদলাতে হলে আগে আপনার অনুমোদন নিই।" },
+    ]
+  : [
+      { q: "How is the monthly fee calculated?", a: "By site size, equipment and number of visits per month. We give a written quote after a free survey." },
+      { q: "Are parts included?", a: "Labour is covered by the contract; we always get your approval before replacing any part." },
+    ];
+const waText = bn ? "হ্যালো, রক্ষণাবেক্ষণ চুক্তির জন্য ফ্রি সার্ভে চাই।" : "Hi, we'd like a free survey for a maintenance contract.";
+---
+<Base lang={lang} title={`${h1} | ${company.name}`} description={intro.slice(0, 155)} path={path} image={site.commercialImage}
+  schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href }))), faqLd(faqs)]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap hero" style="padding-top:0">
+    <div class="hero-img"><Img name={site.commercialImage} priority /></div>
+    <div>
+      <h1>{h1}</h1>
+      <p class="answer">{intro}</p>
+      <CallButtons lang={lang} message={waText} />
+    </div>
+  </section>
+  <section class="section soft">
+    <div class="wrap" style="max-width:820px">
+      {main ? (
+        <>
+          <h2>{t(lang, "included")}</h2>
+          <ul class="checks">{items.map((i) => <li>{i}</li>)}</ul>
+          <div style="margin-top:32px"><Faq items={faqs} title={t(lang, "faqs")} /></div>
+        </>
+      ) : (
+        <>
+          <p class="lead">{bn
+            ? "আমাদের ইলেকট্রিক্যাল ও প্লাম্বিং বিভাগ একসাথে এই চুক্তি পরিচালনা করে। প্লাম্বিংয়ের দিক: পাম্প, ট্যাংক, পানির লাইন, ড্রেন, গ্রিজ ট্র্যাপ ও ওয়াশরুম।"
+            : "Our Electrical and Plumbing divisions run this contract together. On the plumbing side: pumps, tanks, water lines, drains, grease traps and washrooms."}</p>
+          <a class="btn btn-ghost" href={sites.electric.url + lp(lang, path)}>{bn ? "পূর্ণ বিবরণ দেখুন" : "See full contract details"} →</a>
+        </>
+      )}
+    </div>
+  </section>
+</Base>

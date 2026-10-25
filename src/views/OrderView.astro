@@ -1,0 +1,93 @@
+---
+// WhatsApp order form (ported from the old project): every field optional,
+// "Urgent" flag, live message preview, opens WhatsApp with the message.
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { company } from "../data/company";
+import { site } from "../data/sites";
+import { servicesFor } from "../data/services";
+import { areas } from "../data/areas";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, pick, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+const svc = servicesFor(site.key);
+const slots = ["08:00–10:00", "10:00–12:00", "12:00–14:00", "14:00–16:00", "16:00–18:00", "18:00–20:00", "20:00–22:00"]; // PLACEHOLDER: match real hours
+const L = bn
+  ? { h1: "অর্ডার করুন", intro: "যতটুকু জানেন ততটুকু লিখুন — সব ঘর ঐচ্ছিক। বাটনে চাপ দিলে হোয়াটসঅ্যাপ খুলবে, মেসেজ পাঠালেই অর্ডার হয়ে যাবে।", service: "সার্ভিস", other: "অন্য কিছু", problem: "সমস্যা লিখুন", name: "আপনার নাম", phone: "ফোন নম্বর", area: "এলাকা", address: "ঠিকানা (বাসা, রোড, সেক্টর)", date: "তারিখ", time: "সময়", urgent: "জরুরি — যত দ্রুত সম্ভব আসুন", preview: "মেসেজ যেমন যাবে", send: "হোয়াটসঅ্যাপে পাঠান", pick: "বেছে নিন", hi: "হ্যালো, আমি অর্ডার করতে চাই।", urgentTag: "*জরুরি – দয়া করে দ্রুত আসুন*" }
+  : { h1: "Order a service", intro: "Fill in what you know — every field is optional. The button opens WhatsApp with your message; just press send.", service: "Service", other: "Something else", problem: "Describe the problem", name: "Your name", phone: "Phone number", area: "Area", address: "Address (house, road, sector)", date: "Date", time: "Time", urgent: "Urgent — please come ASAP", preview: "Your message", send: "Send on WhatsApp", pick: "Choose", hi: "Hi, I want to order a service.", urgentTag: "*URGENT – PLEASE COME ASAP*" };
+const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name: t(lang, "order"), href: lp(lang, "/order/") }];
+// Short labels used inside the WhatsApp message
+const labels = bn
+  ? { service: "সার্ভিস", problem: "সমস্যা", name: "নাম", phone: "ফোন", area: "এলাকা", address: "ঠিকানা", date: "তারিখ", time: "সময়" }
+  : { service: "Service", problem: "Problem", name: "Name", phone: "Phone", area: "Area", address: "Address", date: "Date", time: "Time" };
+const config = { wa: company.whatsapp, hi: L.hi, urgentTag: L.urgentTag, labels, division: bn ? site.divisionBn : site.division };
+---
+<Base lang={lang} title={`${L.h1} | ${bn ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`}`} description={L.intro} path="/order/"
+  schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap" style="max-width:720px;padding-bottom:48px">
+    <h1>{L.h1}</h1>
+    <p class="lead">{L.intro}</p>
+    <form class="form" id="order" novalidate>
+      <label class="check"><input type="checkbox" name="urgent" /> {L.urgent}</label>
+      <label>{L.service}
+        <select name="service">
+          <option value="">{L.pick}</option>
+          {svc.map((s) => <option>{pick(lang, s.name, s.nameBn)}</option>)}
+          <option>{L.other}</option>
+        </select>
+      </label>
+      <label>{L.problem}<textarea name="problem" maxlength="600"></textarea></label>
+      <div class="row2">
+        <label>{L.name}<input name="name" autocomplete="name" maxlength="80" /></label>
+        <label>{L.phone}<input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" /></label>
+      </div>
+      <label>{L.area}
+        <select name="area">
+          <option value="">{L.pick}</option>
+          {areas.map((a) => <option>{pick(lang, a.name, a.nameBn)}</option>)}
+        </select>
+      </label>
+      <label>{L.address}<input name="address" autocomplete="street-address" maxlength="200" /></label>
+      <div class="row2">
+        <label>{L.date}<input name="date" type="date" /></label>
+        <label>{L.time}
+          <select name="time"><option value="">{L.pick}</option>{slots.map((s) => <option>{s}</option>)}</select>
+        </label>
+      </div>
+      <div>
+        <p style="font-weight:600;margin:0 0 6px">{L.preview}</p>
+        <div class="preview" id="preview" aria-live="polite"></div>
+      </div>
+      <a class="btn btn-wa" id="send" href="#" data-track="whatsapp_order">{L.send}</a>
+    </form>
+  </section>
+  <script type="application/json" id="order-config" set:html={JSON.stringify(config)} />
+</Base>
+<script>
+  const cfg = JSON.parse(document.getElementById("order-config")!.textContent!);
+  const form = document.getElementById("order") as HTMLFormElement;
+  const preview = document.getElementById("preview")!;
+  const send = document.getElementById("send") as HTMLAnchorElement;
+  const fields = ["service", "problem", "name", "phone", "area", "address", "date", "time"] as const;
+
+  function build() {
+    const d = new FormData(form);
+    const lines: string[] = [];
+    if (d.get("urgent")) lines.push(cfg.urgentTag);
+    lines.push(cfg.hi + ` (${cfg.division})`);
+    for (const f of fields) {
+      const v = String(d.get(f) ?? "").trim();
+      if (v) lines.push(`${cfg.labels[f]}: ${v}`);
+    }
+    const msg = lines.join("\n");
+    preview.textContent = msg;
+    send.href = `https://wa.me/${cfg.wa}?text=${encodeURIComponent(msg)}`;
+  }
+  form.addEventListener("input", build);
+  form.addEventListener("change", build);
+  build();
+</script>

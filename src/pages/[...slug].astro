@@ -1,0 +1,68 @@
+---
+// One router for every page, in English (/) and Bangla (/bn/).
+// Each site only builds pages for the services it owns (see src/data/services.ts).
+import HomeView from "../views/HomeView.astro";
+import HubView from "../views/HubView.astro";
+import ServiceView from "../views/ServiceView.astro";
+import IndustryView from "../views/IndustryView.astro";
+import AreasView from "../views/AreasView.astro";
+import AreaView from "../views/AreaView.astro";
+import WorkView from "../views/WorkView.astro";
+import AboutView from "../views/AboutView.astro";
+import ContactView from "../views/ContactView.astro";
+import OrderView from "../views/OrderView.astro";
+import AmcView from "../views/AmcView.astro";
+import GuidesView from "../views/GuidesView.astro";
+import GuideView from "../views/GuideView.astro";
+import ToolView from "../views/ToolView.astro";
+import { site } from "../data/sites";
+import { servicesFor, servicePath } from "../data/services";
+import { areas } from "../data/areas";
+import { industries } from "../data/industries";
+import { guidesFor } from "../lib/guides";
+import type { Lang } from "../i18n";
+
+export function getStaticPaths() {
+  const routes: { path: string; view: string; data?: any; en?: boolean; bn?: boolean }[] = [
+    { path: "/", view: "home" },
+    { path: "/services/", view: "hub", data: "all" },
+    { path: "/home-services/", view: "hub", data: "home" },
+    { path: "/commercial/", view: "hub", data: "commercial" },
+    { path: "/commercial/maintenance-contract/", view: "amc" },
+    { path: "/areas/", view: "areas" },
+    { path: "/work/", view: "work" },
+    { path: "/about/", view: "about" },
+    { path: "/contact/", view: "contact" },
+    { path: "/order/", view: "order" },
+    { path: "/guides/", view: "guides" },
+    { path: site.key === "electric" ? "/tools/ips-load-calculator/" : "/tools/water-pump-calculator/", view: "tool" },
+    ...servicesFor(site.key).map((s) => ({ path: servicePath(s), view: "service", data: s.slug })),
+    ...industries.map((i) => ({ path: `/commercial/${i.slug}/`, view: "industry", data: i.slug })),
+    ...areas.map((a) => ({ path: `/areas/${a.slug}/`, view: "area", data: a.slug })),
+    ...guidesFor(site.key).map((g) => ({ path: `/guides/${g.slug}/`, view: "guide", data: g.slug, en: !!g.en, bn: !!g.bn })),
+  ];
+  const strip = (p: string) => p.replace(/^\/|\/$/g, "") || undefined;
+  return routes.flatMap((r) => {
+    const out = [];
+    if (r.en !== false) out.push({ params: { slug: strip(r.path) }, props: { ...r, lang: "en" as Lang } });
+    if (r.bn !== false) out.push({ params: { slug: strip(`/bn${r.path}`) }, props: { ...r, lang: "bn" as Lang } });
+    return out;
+  });
+}
+
+const { view, data, lang, path } = Astro.props as { view: string; data?: any; lang: Lang; path: string };
+---
+{view === "home" && <HomeView lang={lang} />}
+{view === "hub" && <HubView lang={lang} kind={data} path={path} />}
+{view === "service" && <ServiceView lang={lang} slug={data} />}
+{view === "industry" && <IndustryView lang={lang} slug={data} />}
+{view === "areas" && <AreasView lang={lang} />}
+{view === "area" && <AreaView lang={lang} slug={data} />}
+{view === "work" && <WorkView lang={lang} />}
+{view === "about" && <AboutView lang={lang} />}
+{view === "contact" && <ContactView lang={lang} />}
+{view === "order" && <OrderView lang={lang} />}
+{view === "amc" && <AmcView lang={lang} />}
+{view === "guides" && <GuidesView lang={lang} />}
+{view === "guide" && <GuideView lang={lang} slug={data} />}
+{view === "tool" && <ToolView lang={lang} path={path} />}

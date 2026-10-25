@@ -1,0 +1,138 @@
+---
+import Base from "../layouts/Base.astro";
+import Img from "../components/Img.astro";
+import CallButtons from "../components/CallButtons.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import Faq from "../components/Faq.astro";
+import AreaChips from "../components/AreaChips.astro";
+import ServiceList from "../components/ServiceList.astro";
+import SisterCard from "../components/SisterCard.astro";
+import { company } from "../data/company";
+import { site, sister } from "../data/sites";
+import { findService, servicesFor, servicePath, contentUpdated } from "../data/services";
+import { areas, topAreas } from "../data/areas";
+import { industries } from "../data/industries";
+import { breadcrumbLd, faqLd, serviceLd } from "../lib/schema";
+import { lp, num, pick, serviceMessage, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang; slug: string }
+const { lang, slug } = Astro.props;
+const s = findService(slug)!;
+const bn = lang === "bn";
+const path = servicePath(s);
+const url = site.url + lp(lang, path);
+const name = pick(lang, s.name, s.nameBn);
+const shortBrand = bn ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`;
+const isCom = s.group === "commercial";
+const groupLabel = isCom ? t(lang, "business") : s.group === "home" ? t(lang, "homeServices") : t(lang, "services");
+const groupHref = lp(lang, isCom ? "/commercial/" : s.group === "home" ? "/home-services/" : "/services/");
+
+const answer = bn
+  ? `${s.summaryBn} উত্তরা, বসুন্ধরা সহ ${num(lang, areas.length)}টি এলাকায় সার্ভিস দিই। বুক করতে হোয়াটসঅ্যাপ করুন ${company.phone}।`
+  : `${s.summary} We serve Uttara, Bashundhara and ${areas.length - 2} nearby areas. To book, WhatsApp ${company.phone}.`;
+const title = bn ? `${s.nameBn} — উত্তরা ও বসুন্ধরা | ${shortBrand}` : `${s.name} in Uttara & Bashundhara | ${shortBrand}`;
+const description = (bn ? s.summaryBn : s.summary).slice(0, 155);
+const faqs = bn ? s.faqsBn : s.faqs;
+const includes = bn ? s.includesBn : s.includes;
+const pairs = s.pairs.map(findService).filter((p) => p && p.site === sister.key) as NonNullable<ReturnType<typeof findService>>[];
+const related = servicesFor(site.key).filter((x) => x.group === s.group && x.slug !== s.slug).slice(0, 6);
+const forIndustries = industries.filter((i) => i.services.includes(s.slug));
+const areaItems = areas.filter((a) => topAreas.includes(a.slug));
+const crumbs = [
+  { name: t(lang, "breadcrumbHome"), href: lp(lang, "/") },
+  { name: groupLabel, href: groupHref },
+  { name, href: lp(lang, path) },
+];
+const waText = serviceMessage(lang, name);
+---
+<Base
+  lang={lang}
+  title={title}
+  description={description}
+  path={path}
+  image={s.images[0]}
+  schema={[serviceLd(s, url, lang), breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href }))), faqLd(faqs)]}
+>
+  <div class="wrap page-head">
+    <Breadcrumbs items={crumbs} />
+  </div>
+  <div class="wrap layout">
+    <article>
+      <h1>{bn ? `${s.nameBn} — উত্তরা ও বসুন্ধরা` : `${s.name} in Uttara & Bashundhara`}</h1>
+      <p class="answer">{answer}</p>
+      <CallButtons lang={lang} message={waText} label={isCom ? t(lang, "surveyWhatsapp") : undefined} />
+      <p class="small muted" style="margin-top:12px">{t(lang, "noPriceNote")}</p>
+
+      {s.images.length > 0 && (
+        <div class="photos2">
+          {s.images.slice(0, 2).map((img) => <Img name={img} sizes="(min-width: 960px) 360px, 50vw" />)}
+        </div>
+      )}
+
+      <h2>{t(lang, "included")}</h2>
+      <ul class="checks">{includes.map((i) => <li>{i}</li>)}</ul>
+
+      <h2>{t(lang, "howItWorks")}</h2>
+      <ol>
+        <li><b>{t(lang, "step1")}</b> — {t(lang, "step1d")}</li>
+        <li><b>{t(lang, "step2")}</b> — {t(lang, "step2d")}</li>
+        <li><b>{t(lang, "step3")}</b> — {t(lang, "step3d")}</li>
+      </ol>
+
+      {isCom && (
+        <div class="card accent" style="margin:24px 0">
+          <h3>{t(lang, "amc")}</h3>
+          <p>{t(lang, "amcShort")}</p>
+          <a href={lp(lang, "/commercial/maintenance-contract/")}>{t(lang, "readMore")} →</a>
+        </div>
+      )}
+
+      {forIndustries.length > 0 && (
+        <>
+          <h2>{t(lang, "industries")}</h2>
+          <ul class="tiles light">
+            {forIndustries.map((i) => <li><a href={lp(lang, `/commercial/${i.slug}/`)}><span class="ic" aria-hidden="true">{i.icon}</span>{pick(lang, i.name, i.nameBn)}</a></li>)}
+          </ul>
+        </>
+      )}
+
+      <h2>{t(lang, "areasWeCover")}</h2>
+      <AreaChips lang={lang} items={areaItems} />
+      <p style="margin-top:10px"><a href={lp(lang, "/areas/")}>{t(lang, "viewAllAreas")} ({num(lang, areas.length)}) →</a></p>
+
+      <div style="margin-top:32px"><Faq items={faqs} title={t(lang, "faqs")} /></div>
+
+      {pairs.length > 0 && (
+        <section style="margin-top:32px">
+          <h2>{t(lang, "oftenTogether")}</h2>
+          <p class="muted">{bn ? `আমাদের ${sister.divisionBn} থেকে — একই টিম, একই হোয়াটসঅ্যাপ।` : `From our ${sister.division} — same team, same WhatsApp.`}</p>
+          <ServiceList items={pairs} lang={lang} two={false} external />
+        </section>
+      )}
+
+      {related.length > 0 && (
+        <section style="margin-top:32px">
+          <h2>{bn ? "আরও সার্ভিস" : "More services"}</h2>
+          <ServiceList items={related} lang={lang} />
+        </section>
+      )}
+
+      <p class="meta-line">
+        {t(lang, "lastUpdated")}: {bn ? num(lang, contentUpdated) : contentUpdated} · {t(lang, "reviewedBy")}: {company.expert.name}, {bn ? company.expert.titleBn : company.expert.title}
+      </p>
+    </article>
+
+    <aside class="aside">
+      <div class="card">
+        <h3>{name}</h3>
+        <p class="muted small">{bn ? "সমস্যার ছবি বা ভিডিও পাঠালে দ্রুত উত্তর দিতে পারি।" : "Send a photo or video of the problem for a faster reply."}</p>
+        <CallButtons lang={lang} message={waText} compact />
+        <p class="small" style="margin:12px 0 0"><a href={lp(lang, "/order/")}>{bn ? "ফর্ম দিয়ে অর্ডার করুন" : "Or order with a form"} →</a></p>
+        <p class="small muted" style="margin:8px 0 0">{bn ? company.hours.labelBn : company.hours.label}</p>
+      </div>
+    </aside>
+  </div>
+  <section class="section">
+    <div class="wrap"><SisterCard lang={lang} /></div>
+  </section>
+</Base>

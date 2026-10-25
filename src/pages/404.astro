@@ -1,0 +1,17 @@
+---
+import Base from "../layouts/Base.astro";
+import CallButtons from "../components/CallButtons.astro";
+import ServiceList from "../components/ServiceList.astro";
+import { site } from "../data/sites";
+import { servicesFor } from "../data/services";
+import { t } from "../i18n";
+---
+<Base lang="en" title={`${t("en", "notFound")} | Emergency ${site.trade}`} description={t("en", "notFoundText")} path="/404/" hasAlt={false} noindex>
+  <section class="wrap" style="padding:48px 16px">
+    <h1>{t("en", "notFound")}</h1>
+    <p class="lead">{t("en", "notFoundText")}</p>
+    <p lang="bn">{t("bn", "notFoundText")}</p>
+    <CallButtons lang="en" />
+    <div style="margin-top:32px"><ServiceList items={servicesFor(site.key).slice(0, 10)} lang="en" /></div>
+  </section>
+</Base>

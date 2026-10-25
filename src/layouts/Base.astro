@@ -1,0 +1,81 @@
+---
+import "@fontsource/hind-siliguri/400.css";
+import "@fontsource/hind-siliguri/600.css";
+import "@fontsource/hind-siliguri/700.css";
+import "@fontsource/barlow-condensed/700.css";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import CallButtons from "../components/CallButtons.astro";
+import JsonLd from "../components/JsonLd.astro";
+import { company } from "../data/company";
+import { site } from "../data/sites";
+import { graph, organization, website, localBusiness } from "../lib/schema";
+import { lp, type Lang } from "../i18n";
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  path: string; // path without the /bn prefix, e.g. "/services/x/"
+  image?: string; // image key for social sharing
+  schema?: object[];
+  hasAlt?: boolean; // English/Bangla counterpart exists
+  noindex?: boolean;
+}
+const { lang, title, description, path, image = site.heroImage, schema = [], hasAlt = true, noindex = false } = Astro.props;
+const canonical = site.url + lp(lang, path);
+const ogImage = `${site.url}/img/${image}-1600.webp`;
+const ld = graph(organization(), website(lang), localBusiness(), ...schema);
+// Optional, from .env
+const gaId = process.env.GA_MEASUREMENT_ID?.trim();
+const googleVerify = process.env.GOOGLE_SITE_VERIFICATION?.trim();
+const bingVerify = process.env.BING_SITE_VERIFICATION?.trim();
+---
+<!doctype html>
+<html lang={lang === "bn" ? "bn-BD" : "en-BD"} data-site={site.key}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex" />}
+  {!noindex && <link rel="canonical" href={canonical} />}
+  {hasAlt && <link rel="alternate" hreflang="en" href={site.url + lp("en", path)} />}
+  {hasAlt && <link rel="alternate" hreflang="bn" href={site.url + lp("bn", path)} />}
+  {hasAlt && <link rel="alternate" hreflang="x-default" href={site.url + lp("en", path)} />}
+  <meta name="theme-color" content={site.key === "electric" ? "#FDB601" : "#0074FD"} />
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={`${company.name} – ${site.division}`} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:locale" content={lang === "bn" ? "bn_BD" : "en_US"} />
+  <meta name="twitter:card" content="summary_large_image" />
+  {googleVerify && <meta name="google-site-verification" content={googleVerify} />}
+  {bingVerify && <meta name="msvalidate.01" content={bingVerify} />}
+  <JsonLd data={ld} />
+  {gaId && <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>}
+  {gaId && <script is:inline define:vars={{ gaId }}>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag("js", new Date()); gtag("config", gaId);</script>}
+  <slot name="head" />
+</head>
+<body>
+  <Header lang={lang} path={path} hasAlt={hasAlt} />
+  <main id="main">
+    <slot />
+  </main>
+  <Footer lang={lang} />
+  <div class="callbar"><CallButtons lang={lang} compact /></div>
+  <script>
+    // Sends Call / WhatsApp click events if Google Analytics (gtag) is added later.
+    document.addEventListener("click", (e) => {
+      const el = (e.target as HTMLElement).closest<HTMLElement>("[data-track]");
+      const g = (window as any).gtag;
+      if (el && typeof g === "function") g("event", `${el.dataset.track}_click`, { page_path: location.pathname });
+    });
+  </script>
+</body>
+</html>

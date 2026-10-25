@@ -1,0 +1,41 @@
+---
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import MapEmbed from "../components/MapEmbed.astro";
+import { company, telLink } from "../data/company";
+import { site, sister } from "../data/sites";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name: t(lang, "contact"), href: lp(lang, "/contact/") }];
+const title = bn ? `যোগাযোগ | ইমার্জেন্সি ${site.tradeBn}` : `Contact | Emergency ${site.trade} — ${company.phone}`;
+const description = bn
+  ? `হোয়াটসঅ্যাপ বা কল ${company.phone}। ${company.hours.labelBn}।`
+  : `WhatsApp or call ${company.phone}. ${company.hours.label}.`;
+---
+<Base lang={lang} title={title} description={description} path="/contact/"
+  schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap grid2" style="padding-bottom:48px">
+    <div>
+      <h1>{t(lang, "contact")}</h1>
+      <p class="lead"><a href={telLink} style="font-size:1.6rem;font-weight:700">{company.phone}</a></p>
+      <CallButtons lang={lang} />
+      <table class="ptable" style="margin-top:24px">
+        <tbody>
+          <tr><td>{t(lang, "hours")}</td><td>{bn ? company.hours.labelBn : company.hours.label}</td></tr>
+          <tr><td>{bn ? "ঠিকানা" : "Location"}</td><td>{company.address.street ? `${company.address.street}, ` : ""}{bn ? `${company.address.localityBn}, ${company.address.regionBn}` : `${company.address.locality}, ${company.address.region}`}</td></tr>
+          <tr><td>{t(lang, "payments")}</td><td>{(bn ? company.paymentsBn : company.payments).join(", ")}</td></tr>
+          <tr><td>{t(lang, "division")}</td><td>{bn ? site.divisionBn : site.division}</td></tr>
+          <tr><td>{bn ? sister.divisionBn : sister.division}</td><td><a href={sister.url + lp(lang, "/contact/")}>{sister.domain}</a></td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:20px"><a href={lp(lang, "/order/")}>{bn ? "ফর্ম দিয়ে অর্ডার করুন" : "Order with a form"} →</a></p>
+    </div>
+    <div><MapEmbed lang={lang} query={`${company.name}, Uttara, Dhaka`} /></div>
+  </section>
+</Base>

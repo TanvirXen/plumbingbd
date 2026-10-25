@@ -1,0 +1,24 @@
+---
+// Service rows: name links to the service page; the green button opens WhatsApp with the service pre-filled.
+import Icon from "./Icon.astro";
+import { waLink } from "../data/company";
+import { sites } from "../data/sites";
+import { servicePath, type Service } from "../data/services";
+import { lp, pick, serviceMessage, t, type Lang } from "../i18n";
+interface Props { items: Service[]; lang: Lang; two?: boolean; external?: boolean }
+const { items, lang, two = true, external = false } = Astro.props;
+---
+<ul class={two ? "slist two" : "slist"}>
+  {items.map((s) => {
+    const name = pick(lang, s.name, s.nameBn);
+    const href = (external ? sites[s.site].url : "") + lp(lang, servicePath(s));
+    return (
+      <li>
+        <a class="sname" href={href}>{external && <span aria-hidden="true">{sites[s.site].icon} </span>}{name}</a>
+        <a class="swa" href={waLink(serviceMessage(lang, name))} target="_blank" rel="noopener" data-track="whatsapp" aria-label={`${t(lang, "bookWhatsapp")}: ${name}`}>
+          <Icon name="whatsapp" /><span>{t(lang, "book")}</span>
+        </a>
+      </li>
+    );
+  })}
+</ul>
