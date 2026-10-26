@@ -26,8 +26,8 @@ export interface SiteConfig {
 export const sites: Record<SiteKey, SiteConfig> = {
   electric: {
     key: "electric",
-    domain: "electricianbd.com",
-    url: "https://electricianbd.com",
+    domain: "electricservicebd.com",
+    url: "https://www.electricservicebd.com",
     division: "Electrical Division",
     divisionBn: "ইলেকট্রিক্যাল বিভাগ",
     trade: "Electrician",
@@ -46,8 +46,8 @@ export const sites: Record<SiteKey, SiteConfig> = {
   },
   plumbing: {
     key: "plumbing",
-    domain: "plumbingbd.com",
-    url: "https://plumbingbd.com",
+    domain: "plumbingservicebd.com",
+    url: "https://www.plumbingservicebd.com",
     division: "Plumbing Division",
     divisionBn: "প্লাম্বিং বিভাগ",
     trade: "Plumber",

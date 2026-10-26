@@ -22,9 +22,10 @@ interface Props {
   schema?: object[];
   hasAlt?: boolean; // English/Bangla counterpart exists
   noindex?: boolean;
+  canonicalBase?: string; // set to the sister site's URL for pages it owns
 }
-const { lang, title, description, path, image = site.heroImage, schema = [], hasAlt = true, noindex = false } = Astro.props;
-const canonical = site.url + lp(lang, path);
+const { lang, title, description, path, image = site.heroImage, schema = [], hasAlt = true, noindex = false, canonicalBase = site.url } = Astro.props;
+const canonical = canonicalBase + lp(lang, path);
 const ogImage = `${site.url}/img/${image}-1600.webp`;
 const ld = graph(organization(), website(lang), localBusiness(), ...schema);
 // Optional, from .env
@@ -41,12 +42,17 @@ const bingVerify = process.env.BING_SITE_VERIFICATION?.trim();
   <meta name="description" content={description} />
   {noindex && <meta name="robots" content="noindex" />}
   {!noindex && <link rel="canonical" href={canonical} />}
-  {hasAlt && <link rel="alternate" hreflang="en" href={site.url + lp("en", path)} />}
-  {hasAlt && <link rel="alternate" hreflang="bn" href={site.url + lp("bn", path)} />}
-  {hasAlt && <link rel="alternate" hreflang="x-default" href={site.url + lp("en", path)} />}
+  {hasAlt && !noindex && <link rel="alternate" hreflang="en" href={canonicalBase + lp("en", path)} />}
+  {hasAlt && !noindex && <link rel="alternate" hreflang="bn" href={canonicalBase + lp("bn", path)} />}
+  {hasAlt && !noindex && <link rel="alternate" hreflang="x-default" href={canonicalBase + lp("en", path)} />}
   <meta name="theme-color" content={site.key === "electric" ? "#FDB601" : "#0074FD"} />
-  <link rel="icon" href="/favicon.png" type="image/png" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+  <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+  <meta name="application-name" content={lang === "bn" ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`} />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content={`${company.name} – ${site.division}`} />
   <meta property="og:title" content={title} />

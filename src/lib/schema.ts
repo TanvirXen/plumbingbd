@@ -87,7 +87,7 @@ export const serviceLd = (s: Service, url: string, lang: Lang, areaName?: string
   serviceType: s.name,
   description: lang === "bn" ? s.summaryBn : s.summary,
   url,
-  provider: { "@id": BUSINESS_ID },
+  provider: { "@id": `${sites[s.site].url}/#business` },
   areaServed: areaName
     ? { "@type": "Place", name: `${areaName}, Dhaka` }
     : areas.map((a) => ({ "@type": "Place", name: `${a.name}, Dhaka` })),

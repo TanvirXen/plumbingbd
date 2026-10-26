@@ -15,7 +15,7 @@
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }]
     },
     {
-      "source": "/(favicon.png|apple-touch-icon.png|icon-192.png|logo.png|logo-160.webp)",
+      "source": "/(favicon.ico|favicon-16x16.png|favicon-32x32.png|apple-touch-icon.png|android-chrome-192x192.png|android-chrome-512x512.png|maskable-512x512.png|logo.png|logo-160.webp|site.webmanifest)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }]
     },
     {
@@ -29,7 +29,7 @@
       ]
     },
     {
-      "source": "/(robots.txt|llms.txt|sitemap-index.xml|sitemap-0.xml)",
+      "source": "/(robots.txt|llms.txt|sitemap.xml|sitemap-index.xml)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }]
     }
   ]

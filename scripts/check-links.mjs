@@ -1,10 +1,10 @@
 // After `npm run build`: checks every internal link and that JSON-LD parses.
-// Links to the sister site (electricianbd.com) are checked against ../electricianbd/dist if that folder has been built.
+// Links to the sister site (electricservicebd.com) are checked against ../electricianbd/dist if that folder has been built.
 import fs from "node:fs";
 import path from "node:path";
 
-const own = { domain: new URL(process.env.SITE_URL || "https://plumbingbd.com").host, dir: "dist" };
-const sister = { domain: new URL(process.env.SISTER_URL || "https://electricianbd.com").host, dir: "../electricianbd/dist" };
+const own = { domain: new URL(process.env.SITE_URL || "https://www.plumbingservicebd.com").host, dir: "dist" };
+const sister = { domain: new URL(process.env.SISTER_URL || "https://www.electricservicebd.com").host, dir: "../electricianbd/dist" };
 const sisterBuilt = fs.existsSync(sister.dir);
 const exists = (dir, p) => {
   const f = path.join(dir, p.split(/[?#]/)[0]);

@@ -1,9 +1,9 @@
-# plumbingbd.com
+# plumbingservicebd.com
 
 **Emergency Electric and Plumbing Service — Plumbing Division** (blue theme)
 
 A standalone Astro website. Deploy this folder on its own.
-Its sister site **electricianbd.com** lives in `../electricianbd` and is deployed separately; the two link to each other through `SISTER_URL`.
+Its sister site **electricservicebd.com** lives in `../electricianbd` and is deployed separately; the two link to each other through `SISTER_URL`.
 
 ## Setup
 
@@ -31,8 +31,8 @@ npm run build
 | Key | Example | Purpose |
 |---|---|---|
 | `SITE_KEY` | `plumbing` | Which site this folder builds — keep as is |
-| `SITE_URL` | `https://plumbingbd.com` | This site's live address |
-| `SISTER_URL` | `https://electricianbd.com` | The sister site's live address (used for all cross-links) |
+| `SITE_URL` | `https://www.plumbingservicebd.com` | This site's live address |
+| `SISTER_URL` | `https://www.electricservicebd.com` | The sister site's live address (used for all cross-links) |
 | `WHATSAPP_NUMBER` | `8801609993537` | Receives every booking (no `+`, no spaces) |
 | `PHONE` / `PHONE_INTL` | `01609-993537` / `+8801609993537` | Shown number / tap-to-call number |
 | `GA_MEASUREMENT_ID` | `G-XXXXXXX` | Optional Google Analytics 4 |
@@ -46,10 +46,10 @@ GitHub repo: https://github.com/TanvirXen/plumbingbd
 
 1. In Vercel: **Add New → Project → Import** the repo above.
 2. Vercel reads `vercel.json` — framework **Astro**, build `npm run build`, output `dist`. Nothing else to set.
-3. **Environment Variables** (Production): add the keys from `.env.sample` — at least `SITE_URL=https://plumbingbd.com` and `SISTER_URL=https://electricianbd.com`.
+3. **Environment Variables** (Production): add the keys from `.env.sample` — at least `SITE_URL=https://www.plumbingservicebd.com` and `SISTER_URL=https://www.electricservicebd.com`.
    (If you skip this, the same live domains are used as defaults.)
-4. **Settings → Domains**: add `plumbingbd.com` and `www.plumbingbd.com`, and set `www` to **redirect** to `plumbingbd.com` (308).
-5. After the first deploy, submit `https://plumbingbd.com/sitemap-index.xml` in Google Search Console and Bing Webmaster Tools.
+4. **Settings → Domains**: add `plumbingservicebd.com` and `www.plumbingservicebd.com`, and set the bare `plumbingservicebd.com` to **redirect** to `www.plumbingservicebd.com` (308) — the site's canonical address uses www.
+5. After the first deploy, submit `https://www.plumbingservicebd.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
 
 What `vercel.json` adds:
 

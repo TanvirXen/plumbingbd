@@ -39,6 +39,7 @@ const place = bn ? `${company.address.localityBn}, ${company.address.regionBn}` 
         <h3>{t(lang, "services")}</h3>
         <ul>
           {popular.map((s) => <li><a href={lp(lang, servicePath(s))}>{pick(lang, s.name, s.nameBn)}</a></li>)}
+          <li><a href={lp(lang, `/services/#${sister.key}`)}>{sister.icon} {bn ? `${sister.workBn} সার্ভিস` : `${sister.work[0].toUpperCase() + sister.work.slice(1)} services`}</a></li>
           <li><a href={lp(lang, "/services/")}>{t(lang, "allServices")} →</a></li>
         </ul>
       </div>
@@ -58,6 +59,7 @@ const place = bn ? `${company.address.localityBn}, ${company.address.regionBn}` 
         <ul style="margin-top:16px">
           <li><a href={lp(lang, "/guides/")}>{t(lang, "guides")}</a></li>
           <li><a href={lp(lang, "/order/")}>{t(lang, "order")}</a></li>
+          <li><a href={lp(lang, "/sitemap/")}>{bn ? "সাইটম্যাপ" : "Sitemap"}</a></li>
           {socials.map(([k, v]) => <li><a href={v} rel="noopener">{socialNames[k]}</a></li>)}
         </ul>
       </div>

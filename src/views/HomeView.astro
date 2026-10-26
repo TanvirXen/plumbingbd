@@ -9,7 +9,7 @@ import SisterCard from "../components/SisterCard.astro";
 import Faq from "../components/Faq.astro";
 import JsonLd from "../components/JsonLd.astro";
 import { company } from "../data/company";
-import { site } from "../data/sites";
+import { site, sister } from "../data/sites";
 import { servicesFor } from "../data/services";
 import { areas } from "../data/areas";
 import { industries, businessBenefits } from "../data/industries";
@@ -23,6 +23,7 @@ const bn = lang === "bn";
 const all = servicesFor(site.key);
 const homeList = all.filter((s) => s.group === "residential");
 const homeServ = all.filter((s) => s.group === "home");
+const sisterHome = servicesFor(sister.key).filter((s) => s.group !== "commercial");
 const faqs = generalFaqs(site.key, lang);
 const gallery = site.key === "electric"
   ? ["fan-install-1", "panel-3", "chandelier-1", "socket-2", "panel-room-1", "light-1", "panel-7", "drilling-2", "supershop-2"]
@@ -114,6 +115,8 @@ const description = bn
       <ServiceList items={homeList} lang={lang} />
       <h3 style="margin-top:32px">{t(lang, "homeServices")}</h3>
       <ServiceList items={homeServ} lang={lang} />
+      <h3 style="margin-top:32px" id={sister.key}>{sister.icon} {bn ? `${sister.workBn} সার্ভিস — আমাদের ${sister.divisionBn}` : `${sister.work[0].toUpperCase() + sister.work.slice(1)} services — by our ${sister.division}`}</h3>
+      <ServiceList items={sisterHome} lang={lang} />
     </div>
   </section>
 

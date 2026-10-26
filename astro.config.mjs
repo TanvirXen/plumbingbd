@@ -1,5 +1,4 @@
 import { defineConfig } from "astro/config";
-import sitemap from "@astrojs/sitemap";
 import fs from "node:fs";
 
 // Load .env.local / .env into process.env. Real environment variables (e.g. set on the host) take priority.
@@ -11,19 +10,13 @@ for (const file of [".env.local", ".env"]) {
   }
 }
 
-// Defaults for THIS folder (plumbingbd.com) when no .env is present.
+// Defaults for THIS folder (plumbingservicebd.com) when no .env is present.
 process.env.SITE_KEY ??= "plumbing";
-process.env.SITE_URL ??= "https://plumbingbd.com";
-process.env.SISTER_URL ??= "https://electricianbd.com";
+process.env.SITE_URL ??= "https://www.plumbingservicebd.com";
+process.env.SISTER_URL ??= "https://www.electricservicebd.com";
 
 export default defineConfig({
   site: process.env.SITE_URL,
   trailingSlash: "always",
   build: { format: "directory" },
-  integrations: [
-    sitemap({
-      i18n: { defaultLocale: "en", locales: { en: "en", bn: "bn" } },
-      filter: (page) => !page.includes("/404"),
-    }),
-  ],
 });

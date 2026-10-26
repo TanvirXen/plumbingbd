@@ -9,7 +9,10 @@ export const GET: APIRoute = () => {
   const svc = servicesFor(site.key)
     .map((s) => `- [${s.name}](${site.url}${servicePath(s)}): ${s.summary}`)
     .join("\n");
-  const body = `# ${company.name} – ${site.division}
+  const other = servicesFor(sister.key)
+    .map((s) => `- [${s.name}](${sister.url}${servicePath(s)})`)
+    .join("\n");
+  const body =`# ${company.name} – ${site.division}
 
 > ${site.trade} service for homes and businesses in Uttara, Bashundhara and north Dhaka, Bangladesh. Book on WhatsApp ${company.phone}. ${company.hours.label}. The company's ${sister.division} is at ${sister.url}.
 
@@ -21,9 +24,13 @@ export const GET: APIRoute = () => {
 - [About](${site.url}/about/)
 - [Contact](${site.url}/contact/)
 - [Bangla version](${site.url}/bn/)
+- [Sitemap](${site.url}/sitemap.xml)
 
 ## Services
 ${svc}
+
+## ${sister.division} services (on ${sister.domain})
+${other}
 
 ## Areas served
 ${areas.map((a) => a.name).join(", ")}

@@ -8,7 +8,7 @@ import AreaChips from "../components/AreaChips.astro";
 import ServiceList from "../components/ServiceList.astro";
 import SisterCard from "../components/SisterCard.astro";
 import { company } from "../data/company";
-import { site, sister } from "../data/sites";
+import { site, sister, sites } from "../data/sites";
 import { findService, servicesFor, servicePath, contentUpdated } from "../data/services";
 import { areas, topAreas } from "../data/areas";
 import { industries } from "../data/industries";
@@ -20,7 +20,9 @@ const { lang, slug } = Astro.props;
 const s = findService(slug)!;
 const bn = lang === "bn";
 const path = servicePath(s);
-const url = site.url + lp(lang, path);
+const owner = sites[s.site];
+const isOwn = s.site === site.key;
+const url = owner.url + lp(lang, path); // canonical: the owning site
 const name = pick(lang, s.name, s.nameBn);
 const shortBrand = bn ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`;
 const isCom = s.group === "commercial";
@@ -34,8 +36,8 @@ const title = bn ? `${s.nameBn} — উত্তরা ও বসুন্ধর
 const description = (bn ? s.summaryBn : s.summary).slice(0, 155);
 const faqs = bn ? s.faqsBn : s.faqs;
 const includes = bn ? s.includesBn : s.includes;
-const pairs = s.pairs.map(findService).filter((p) => p && p.site === sister.key) as NonNullable<ReturnType<typeof findService>>[];
-const related = servicesFor(site.key).filter((x) => x.group === s.group && x.slug !== s.slug).slice(0, 6);
+const pairs = s.pairs.map(findService).filter(Boolean) as NonNullable<ReturnType<typeof findService>>[];
+const related = servicesFor(s.site).filter((x) => x.group === s.group && x.slug !== s.slug).slice(0, 6);
 const forIndustries = industries.filter((i) => i.services.includes(s.slug));
 const areaItems = areas.filter((a) => topAreas.includes(a.slug));
 const crumbs = [
@@ -50,6 +52,7 @@ const waText = serviceMessage(lang, name);
   title={title}
   description={description}
   path={path}
+  canonicalBase={owner.url}
   image={s.images[0]}
   schema={[serviceLd(s, url, lang), breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href }))), faqLd(faqs)]}
 >
@@ -58,6 +61,13 @@ const waText = serviceMessage(lang, name);
   </div>
   <div class="wrap layout">
     <article>
+      {!isOwn && (
+        <div class="card accent owner-note">
+          <b>{owner.icon} {bn ? `এই সার্ভিসটি দেয় আমাদের ${owner.divisionBn}` : `This service is provided by our ${owner.division}`}</b>
+          <p>{bn ? "একই প্রতিষ্ঠান, একই টিম, একই হোয়াটসঅ্যাপ — এখান থেকেই বুক করতে পারেন।" : "Same company, same team, same WhatsApp — you can book it right here."}</p>
+          <a href={owner.url + lp(lang, path)}>{bn ? `পূর্ণ বিবরণ ${owner.domain}-এ` : `Full details on ${owner.domain}`} →</a>
+        </div>
+      )}
       <h1>{bn ? `${s.nameBn} — উত্তরা ও বসুন্ধরা` : `${s.name} in Uttara & Bashundhara`}</h1>
       <p class="answer">{answer}</p>
       <CallButtons lang={lang} message={waText} label={isCom ? t(lang, "surveyWhatsapp") : undefined} />
@@ -105,7 +115,7 @@ const waText = serviceMessage(lang, name);
       {pairs.length > 0 && (
         <section style="margin-top:32px">
           <h2>{t(lang, "oftenTogether")}</h2>
-          <p class="muted">{bn ? `আমাদের ${sister.divisionBn} থেকে — একই টিম, একই হোয়াটসঅ্যাপ।` : `From our ${sister.division} — same team, same WhatsApp.`}</p>
+          <p class="muted">{bn ? "আমাদের অন্য বিভাগ থেকে — একই টিম, একই হোয়াটসঅ্যাপ।" : "From our other division — same team, same WhatsApp."}</p>
           <ServiceList items={pairs} lang={lang} two={false} external />
         </section>
       )}
@@ -132,7 +142,9 @@ const waText = serviceMessage(lang, name);
       </div>
     </aside>
   </div>
-  <section class="section">
-    <div class="wrap"><SisterCard lang={lang} /></div>
-  </section>
+  {isOwn && (
+    <section class="section">
+      <div class="wrap"><SisterCard lang={lang} /></div>
+    </section>
+  )}
 </Base>

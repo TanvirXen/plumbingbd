@@ -1,0 +1,70 @@
+---
+// Human-readable sitemap: every page on this site, plus the sister site's services (linked to the sister site).
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { company } from "../data/company";
+import { site, sister } from "../data/sites";
+import { servicesFor, servicePath } from "../data/services";
+import { areas } from "../data/areas";
+import { industries } from "../data/industries";
+import { guidesFor } from "../lib/guides";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, pick, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+const own = servicesFor(site.key);
+const other = servicesFor(sister.key);
+const groups = [
+  { g: "residential", label: bn ? site.tradeBn : site.trade },
+  { g: "home", label: t(lang, "homeServices") },
+  { g: "commercial", label: t(lang, "corporate") },
+];
+const main = [
+  ["/", t(lang, "home")], ["/services/", t(lang, "allServices")], ["/home-services/", t(lang, "homeServices")],
+  ["/commercial/", t(lang, "business")], ["/commercial/maintenance-contract/", t(lang, "amc")], ["/areas/", t(lang, "areas")],
+  ["/work/", t(lang, "work")], ["/guides/", t(lang, "guides")], ["/about/", t(lang, "about")], ["/contact/", t(lang, "contact")], ["/order/", t(lang, "order")],
+];
+const title = bn ? `সাইটম্যাপ | ইমার্জেন্সি ${site.tradeBn}` : `Sitemap | Emergency ${site.trade} — ${company.name}`;
+const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name: bn ? "সাইটম্যাপ" : "Sitemap", href: lp(lang, "/sitemap/") }];
+---
+<Base lang={lang} title={title} description={bn ? "এই ওয়েবসাইটের সব পেজের তালিকা।" : "A list of every page on this website."} path="/sitemap/"
+  schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="wrap smap" style="padding-bottom:48px">
+    <h1>{bn ? "সাইটম্যাপ" : "Sitemap"}</h1>
+    <p class="muted">XML: <a href="/sitemap.xml">{site.url}/sitemap.xml</a></p>
+    <div class="smap-grid">
+      <div>
+        <h2>{bn ? "প্রধান পেজ" : "Main pages"}</h2>
+        <ul>{main.map(([p, n]) => <li><a href={lp(lang, p)}>{n}</a></li>)}</ul>
+        <h2>{t(lang, "industries")}</h2>
+        <ul>{industries.map((i) => <li><a href={lp(lang, `/commercial/${i.slug}/`)}>{pick(lang, i.name, i.nameBn)}</a></li>)}</ul>
+        <h2>{t(lang, "guides")}</h2>
+        <ul>{guidesFor(site.key).filter((g) => (bn ? g.bn : g.en)).map((g) => <li><a href={lp(lang, `/guides/${g.slug}/`)}>{(bn ? g.bn : g.en)!.title}</a></li>)}</ul>
+      </div>
+      <div>
+        {groups.map(({ g, label }) => (
+          <>
+            <h2>{site.icon} {label}</h2>
+            <ul>{own.filter((s) => s.group === g).map((s) => <li><a href={lp(lang, servicePath(s))}>{pick(lang, s.name, s.nameBn)}</a></li>)}</ul>
+          </>
+        ))}
+      </div>
+      <div>
+        <h2>{sister.icon} {bn ? `${sister.divisionBn} (${sister.domain})` : `${sister.division} (${sister.domain})`}</h2>
+        <ul>{other.map((s) => <li><a href={sister.url + lp(lang, servicePath(s))}>{pick(lang, s.name, s.nameBn)}</a></li>)}</ul>
+        <h2>{t(lang, "areas")}</h2>
+        <ul>{areas.map((a) => <li><a href={lp(lang, `/areas/${a.slug}/`)}>{pick(lang, a.name, a.nameBn)}</a></li>)}</ul>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .smap-grid { display: grid; gap: 8px 40px; }
+  @media (min-width: 900px) { .smap-grid { grid-template-columns: repeat(3, 1fr); } }
+  .smap h2 { font-size: 1.15rem; text-transform: none; margin-top: 24px; }
+  .smap ul { padding-left: 1.1em; margin: 0; }
+  .smap li { margin: 4px 0; }
+</style>

@@ -68,6 +68,10 @@ const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name
 const schema: object[] = [breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))];
 if (kind === "commercial") schema.push(faqLd(bizFaqs));
 const sisterCom = servicesFor(sister.key).filter((s) => s.group === "commercial");
+const sisterBy = (g: string) => servicesFor(sister.key).filter((s) => s.group === g);
+const sisterHeading = bn
+  ? `${sister.icon} ${sister.workBn} সার্ভিস — আমাদের ${sister.divisionBn}`
+  : `${sister.icon} ${sister.work[0].toUpperCase() + sister.work.slice(1)} services — by our ${sister.division}`;
 ---
 <Base lang={lang} title={copy.title} description={copy.intro.slice(0, 155)} path={path} image={copy.image} schema={schema}>
   <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
@@ -99,7 +103,7 @@ const sisterCom = servicesFor(sister.key).filter((s) => s.group === "commercial"
           <h2>{bn ? `${site.divisionBn}-এর কর্পোরেট সার্ভিস` : `${site.division}: corporate services`}</h2>
           <ServiceList items={by("commercial")} lang={lang} />
           <h3 style="margin-top:32px">{t(lang, "fromSister", { division: bn ? sister.divisionBn : sister.division })}</h3>
-          <ServiceList items={sisterCom} lang={lang} external />
+          <ServiceList items={sisterCom} lang={lang} />
           <div class="card accent" style="margin-top:32px">
             <h3>{t(lang, "amc")}</h3>
             <p>{t(lang, "amcShort")}</p>
@@ -128,18 +132,21 @@ const sisterCom = servicesFor(sister.key).filter((s) => s.group === "commercial"
             <h2 style="margin-top:40px">{t(lang, "corporate")}</h2>
             <ServiceList items={by("commercial")} lang={lang} />
             <p style="margin-top:16px"><a href={lp(lang, "/commercial/")}>{t(lang, "business")} →</a></p>
+            <h2 style="margin-top:56px" id={sister.key}>{sisterHeading}</h2>
+            <p class="muted">{bn ? `একই প্রতিষ্ঠান, একই হোয়াটসঅ্যাপ। বিস্তারিত: ` : `Same company, same WhatsApp. More on `}<a href={sister.url + lp(lang, "/services/")}>{sister.domain}</a></p>
+            <ServiceList items={sisterBy("residential")} lang={lang} />
+            <h3 style="margin-top:32px">{t(lang, "homeServices")}</h3>
+            <ServiceList items={sisterBy("home")} lang={lang} />
+            <h3 style="margin-top:32px">{t(lang, "corporate")}</h3>
+            <ServiceList items={sisterBy("commercial")} lang={lang} />
           </>
         )}
         {kind === "home" && (
           <>
             <ServiceList items={by("home")} lang={lang} />
-            <p style="margin-top:24px">
-              {bn ? `${sister.workBn} হোম সার্ভিস (যেমন ` : `Looking for ${sister.work} home services (like `}
-              {sister.key === "plumbing"
-                ? (bn ? "ওয়াশিং মেশিন, গ্যাসের চুলা, আয়না" : "washing machine, gas stove, mirrors")
-                : (bn ? "টিভি মাউন্ট, শেলফ, কিচেন হুড" : "TV mount, shelves, kitchen hood")}
-              )? <a href={sister.url + lp(lang, "/home-services/")}>{sister.domain} →</a>
-            </p>
+            <h2 style="margin-top:48px">{sisterHeading}</h2>
+            <ServiceList items={sisterBy("home")} lang={lang} />
+            <p style="margin-top:16px"><a href={sister.url + lp(lang, "/home-services/")}>{sister.domain} →</a></p>
           </>
         )}
       </div>

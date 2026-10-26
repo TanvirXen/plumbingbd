@@ -13,7 +13,7 @@ const common: Record<Lang, Faq[]> = {
     { q: "How fast can a technician reach me?", a: `In most of Uttara we usually arrive within about ${m} minutes for urgent jobs. For other areas or booked jobs, we come at the time you choose.` },
     { q: "Will I know the cost before work starts?", a: "Yes. We discuss the job with you on WhatsApp or on site and agree everything before starting. No surprises." },
     { q: "How do I pay?", a: `You pay after the job is done, by ${company.payments.join(", ")}.` },
-    { q: "Do you do both electrical and plumbing work?", a: "Yes. Emergency Electric and Plumbing Service has an Electrical Division (electricianbd.com) and a Plumbing Division (plumbingbd.com). One message, one team, both jobs." },
+    { q: "Do you do both electrical and plumbing work?", a: "Yes. Emergency Electric and Plumbing Service has an Electrical Division (electricservicebd.com) and a Plumbing Division (plumbingservicebd.com). One message, one team, both jobs." },
     { q: "Do you work for offices and companies?", a: "Yes — offices, shops, restaurants, super shops, clinics, schools and apartment buildings, including monthly maintenance contracts and after-hours work." },
   ],
   bn: [
@@ -21,7 +21,7 @@ const common: Record<Lang, Faq[]> = {
     { q: "টেকনিশিয়ান কত দ্রুত আসতে পারবে?", a: `উত্তরার বেশিরভাগ জায়গায় জরুরি কাজে সাধারণত প্রায় ${m} মিনিটের মধ্যে পৌঁছাই। অন্য এলাকায় বা আগে বুক করা কাজে আপনার পছন্দের সময়ে আসি।` },
     { q: "কাজ শুরুর আগে কি খরচ জানতে পারব?", a: "হ্যাঁ। হোয়াটসঅ্যাপে বা সরেজমিনে কাজটি নিয়ে আলোচনা করে সব ঠিক করে তারপর কাজ শুরু করি। কোনো চমক নেই।" },
     { q: "কীভাবে পেমেন্ট করব?", a: `কাজ শেষ হওয়ার পর ${company.paymentsBn.join(", ")} — যেকোনোভাবে পেমেন্ট করতে পারেন।` },
-    { q: "আপনারা কি ইলেকট্রিক ও প্লাম্বিং দুটো কাজই করেন?", a: "হ্যাঁ। ইমার্জেন্সি ইলেকট্রিক অ্যান্ড প্লাম্বিং সার্ভিসের ইলেকট্রিক্যাল বিভাগ (electricianbd.com) ও প্লাম্বিং বিভাগ (plumbingbd.com) আছে। এক মেসেজে, এক টিমে দুই কাজ।" },
+    { q: "আপনারা কি ইলেকট্রিক ও প্লাম্বিং দুটো কাজই করেন?", a: "হ্যাঁ। ইমার্জেন্সি ইলেকট্রিক অ্যান্ড প্লাম্বিং সার্ভিসের ইলেকট্রিক্যাল বিভাগ (electricservicebd.com) ও প্লাম্বিং বিভাগ (plumbingservicebd.com) আছে। এক মেসেজে, এক টিমে দুই কাজ।" },
     { q: "অফিস ও কোম্পানির কাজ কি করেন?", a: "হ্যাঁ — অফিস, দোকান, রেস্টুরেন্ট, সুপার শপ, ক্লিনিক, স্কুল ও অ্যাপার্টমেন্ট বিল্ডিং; মাসিক রক্ষণাবেক্ষণ চুক্তি ও অফিস সময়ের পরে কাজ সহ।" },
   ],
 };

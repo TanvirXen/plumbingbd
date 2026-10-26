@@ -84,6 +84,8 @@ const waText = bn ? `হ্যালো, ${area} এলাকায় ${site.tr
       <ServiceList items={all.filter((s) => s.group !== "commercial")} lang={lang} />
       <h3 style="margin-top:24px">{t(lang, "commercial")}</h3>
       <ServiceList items={all.filter((s) => s.group === "commercial")} lang={lang} />
+      <h3 style="margin-top:24px">{sister.icon} {bn ? `${area} এলাকায় ${sister.workBn} সার্ভিস` : `${sister.work[0].toUpperCase() + sister.work.slice(1)} services in ${a.name}`}</h3>
+      <ServiceList items={servicesFor(sister.key)} lang={lang} />
 
       <div style="margin-top:32px"><MapEmbed lang={lang} query={`${a.name}, Dhaka`} /></div>
 
