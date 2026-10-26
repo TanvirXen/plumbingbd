@@ -76,6 +76,16 @@ if (!(envKey in sites)) throw new Error(`Unknown SITE_KEY "${envKey}" — use el
 const clean = (u?: string) => u?.trim().replace(/\/+$/, "") || undefined;
 const siteUrl = clean(process.env.SITE_URL);
 const sisterUrl = clean(process.env.SISTER_URL);
+// Guard: a wrong SITE_URL / SISTER_URL (e.g. an old domain left in Vercel's env vars) silently breaks
+// canonical tags and the sitemap, so fail the build instead. localhost is allowed for local testing.
+const checkUrl = (name: string, url: string | undefined, key: SiteKey) => {
+  if (!url) return;
+  const host = new URL(url).hostname;
+  if (host !== "localhost" && host !== "127.0.0.1" && host !== sites[key].domain && !host.endsWith(`.${sites[key].domain}`))
+    throw new Error(`${name}="${url}" does not match ${sites[key].domain}. Fix it in .env or in Vercel → Settings → Environment Variables.`);
+};
+checkUrl("SITE_URL", siteUrl, envKey);
+checkUrl("SISTER_URL", sisterUrl, sites[envKey].sister);
 if (siteUrl) sites[envKey].url = siteUrl;
 if (sisterUrl) sites[sites[envKey].sister].url = sisterUrl;
 
