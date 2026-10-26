@@ -2,7 +2,7 @@
 // Corporate enquiry → opens WhatsApp with a structured message. All fields optional.
 import { company } from "../data/company";
 import { industries } from "../data/industries";
-import { areas } from "../data/areas";
+import { areas, uttaraSectors, bashundharaBlocks } from "../data/areas";
 import { site } from "../data/sites";
 import { pick, t, type Lang } from "../i18n";
 interface Props { lang: Lang; industry?: string }
@@ -33,7 +33,9 @@ const pre = industries.find((i) => i.slug === industry);
     <label>{L.phone}<input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" /></label>
   </div>
   <label>{L.area}
-    <select name="area"><option value="">{L.pick}</option>{areas.map((a) => <option>{pick(lang, a.name, a.nameBn)}</option>)}</select>
+    <select name="area"><option value="">{L.pick}</option>{areas.map((a) => <option>{pick(lang, a.name, a.nameBn)}</option>)}
+          <optgroup label={lang === "bn" ? "উত্তরার সেক্টর" : "Uttara sectors"}>{uttaraSectors.map((a) => <option>{pick(lang, a.name, a.nameBn)}</option>)}</optgroup>
+          <optgroup label={lang === "bn" ? "বসুন্ধরার ব্লক" : "Bashundhara blocks"}>{bashundharaBlocks.map((a) => <option>{pick(lang, a.name, a.nameBn)}</option>)}</optgroup></select>
   </label>
   <fieldset style="border:0;padding:0;margin:0">
     <legend style="font-weight:600;margin-bottom:6px">{L.need}</legend>

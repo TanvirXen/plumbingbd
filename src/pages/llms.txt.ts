@@ -3,7 +3,7 @@ import type { APIRoute } from "astro";
 import { company } from "../data/company";
 import { site, sister } from "../data/sites";
 import { servicesFor, servicePath } from "../data/services";
-import { areas } from "../data/areas";
+import { areas, subAreas } from "../data/areas";
 
 export const GET: APIRoute = () => {
   const svc = servicesFor(site.key)
@@ -34,6 +34,9 @@ ${other}
 
 ## Areas served
 ${areas.map((a) => a.name).join(", ")}
+
+Every sector of Uttara and every block of Bashundhara R/A has its own page:
+${subAreas.map((a) => `- [${a.name}](${site.url}/areas/${a.slug}/)`).join("\n")}
 `;
   return new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
 };

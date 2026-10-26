@@ -6,7 +6,7 @@ import Breadcrumbs from "../components/Breadcrumbs.astro";
 import { company } from "../data/company";
 import { site } from "../data/sites";
 import { servicesFor } from "../data/services";
-import { areas } from "../data/areas";
+import { areas, uttaraSectors, bashundharaBlocks } from "../data/areas";
 import { breadcrumbLd } from "../lib/schema";
 import { lp, pick, t, type Lang } from "../i18n";
 
@@ -49,6 +49,8 @@ const config = { wa: company.whatsapp, hi: L.hi, urgentTag: L.urgentTag, labels,
         <select name="area">
           <option value="">{L.pick}</option>
           {areas.map((a) => <option>{pick(lang, a.name, a.nameBn)}</option>)}
+          <optgroup label={lang === "bn" ? "উত্তরার সেক্টর" : "Uttara sectors"}>{uttaraSectors.map((a) => <option>{pick(lang, a.name, a.nameBn)}</option>)}</optgroup>
+          <optgroup label={lang === "bn" ? "বসুন্ধরার ব্লক" : "Bashundhara blocks"}>{bashundharaBlocks.map((a) => <option>{pick(lang, a.name, a.nameBn)}</option>)}</optgroup>
         </select>
       </label>
       <label>{L.address}<input name="address" autocomplete="street-address" maxlength="200" /></label>

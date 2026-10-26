@@ -11,7 +11,7 @@ export interface Area {
   note: string;
   noteBn: string;
   nearby: string[];
-  sectors?: number;
+  parent?: string; // slug of the parent area (Uttara sectors, Bashundhara blocks)
 }
 
 const U = ["uttara", "diabari", "abdullahpur"];
@@ -19,7 +19,7 @@ const E = ["uttarkhan", "dakkhinkhan", "ashkona"];
 
 export const areas: Area[] = [
   {
-    slug: "uttara", name: "Uttara", nameBn: "উত্তরা", sectors: 18,
+    slug: "uttara", name: "Uttara", nameBn: "উত্তরা",
     note: "Uttara is a planned residential model town in north Dhaka with Sectors 1–18, full of high-rise apartment buildings, offices, shops and restaurants. It is our home base, so this is where we reach customers fastest.",
     noteBn: "উত্তরা ঢাকার উত্তরে সেক্টর ১–১৮ নিয়ে গড়া একটি পরিকল্পিত আবাসিক মডেল টাউন — এখানে অনেক উঁচু অ্যাপার্টমেন্ট, অফিস, দোকান ও রেস্টুরেন্ট। এটি আমাদের মূল কেন্দ্র, তাই এখানে আমরা সবচেয়ে দ্রুত পৌঁছাই।",
     nearby: ["diabari", "abdullahpur", "uttarkhan", "dakkhinkhan"],
@@ -85,6 +85,40 @@ export const areas: Area[] = [
   { slug: "dharangartek", name: "Dharangartek", nameBn: "ধরঙ্গারটেক", note: "", noteBn: "", nearby: E },
 ];
 
-export const findArea = (slug: string) => areas.find((a) => a.slug === slug);
+// ── Sub-areas: every Uttara sector and every Bashundhara R/A block get their own page ──
+// TODO: add a real local note (landmarks, main roads, building types, jobs done) to the busiest ones.
+// PLACEHOLDER: Bashundhara block list (A–N) — confirm it matches the blocks you serve.
+const bnDigits = "০১২৩৪৫৬৭৮৯";
+const bnNum = (n: number) => String(n).replace(/\d/g, (d) => bnDigits[+d]);
+const blockBn: Record<string, string> = {
+  A: "এ", B: "বি", C: "সি", D: "ডি", E: "ই", F: "এফ", G: "জি", H: "এইচ", I: "আই", J: "জে", K: "কে", L: "এল", M: "এম", N: "এন",
+};
+
+export const uttaraSectors: Area[] = Array.from({ length: 18 }, (_, i) => ({
+  slug: `uttara-sector-${i + 1}`,
+  name: `Uttara Sector ${i + 1}`,
+  nameBn: `উত্তরা সেক্টর ${bnNum(i + 1)}`,
+  note: "",
+  noteBn: "",
+  nearby: [],
+  parent: "uttara",
+}));
+
+export const bashundharaBlocks: Area[] = Object.keys(blockBn).map((b) => ({
+  slug: `bashundhara-block-${b.toLowerCase()}`,
+  name: `Bashundhara Block ${b}`,
+  nameBn: `বসুন্ধরা ব্লক-${blockBn[b]}`,
+  note: "",
+  noteBn: "",
+  nearby: [],
+  parent: "bashundhara-residential-area",
+}));
+
+export const subAreas: Area[] = [...uttaraSectors, ...bashundharaBlocks];
+/** Main areas + every sector/block (each has its own page). `areas` alone = the 25 main areas. */
+export const allAreas: Area[] = [...areas, ...subAreas];
+
+export const findArea = (slug: string) => allAreas.find((a) => a.slug === slug);
+export const childrenOf = (slug: string) => subAreas.filter((a) => a.parent === slug);
 // Areas featured on home pages and in short lists
 export const topAreas = ["uttara", "bashundhara-residential-area", "diabari", "uttarkhan", "dakkhinkhan", "ashkona", "abdullahpur", "rupayan-city"];

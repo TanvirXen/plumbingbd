@@ -6,7 +6,7 @@ import { lp, t, type Lang } from "../i18n";
 interface Props { lang: Lang; path?: string; text?: string }
 const { lang, path = "/", text } = Astro.props;
 const href = sister.url + lp(lang, path);
-const trade = lang === "bn" ? sister.tradeBn : sister.trade.toLowerCase();
+const trade = lang === "bn" ? sister.tradeBn : sister.tradeA;
 const body = text ?? (lang === "bn"
   ? `${company.nameBn}ের ${sister.divisionBn} — একই টিম, একই হোয়াটসঅ্যাপ। এক ভিজিটে দুই কাজ করিয়ে নিন।`
   : `${company.name} also has a ${sister.division}. Same team, same WhatsApp — get both jobs done in one visit.`);

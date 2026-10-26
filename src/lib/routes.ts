@@ -4,7 +4,7 @@
 // and it is left out of this site's sitemap — so Google never sees two competing copies.
 import { site, sites } from "../data/sites";
 import { services, servicePath } from "../data/services";
-import { areas } from "../data/areas";
+import { allAreas } from "../data/areas";
 import { industries } from "../data/industries";
 import { guidesFor } from "./guides";
 
@@ -45,7 +45,7 @@ export function getRoutes(): Route[] {
     ...own.map((s) => r(servicePath(s), "service", { data: s.slug, priority: s.group === "commercial" ? 0.85 : 0.8, image: s.images[0] })),
     ...other.map((s) => r(servicePath(s), "service", { data: s.slug, indexable: false, priority: 0.3 })),
     ...industries.map((i) => r(`/commercial/${i.slug}/`, "industry", { data: i.slug, priority: 0.8, image: i.image[site.key] })),
-    ...areas.map((a) => r(`/areas/${a.slug}/`, "area", { data: a.slug, priority: a.slug === "uttara" ? 0.8 : 0.7 })),
+    ...allAreas.map((a) => r(`/areas/${a.slug}/`, "area", { data: a.slug, priority: a.slug === "uttara" || a.slug === "bashundhara-residential-area" ? 0.8 : a.parent ? 0.6 : 0.7 })),
     ...guidesFor(site.key).map((g) => r(`/guides/${g.slug}/`, "guide", { data: g.slug, en: !!g.en, bn: !!g.bn, priority: 0.6, image: g.meta.image })),
   ];
 }

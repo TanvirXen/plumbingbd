@@ -57,7 +57,7 @@ const dict = {
     viewAllAreas: "View all areas",
     lastUpdated: "Last updated",
     reviewedBy: "Reviewed by",
-    needOther: "Need a {trade} too?",
+    needOther: "Need {trade} too?",
     otherDivision: "Our {division}",
     nearbyAreas: "Nearby areas",
     servicesIn: "Our services in {area}",

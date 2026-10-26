@@ -6,7 +6,7 @@ import AreaChips from "../components/AreaChips.astro";
 import MapEmbed from "../components/MapEmbed.astro";
 import { company } from "../data/company";
 import { site } from "../data/sites";
-import { areas } from "../data/areas";
+import { areas, uttaraSectors, bashundharaBlocks } from "../data/areas";
 import { breadcrumbLd } from "../lib/schema";
 import { lp, num, t, type Lang } from "../i18n";
 
@@ -32,6 +32,10 @@ const description = bn
       <div>
         <h2>{bn ? "এলাকা বেছে নিন" : "Choose your area"}</h2>
         <AreaChips lang={lang} items={areas} />
+        <h2 style="margin-top:32px">{bn ? "উত্তরার সব সেক্টর" : "All Uttara sectors"}</h2>
+        <AreaChips lang={lang} items={uttaraSectors} />
+        <h2 style="margin-top:32px">{bn ? "বসুন্ধরা আবাসিক এলাকার সব ব্লক" : "All Bashundhara R/A blocks"}</h2>
+        <AreaChips lang={lang} items={bashundharaBlocks} />
         <p class="muted small" style="margin-top:16px">
           {bn ? "আপনার এলাকা তালিকায় নেই? কল করুন — কাছাকাছি হলে আমরা আসি।" : "Your area isn't listed? Call us — if it's nearby, we'll come."}
         </p>

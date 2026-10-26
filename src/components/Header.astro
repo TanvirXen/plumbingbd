@@ -17,7 +17,7 @@ const links = [
 ];
 const divisionLink = (key: "electric" | "plumbing") =>
   site.key === key ? lp(lang, "/") : sites[key].url + lp(lang, "/");
-const waText = lang === "bn" ? `হ্যালো, আমার ${site.tradeBn} সার্ভিস দরকার। এলাকা: ` : `Hi, I need a ${site.trade.toLowerCase()}. My area: `;
+const waText = lang === "bn" ? `হ্যালো, আমার ${site.tradeBn} সার্ভিস দরকার। এলাকা: ` : `Hi, I need ${site.tradeA}. My area: `;
 ---
 <a class="skip" href="#main">{t(lang, "skip")}</a>
 <div class="topbar">

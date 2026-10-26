@@ -10,7 +10,7 @@ import Img from "../components/Img.astro";
 import { company } from "../data/company";
 import { site, sister } from "../data/sites";
 import { servicesFor } from "../data/services";
-import { areas, findArea } from "../data/areas";
+import { findArea, childrenOf, type Area } from "../data/areas";
 import { breadcrumbLd, faqLd } from "../lib/schema";
 import { lp, num, pick, t, type Lang } from "../i18n";
 
@@ -19,37 +19,46 @@ const { lang, slug } = Astro.props;
 const bn = lang === "bn";
 const a = findArea(slug)!;
 const area = pick(lang, a.name, a.nameBn);
+const parent = a.parent ? findArea(a.parent) : undefined;
+const parentName = parent ? pick(lang, parent.name, parent.nameBn) : "";
+const children = childrenOf(a.slug); // sectors / blocks of this area
+const siblings = parent ? childrenOf(parent.slug).filter((x) => x.slug !== a.slug) : [];
 const path = `/areas/${a.slug}/`;
 const url = site.url + lp(lang, path);
 const all = servicesFor(site.key);
-const nearby = a.nearby.map(findArea).filter(Boolean) as typeof areas;
-const isHome = a.slug === "uttara";
+const nearby = a.nearby.map(findArea).filter(Boolean) as Area[];
+const inUttara = a.slug === "uttara" || a.parent === "uttara";
+const childWord = a.slug === "uttara" ? (bn ? "সেক্টর" : "sectors") : (bn ? "ব্লক" : "blocks");
+const siblingWord = a.parent === "uttara" ? (bn ? "উত্তরার অন্যান্য সেক্টর" : "Other Uttara sectors") : (bn ? "বসুন্ধরার অন্যান্য ব্লক" : "Other Bashundhara blocks");
 
 const h1 = bn ? `${area} এলাকায় ${site.tradeBn}` : `${site.trade} in ${a.name}, Dhaka`;
 const title = bn
   ? `${area} এলাকায় ${site.tradeBn} — বাসা ও অফিস | ইমার্জেন্সি ${site.tradeBn}`
   : `${site.trade} in ${a.name} — Home & Commercial | Emergency ${site.trade}`;
+const where = area; // sector and block names already include their parent area
 const answer = bn
-  ? `${area} এলাকায় ${site.tradeBn} দরকার? ${company.nameBn} ${isHome ? "উত্তরাতেই অবস্থিত" : "উত্তরা থেকে"} ${area} এলাকার বাসা, দোকান ও অফিসে অভিজ্ঞ টেকনিশিয়ান পাঠায়। কাজের আগে সব ঠিক করে নেওয়া হয়। হোয়াটসঅ্যাপে বুক করুন ${company.phone}।`
-  : `Need a ${site.trade.toLowerCase()} in ${a.name}? ${company.name} ${isHome ? "is based in Uttara and sends" : "sends"} experienced ${site.tradePlural} to homes, shops and offices in ${a.name}${isHome ? "" : " from our Uttara base"}. Everything is agreed before work starts. Book on WhatsApp ${company.phone}.`;
+  ? `${area} এলাকায় ${site.tradeBn} দরকার? ${company.nameBn} ${inUttara ? "উত্তরাতেই অবস্থিত, তাই" : "উত্তরা থেকে"} ${where} এলাকার বাসা, দোকান ও অফিসে অভিজ্ঞ টেকনিশিয়ান পাঠায়। কাজের আগে সব ঠিক করে নেওয়া হয়। হোয়াটসঅ্যাপে বুক করুন ${company.phone}।`
+  : `Need ${site.tradeA} in ${a.name}? ${company.name} ${inUttara ? "is based in Uttara and sends" : "sends"} experienced ${site.tradePlural} to homes, shops and offices in ${where}${inUttara ? "" : " from our Uttara base"}. Everything is agreed before work starts. Book on WhatsApp ${company.phone}.`;
 
 const faqs = bn
   ? [
-      { q: `আপনারা কি ${area} এলাকায় সার্ভিস দেন?`, a: `হ্যাঁ। ${area} এলাকার বাসা, দোকান ও অফিসে আমরা নিয়মিত ${site.workBn} কাজ করি।` },
-      { q: `${area} এলাকায় কত দ্রুত আসতে পারবেন?`, a: isHome ? `উত্তরায় জরুরি কলে সাধারণত প্রায় ${num(lang, company.responseMinutes)} মিনিটে পৌঁছাই।` : `জরুরি কলে আমরা যত দ্রুত সম্ভব রওনা দিই; সময় ট্রাফিকের উপর নির্ভর করে। বুকিংয়ের কাজ আপনার পছন্দের সময়ে।` },
-      { q: `${area} এলাকার অফিস বা দোকানের কাজ করেন?`, a: `হ্যাঁ, কমার্শিয়াল কাজ ও মাসিক রক্ষণাবেক্ষণ চুক্তি দুটোই করি।` },
+      { q: `আপনারা কি ${area} এলাকায় সার্ভিস দেন?`, a: `হ্যাঁ। ${where} এলাকার বাসা, দোকান ও অফিসে আমরা নিয়মিত ${site.workBn} কাজ করি।` },
+      { q: `${area} এলাকায় কত দ্রুত আসতে পারবেন?`, a: inUttara ? `উত্তরায় জরুরি কলে সাধারণত প্রায় ${num(lang, company.responseMinutes)} মিনিটে পৌঁছাই।` : `জরুরি কলে আমরা যত দ্রুত সম্ভব রওনা দিই; সময় ট্রাফিকের উপর নির্ভর করে। বুকিংয়ের কাজ আপনার পছন্দের সময়ে।` },
+      { q: `${area} এলাকার অফিস, দোকান বা বিল্ডিংয়ের কাজ করেন?`, a: `হ্যাঁ, কমার্শিয়াল কাজ, বিল্ডিংয়ের এমডিবি/পাম্প রক্ষণাবেক্ষণ ও মাসিক চুক্তি — সবই করি।` },
     ]
   : [
-      { q: `Do you provide ${site.work} service in ${a.name}?`, a: `Yes. We regularly work in homes, shops and offices in ${a.name}.` },
-      { q: `How fast can you reach ${a.name}?`, a: isHome ? `For urgent calls in Uttara we usually arrive in about ${company.responseMinutes} minutes.` : `For urgent calls we leave as soon as possible; travel time depends on traffic. Booked jobs are done at your chosen time.` },
-      { q: `Do you work for offices and shops in ${a.name}?`, a: `Yes — commercial jobs and monthly maintenance contracts are both available.` },
+      { q: `Do you provide ${site.work} service in ${a.name}?`, a: `Yes. We regularly work in homes, shops and offices in ${where}.` },
+      { q: `How fast can you reach ${a.name}?`, a: inUttara ? `For urgent calls in Uttara we usually arrive in about ${company.responseMinutes} minutes.` : `For urgent calls we leave as soon as possible; travel time depends on traffic. Booked jobs are done at your chosen time.` },
+      { q: `Do you work for offices, shops and buildings in ${a.name}?`, a: `Yes — commercial jobs, building MDB and pump maintenance, and monthly contracts are all available.` },
     ];
 
 const crumbs = [
   { name: t(lang, "breadcrumbHome"), href: lp(lang, "/") },
   { name: t(lang, "areas"), href: lp(lang, "/areas/") },
+  ...(parent ? [{ name: parentName, href: lp(lang, `/areas/${parent.slug}/`) }] : []),
   { name: area, href: lp(lang, path) },
 ];
+const placeName = `${a.name}, Dhaka, Bangladesh`;
 const areaService = {
   "@type": "Service",
   "@id": `${url}#service`,
@@ -57,9 +66,13 @@ const areaService = {
   serviceType: site.trade,
   url,
   provider: { "@id": `${site.url}/#business` },
-  areaServed: { "@type": "Place", name: `${a.name}, Dhaka, Bangladesh` },
+  areaServed: {
+    "@type": "Place",
+    name: placeName,
+    ...(parent ? { containedInPlace: { "@type": "Place", name: `${parent.name}, Dhaka, Bangladesh` } } : {}),
+  },
 };
-const waText = bn ? `হ্যালো, ${area} এলাকায় ${site.tradeBn} দরকার।` : `Hi, I need a ${site.trade.toLowerCase()} in ${a.name}.`;
+const waText = bn ? `হ্যালো, ${area} এলাকায় ${site.tradeBn} দরকার।` : `Hi, I need ${site.tradeA} in ${a.name}.`;
 ---
 <Base lang={lang} title={title} description={answer.slice(0, 155)} path={path}
   schema={[areaService, breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href }))), faqLd(faqs)]}>
@@ -71,12 +84,11 @@ const waText = bn ? `হ্যালো, ${area} এলাকায় ${site.tr
       <CallButtons lang={lang} message={waText} />
       {(bn ? a.noteBn : a.note) && <p class="lead" style="margin-top:24px">{bn ? a.noteBn : a.note}</p>}
 
-      {a.sectors && (
+      {children.length > 0 && (
         <>
-          <h2 style="margin-top:28px">{bn ? "উত্তরার সব সেক্টর" : "All Uttara sectors"}</h2>
-          <ul class="chips">
-            {Array.from({ length: a.sectors }, (_, i) => <li><span class="chips-static">{bn ? `সেক্টর ${num(lang, i + 1)}` : `Sector ${i + 1}`}</span></li>)}
-          </ul>
+          <h2 style="margin-top:28px">{bn ? `${area} এলাকার সব ${childWord}` : `All ${childWord} in ${a.name}`}</h2>
+          <p class="muted">{bn ? `আপনার ${childWord} বেছে নিন:` : `Choose your ${childWord === "sectors" ? "sector" : "block"}:`}</p>
+          <AreaChips lang={lang} items={children} />
         </>
       )}
 
@@ -92,10 +104,18 @@ const waText = bn ? `হ্যালো, ${area} এলাকায় ${site.tr
       <div style="margin-top:32px"><Faq items={faqs} title={t(lang, "faqs")} /></div>
 
       <div class="card accent" style="margin-top:32px">
-        <h3>{sister.icon} {bn ? `${area} এলাকায় ${sister.tradeBn} লাগবে?` : `Need a ${sister.trade.toLowerCase()} in ${a.name}?`}</h3>
+        <h3>{sister.icon} {bn ? `${area} এলাকায় ${sister.tradeBn} লাগবে?` : `Need ${sister.tradeA} in ${a.name}?`}</h3>
         <p>{bn ? `আমাদের ${sister.divisionBn} ${area} এলাকায় ${sister.workBn} কাজ করে — একই হোয়াটসঅ্যাপ।` : `Our ${sister.division} covers ${a.name} too — same WhatsApp.`}</p>
         <a href={sister.url + lp(lang, path)}>{bn ? `${area} এলাকায় ${sister.tradeBn}` : `${sister.trade} in ${a.name}`} — {sister.domain} →</a>
       </div>
+
+      {parent && (
+        <>
+          <h2 style="margin-top:32px">{siblingWord}</h2>
+          <AreaChips lang={lang} items={siblings} />
+          <p style="margin-top:12px"><a href={lp(lang, `/areas/${parent.slug}/`)}>{bn ? `${parentName} এলাকায় ${site.tradeBn}` : `${site.trade} in ${parent.name}`} →</a></p>
+        </>
+      )}
 
       {nearby.length > 0 && (
         <>
@@ -115,6 +135,5 @@ const waText = bn ? `হ্যালো, ${area} এলাকায় ${site.tr
   </div>
 </Base>
 <style>
-  .chips-static { display: inline-block; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; font-size: .9rem; }
   .aside :global(img) { border-radius: 10px; aspect-ratio: 4/3; object-fit: cover; }
 </style>

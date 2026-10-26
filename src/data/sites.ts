@@ -11,6 +11,7 @@ export interface SiteConfig {
   trade: string; // "Electrician"
   tradeBn: string;
   tradePlural: string;
+  tradeA: string; // "an electrician" / "a plumber"
   work: string; // "electrical" — used in sentences
   workBn: string;
   schemaType: "Electrician" | "Plumber";
@@ -33,6 +34,7 @@ export const sites: Record<SiteKey, SiteConfig> = {
     trade: "Electrician",
     tradeBn: "ইলেকট্রিশিয়ান",
     tradePlural: "electricians",
+    tradeA: "an electrician",
     work: "electrical",
     workBn: "ইলেকট্রিক্যাল",
     schemaType: "Electrician",
@@ -53,6 +55,7 @@ export const sites: Record<SiteKey, SiteConfig> = {
     trade: "Plumber",
     tradeBn: "প্লাম্বার",
     tradePlural: "plumbers",
+    tradeA: "a plumber",
     work: "plumbing",
     workBn: "প্লাম্বিং",
     schemaType: "Plumber",
