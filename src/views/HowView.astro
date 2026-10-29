@@ -1,0 +1,68 @@
+---
+// /how-it-works/ – the 3 steps (moved off the home page) plus what happens with an order.
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import Img from "../components/Img.astro";
+import { company } from "../data/company";
+import { site } from "../data/sites";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+const steps = (["step1", "step2", "step3"] as const).map((k, i) => ({ name: t(lang, k), text: t(lang, `${k}d` as "step1d"), img: site.stepImages[i] }));
+const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name: t(lang, "howItWorks"), href: lp(lang, "/how-it-works/") }];
+const title = bn ? `কীভাবে কাজ করি — ${site.tradeBn} বুকিং | ${company.nameBn}` : `How it works — booking a ${site.work} job | ${company.name}`;
+const description = bn
+  ? "হোয়াটসঅ্যাপে মেসেজ বা ফর্ম, অর্ডার আইডি, ইউনিফর্ম পরা টেকনিশিয়ান, আগে খরচ ঠিক, কাজের পরে পেমেন্ট — ধাপে ধাপে।"
+  : "WhatsApp message or form, an Order ID, a uniformed technician, cost agreed first, pay after — step by step.";
+const details = bn
+  ? [
+      ["দুইভাবে অর্ডার", "এক চাপে হোয়াটসঅ্যাপ মেসেজ (A), অথবা কাজ, ঠিকানা, তারিখ ও সময়সহ ছোট ফর্ম (B)। কোনো লগইন নেই।"],
+      ["অর্ডার আইডি", "প্রতিটি অর্ডারে একটি আইডি থাকে, যেমন ES-301026-1। ওই কাজ নিয়ে কথা বলতে আইডিটি বলুন।"],
+      ["আগে খরচ, পরে কাজ", "ছবি বা সরেজমিনে দেখে খরচ জানাই। আপনি রাজি হলে তবেই কাজ শুরু।"],
+      ["কাজ শেষে পেমেন্ট", `চেক করে নেওয়ার পর ${company.paymentsBn.join(", ")}।`],
+    ]
+  : [
+      ["Two ways to order", "One-tap WhatsApp message (A), or a short form with work, address, date and time (B). No login."],
+      ["An Order ID", "Every order gets an ID like ES-301026-1. Quote it whenever you contact us about that job."],
+      ["Cost first, then work", "We price the job from photos or on site. Work starts only when you agree."],
+      ["Pay after the job", `Once you've checked the work: ${company.payments.join(", ")}.`],
+    ];
+const howTo = {
+  "@type": "HowTo",
+  name: title.split(" | ")[0],
+  description,
+  step: steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.name, text: s.text, image: `${site.url}/img/${s.img}-960.webp` })),
+};
+---
+<Base lang={lang} title={title} description={description} path="/how-it-works/"
+  schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href }))), howTo]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <h1>{t(lang, "howItWorks")}</h1>
+      <p class="lead muted">{description}</p>
+      <div class="steps">
+        {steps.map((s) => (
+          <div class="step">
+            <Img name={s.img} sizes="(min-width: 760px) 33vw, 100vw" />
+            <h3>{s.name}</h3>
+            <p>{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  <section class="section soft">
+    <div class="wrap">
+      <ul class="benefits">
+        {details.map(([h, p]) => <li><b>{h}</b><p>{p}</p></li>)}
+      </ul>
+      <div style="margin-top:28px"><CallButtons lang={lang} /></div>
+      <p style="margin-top:16px"><a href={lp(lang, "/faq/")}>{t(lang, "faqs")} →</a></p>
+    </div>
+  </section>
+</Base>

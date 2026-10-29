@@ -32,8 +32,10 @@ const ld = graph(organization(), website(lang), localBusiness(), ...schema);
 const gaId = process.env.GA_MEASUREMENT_ID?.trim();
 const googleVerify = process.env.GOOGLE_SITE_VERIFICATION?.trim();
 const bingVerify = process.env.BING_SITE_VERIFICATION?.trim();
-// Google Sheet for orders (Apps Script web app URL). Empty = WhatsApp only, no Order ID.
+// Where orders are saved for the Order ID (src/scripts/order.ts): Supabase, else the Google Sheet.
 const sheetCfg = {
+  supabaseUrl: process.env.SUPABASE_URL?.trim().replace(/\/+$/, "") || "",
+  supabaseKey: process.env.SUPABASE_ANON_KEY?.trim() || "",
   url: process.env.GOOGLE_SHEET_WEBHOOK_URL?.trim() || "",
   website: site.domain,
   letters: site.orderLetters,
@@ -48,7 +50,7 @@ const sheetCfg = {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  {noindex && <meta name="robots" content="noindex" />}
+  <meta name="robots" content={noindex ? "noindex" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
   {!noindex && <link rel="canonical" href={canonical} />}
   {hasAlt && !noindex && <link rel="alternate" hreflang="en" href={canonicalBase + lp("en", path)} />}
   {hasAlt && !noindex && <link rel="alternate" hreflang="bn" href={canonicalBase + lp("bn", path)} />}

@@ -38,6 +38,8 @@ export function getRoutes(): Route[] {
     r("/areas/", "areas", { priority: 0.8 }),
     r("/work/", "work", { priority: 0.6 }),
     r("/about/", "about", { priority: 0.5 }),
+    r("/faq/", "faq", { priority: 0.7 }),
+    r("/how-it-works/", "how", { priority: 0.5 }),
     r("/contact/", "contact", { priority: 0.6 }),
     r("/order/", "order", { priority: 0.5 }),
     ...orderCategories.map((c) => r(`/order/${c.key}/`, "order-service", { data: c.key, priority: 0.5 })),

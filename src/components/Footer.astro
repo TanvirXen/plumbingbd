@@ -1,70 +1,54 @@
 ---
+// Short footer: contact, main pages, the other division. Full lists live on /services/, /commercial/, /areas/ and /sitemap/.
 import { company, telLink, waLink } from "../data/company";
-import { site, sister } from "../data/sites";
-import { servicesFor, servicePath } from "../data/services";
-import { areas, topAreas } from "../data/areas";
-import { industries } from "../data/industries";
-import { lp, num, pick, t, type Lang } from "../i18n";
+import { sister } from "../data/sites";
+import { lp, num, t, type Lang } from "../i18n";
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const bn = lang === "bn";
-const popular = servicesFor(site.key).filter((s) => s.group !== "commercial").slice(0, 6);
-const areaList = areas.filter((a) => topAreas.includes(a.slug));
 const socialNames: Record<string, string> = {
   googleBusiness: "Google", facebook: "Facebook", youtube: "YouTube", instagram: "Instagram", tiktok: "TikTok",
 };
 const socials = Object.entries(company.social).filter(([k, v]) => v && k in socialNames);
 const year = new Date().getFullYear();
-const place = bn ? `${company.address.localityBn}, ${company.address.regionBn}` : `${company.address.locality}, ${company.address.region}`;
+const links = [
+  { href: lp(lang, "/services/"), label: t(lang, "services") },
+  { href: lp(lang, "/commercial/"), label: t(lang, "business") },
+  { href: lp(lang, "/areas/"), label: t(lang, "areasShort") },
+  { href: lp(lang, "/about/"), label: t(lang, "about") },
+  { href: lp(lang, "/contact/"), label: t(lang, "contact") },
+  { href: lp(lang, "/order/"), label: t(lang, "order") },
+  { href: lp(lang, "/how-it-works/"), label: t(lang, "howItWorks") },
+  { href: lp(lang, "/faq/"), label: t(lang, "faqs") },
+];
 ---
 <footer class="footer">
   <div class="wrap">
     <div class="cols">
       <div>
         <h3>{bn ? company.nameBn : company.name}</h3>
-        <p>{bn ? site.divisionBn : site.division} · {site.domain}</p>
         <p>
-          {t(lang, "whatsapp")}: <a href={waLink(bn ? "হ্যালো" : "Hi")} target="_blank" rel="noopener">{company.phone}</a><br />
-          {t(lang, "phone")}: <a href={telLink}>{company.phone}</a><br />
-          {t(lang, "hours")}: {bn ? company.hours.labelBn : company.hours.label}<br />
-          {company.email && <>{bn ? "ইমেইল" : "Email"}: <a href={`mailto:${company.email}`}>{company.email}</a><br /></>}
-          {company.address.street ? `${bn ? company.address.streetBn : company.address.street}, ` : ""}{place}
+          {t(lang, "whatsapp")} / {t(lang, "phone")}: <a href={waLink(bn ? "হ্যালো" : "Hi")} target="_blank" rel="noopener">{company.phone}</a>
+          {" · "}<a href={telLink}>{bn ? "কল" : "Call"}</a><br />
+          {bn ? company.hours.labelBn : company.hours.label} · {bn ? `${company.address.localityBn}, ${company.address.regionBn}` : `${company.address.locality}, ${company.address.region}`}
         </p>
-        <p>{t(lang, "payments")}: {(bn ? company.paymentsBn : company.payments).join(" · ")}</p>
+      </div>
+      <nav aria-label={bn ? "ফুটার" : "Footer"}>
+        <ul class="flinks">
+          {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </nav>
+      <div>
         <p>
-          {t(lang, "otherDivision", { division: bn ? sister.divisionBn : sister.division })}:
+          {sister.icon} {t(lang, "otherDivision", { division: bn ? sister.divisionBn : sister.division })}:{" "}
           <a href={sister.url + lp(lang, "/")}>{sister.domain}</a>
         </p>
-      </div>
-      <div>
-        <h3>{t(lang, "services")}</h3>
-        <ul>
-          {popular.map((s) => <li><a href={lp(lang, servicePath(s))}>{pick(lang, s.name, s.nameBn)}</a></li>)}
-          <li><a href={lp(lang, `/services/#${sister.key}`)}>{sister.icon} {bn ? `${sister.workBn} সার্ভিস` : `${sister.work[0].toUpperCase() + sister.work.slice(1)} services`}</a></li>
-          <li><a href={lp(lang, "/services/")}>{t(lang, "allServices")} →</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>{t(lang, "business")}</h3>
-        <ul>
-          {industries.map((i) => <li><a href={lp(lang, `/commercial/${i.slug}/`)}>{pick(lang, i.name, i.nameBn)}</a></li>)}
-          <li><a href={lp(lang, "/commercial/maintenance-contract/")}>{t(lang, "amc")}</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>{t(lang, "areas")}</h3>
-        <ul>
-          {areaList.map((a) => <li><a href={lp(lang, `/areas/${a.slug}/`)}>{pick(lang, a.name, a.nameBn)}</a></li>)}
-          <li><a href={lp(lang, "/areas/")}>{t(lang, "viewAllAreas")} →</a></li>
-        </ul>
-        <ul style="margin-top:16px">
-          <li><a href={lp(lang, "/guides/")}>{t(lang, "guides")}</a></li>
-          <li><a href={lp(lang, "/order/")}>{t(lang, "order")}</a></li>
-          <li><a href={lp(lang, "/sitemap/")}>{bn ? "সাইটম্যাপ" : "Sitemap"}</a></li>
-          {socials.map(([k, v]) => <li><a href={v} rel="noopener">{socialNames[k]}</a></li>)}
-        </ul>
+        {socials.length > 0 && <p>{socials.map(([k, v], i) => <>{i > 0 && " · "}<a href={v} rel="noopener">{socialNames[k]}</a></>)}</p>}
       </div>
     </div>
-    <div class="base">© {num(lang, String(year))} {bn ? company.nameBn : company.name}{bn ? "।" : "."} {t(lang, "copyright")}</div>
+    <div class="base">
+      © {num(lang, String(year))} {bn ? company.nameBn : company.name}{bn ? "।" : "."} {t(lang, "copyright")}
+      {" · "}<a href={lp(lang, "/sitemap/")}>{bn ? "সাইটম্যাপ" : "Sitemap"}</a>
+    </div>
   </div>
 </footer>

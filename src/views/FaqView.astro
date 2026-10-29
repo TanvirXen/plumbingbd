@@ -1,0 +1,52 @@
+---
+// /faq/ – all customer questions, grouped by topic, with FAQPage schema for Google and AI answers.
+import Base from "../layouts/Base.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import CallButtons from "../components/CallButtons.astro";
+import { company } from "../data/company";
+import { site } from "../data/sites";
+import { allFaqs, faqGroups } from "../data/faqs";
+import { breadcrumbLd, faqLd } from "../lib/schema";
+import { lp, t, type Lang } from "../i18n";
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const bn = lang === "bn";
+const groups = faqGroups(site.key, lang);
+const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name: t(lang, "faqs"), href: lp(lang, "/faq/") }];
+const title = bn
+  ? `প্রশ্ন ও উত্তর — ${site.tradeBn} উত্তরা ও বসুন্ধরা | ${company.nameBn}`
+  : `FAQ — ${site.trade} in Uttara & Bashundhara | ${company.name}`;
+const description = bn
+  ? "বুকিং, ২৪ ঘণ্টা সার্ভিস, খরচ, বিকাশ/নগদ পেমেন্ট, পার্টস, ওয়ারেন্টি ও এলাকা নিয়ে ঢাকার গ্রাহকদের সাধারণ প্রশ্নের উত্তর।"
+  : "Answers to what Dhaka customers ask most: booking, 24-hour service, cost, bKash/Nagad payment, parts, warranty and areas covered.";
+---
+<Base lang={lang} title={title} description={description} path="/faq/"
+  schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href }))), faqLd(allFaqs(site.key, lang))]}>
+  <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <section class="section" style="padding-top:0">
+    <div class="wrap" style="max-width:820px">
+      <h1>{t(lang, "faqs")}</h1>
+      <p class="lead muted">{description}</p>
+      <nav class="faq-toc" aria-label={bn ? "বিষয়" : "Topics"}>
+        {groups.map((g) => <a href={`#${g.key}`}>{g.title}</a>)}
+      </nav>
+      {groups.map((g) => (
+        <div class="faq-group" id={g.key}>
+          <h2>{g.title}</h2>
+          <div class="faq">
+            {g.items.map((f) => (
+              <details>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      ))}
+      <h2 style="margin-top:40px">{bn ? "আপনার প্রশ্ন এখানে নেই?" : "Didn't find your question?"}</h2>
+      <p class="muted">{bn ? "হোয়াটসঅ্যাপে জিজ্ঞেস করুন — ২৪ ঘণ্টা উত্তর দিই।" : "Ask us on WhatsApp — we answer 24 hours a day."}</p>
+      <CallButtons lang={lang} />
+    </div>
+  </section>
+</Base>

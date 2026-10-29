@@ -9,6 +9,7 @@ const { lang, path, hasAlt } = Astro.props;
 const enHref = hasAlt ? lp("en", path) : "/";
 const bnHref = hasAlt ? lp("bn", path) : "/bn/";
 const links = [
+  { href: lp(lang, "/"), label: t(lang, "home") },
   { href: lp(lang, "/services/"), label: t(lang, "services") },
   { href: lp(lang, "/commercial/"), label: t(lang, "business") },
   { href: lp(lang, "/areas/"), label: t(lang, "areasShort") },
@@ -50,6 +51,8 @@ const divisionLink = (key: "electric" | "plumbing") =>
       <nav class="menu-panel" aria-label="Mobile">
         {links.map((l) => <a href={l.href}>{l.label}</a>)}
         <a href={lp(lang, "/order/")}>{t(lang, "order")}</a>
+        <a href={lp(lang, "/how-it-works/")}>{t(lang, "howItWorks")}</a>
+        <a href={lp(lang, "/faq/")}>{t(lang, "faqs")}</a>
         <a href={lp(lang, "/guides/")}>{t(lang, "guides")}</a>
       </nav>
     </details>

@@ -25,7 +25,7 @@ const description = bn
       <h1>{t(lang, "contact")}</h1>
       <p class="lead"><a href={telLink} style="font-size:1.6rem;font-weight:700">{company.phone}</a></p>
       <CallButtons lang={lang} />
-      <table class="ptable" style="margin-top:24px">
+      <table class="ptable info" style="margin-top:24px">
         <tbody>
           <tr><td>{t(lang, "hours")}</td><td>{bn ? company.hours.labelBn : company.hours.label}</td></tr>
           <tr><td>{bn ? "ঠিকানা" : "Location"}</td><td>{company.address.street ? `${bn ? company.address.streetBn : company.address.street}, ` : ""}{bn ? `${company.address.localityBn}, ${company.address.regionBn}` : `${company.address.locality}, ${company.address.region}`}</td></tr>

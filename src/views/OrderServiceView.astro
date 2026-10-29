@@ -60,7 +60,7 @@ const config = {
       </section>
 
       <!-- B – order form -->
-      <section class="card">
+      <section class="card" id="details">
         <h2><span class="letter">B</span> {T.bTitle}</h2>
         <p class="muted">{T.bText}</p>
 
@@ -143,6 +143,9 @@ const config = {
   type Text = { en: string; bn: string };
   type Slot = { start: number; end: number } & Text;
   const cfg = JSON.parse(document.getElementById("order-config")!.textContent!);
+
+  // Home page "Order with details" opens this page at #details: jump straight to form B (no slow smooth scroll)
+  if (location.hash === "#details") document.getElementById("details")?.scrollIntoView({ behavior: "instant", block: "start" });
   const lang: "en" | "bn" = cfg.lang;
   const T = cfg.T;
   const cat: { letters: string; name: Text; options: Text[] } = cfg.cat;

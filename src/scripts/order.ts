@@ -1,9 +1,11 @@
-// Every WhatsApp order button (any link with data-order) first saves the order as a new row in the
-// owner's Google Sheet. The sheet's Apps Script gives back an Order ID (ES-301026-1), which is added
-// to the WhatsApp message. Sheet not set up or not reachable: WhatsApp opens with the message as it is.
+// Every WhatsApp order button (any link with data-order) first saves the order and gets an Order ID
+// (ES-301026-1), which is added to the WhatsApp message.
+//   1. Supabase (SUPABASE_URL + SUPABASE_ANON_KEY): create_order() in supabase/schema.sql, no backend needed.
+//   2. Otherwise the Google Sheet (GOOGLE_SHEET_WEBHOOK_URL, Apps Script web app).
+//   3. Neither set up or not reachable: a backup ID made here (ES-301026-K7Q2), so the message always has one.
 //
-// data-order holds the sheet fields for that button (JSON). Forms update it while the customer types.
-// Config comes from <script id="sheet-cfg"> in Base.astro (GOOGLE_SHEET_WEBHOOK_URL in .env).
+// data-order holds the order fields for that button (JSON). Forms update it while the customer types.
+// Config comes from <script id="sheet-cfg"> in Base.astro.
 
 export interface OrderData {
   letters?: string; // Order ID letters; empty = this site's letters
@@ -20,7 +22,7 @@ export interface OrderData {
   urgent?: boolean;
 }
 
-interface SheetCfg { url: string; website: string; letters: string; lang: "en" | "bn"; idLabel: string }
+interface SheetCfg { supabaseUrl: string; supabaseKey: string; url: string; website: string; letters: string; lang: "en" | "bn"; idLabel: string }
 
 const cfgEl = document.getElementById("sheet-cfg");
 const cfg: SheetCfg | null = cfgEl ? JSON.parse(cfgEl.textContent || "null") : null;
@@ -36,29 +38,49 @@ function jobDate(o: OrderData): string {
   return `${d}${m}${y.slice(2)}`;
 }
 
+const ID_RE = /^[A-Z]{2}-\d{6}-\d+$/;
+
 async function saveOrder(o: OrderData): Promise<string | undefined> {
-  if (!cfg?.url) return undefined;
+  const body = {
+    ...o,
+    letters: o.letters || cfg!.letters,
+    jobDate: jobDate(o),
+    contact: o.contact?.replace(/[\s-]/g, "").replace(/^\+?88/, ""),
+    date: o.urgent ? undefined : o.date,
+    language: cfg!.lang === "bn" ? "Bangla" : "English",
+    website: cfg!.website,
+  };
   try {
-    const res = await fetch(cfg.url, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" }, // simple request: no CORS preflight
-      body: JSON.stringify({
-        ...o,
-        letters: o.letters || cfg.letters,
-        jobDate: jobDate(o),
-        contact: o.contact?.replace(/[\s-]/g, "").replace(/^\+?88/, ""),
-        date: o.urgent ? undefined : o.date,
-        language: cfg.lang === "bn" ? "Bangla" : "English",
-        website: cfg.website,
-      }),
-      signal: AbortSignal.timeout(10000),
-    });
-    const data = await res.json();
-    if (data?.ok && /^[A-Z]{2}-\d{6}-\d+$/.test(data.orderId)) return data.orderId;
+    if (cfg!.supabaseUrl && cfg!.supabaseKey) {
+      const res = await fetch(`${cfg!.supabaseUrl}/rest/v1/rpc/create_order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: cfg!.supabaseKey, Authorization: `Bearer ${cfg!.supabaseKey}` },
+        body: JSON.stringify({ o: body }),
+        signal: AbortSignal.timeout(10000),
+      });
+      const id = await res.json();
+      if (res.ok && typeof id === "string" && ID_RE.test(id)) return id;
+    } else if (cfg!.url) {
+      const res = await fetch(cfg!.url, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" }, // simple request: no CORS preflight
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(10000),
+      });
+      const data = await res.json();
+      if (data?.ok && ID_RE.test(data.orderId)) return data.orderId;
+    }
   } catch {
-    // Sheet not reachable: send without Order ID
+    // Not reachable: backup ID below
   }
   return undefined;
+}
+
+/** Backup Order ID when the database can't be reached: same letters and date, 4 random letters/digits instead of the number. */
+function backupId(o: OrderData): string {
+  const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O, 1/I
+  const r = Array.from(crypto.getRandomValues(new Uint8Array(4)), (n) => abc[n % abc.length]).join("");
+  return `${o.letters || cfg!.letters}-${jobDate(o)}-${r}`;
 }
 
 /**
@@ -78,7 +100,7 @@ const busy = new WeakSet<HTMLAnchorElement>();
 
 document.addEventListener("click", async (e) => {
   const a = (e.target as HTMLElement).closest<HTMLAnchorElement>("a[data-order]");
-  if (!a || !cfg?.url || !a.href.startsWith("https://wa.me/")) return; // no sheet: normal link
+  if (!a || !cfg || !a.href.startsWith("https://wa.me/")) return;
   e.preventDefault();
   if (busy.has(a)) return;
   busy.add(a);
@@ -87,8 +109,8 @@ document.addEventListener("click", async (e) => {
   // New tab must open now (inside the click), or the browser blocks it
   const tab = a.target === "_blank" ? window.open("about:blank", "_blank") : null;
   const order: OrderData = JSON.parse(a.dataset.order || "{}");
-  const id = await saveOrder(order);
-  const url = id ? withOrderId(a.href, id, order) : a.href;
+  const id = (await saveOrder(order)) ?? backupId(order);
+  const url = withOrderId(a.href, id, order);
   if (tab) {
     tab.opener = null;
     tab.location.href = url;

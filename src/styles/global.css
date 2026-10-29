@@ -37,6 +37,7 @@ body {
   color: var(--text);
   font: 400 17px/1.6 var(--body);
   padding-bottom: 72px; /* room for sticky call bar */
+  overflow-wrap: break-word; /* long links/words wrap instead of widening the page on phones */
 }
 :lang(bn) body, body:lang(bn) { line-height: 1.75; }
 img { max-width: 100%; height: auto; display: block; }
@@ -130,7 +131,27 @@ ul { padding-left: 1.2em; }
 .step h3 { margin: 10px 0 4px; text-transform: uppercase; font-size: 1.1rem; }
 .step h3::before { counter-increment: s; content: counter(s) ". "; color: var(--link); }
 .step p { font-size: .92rem; color: var(--muted); margin: 0; }
-@media (max-width: 520px) { .step p { display: none; } }
+@media (max-width: 600px) { .steps { grid-template-columns: 1fr; } .step img { aspect-ratio: 16/10; } }
+
+/* Work photo carousel (WorkCarousel.astro) */
+.carousel { position: relative; }
+.carousel-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; border-radius: var(--radius); }
+.carousel-track::-webkit-scrollbar { display: none; }
+.carousel-track:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; }
+.carousel-slide { flex: 0 0 85%; scroll-snap-align: start; }
+@media (min-width: 600px) { .carousel-slide { flex-basis: calc((100% - 12px) / 2); } }
+@media (min-width: 960px) { .carousel-slide { flex-basis: calc((100% - 24px) / 3); } }
+.carousel-slide img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: var(--radius); }
+.carousel-btn { position: absolute; top: 50%; translate: 0 -50%; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(255,255,255,.92); color: var(--text); font-size: 1.8rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.carousel-btn:hover { background: #fff; }
+.carousel-btn.prev { left: 8px; }
+.carousel-btn.next { right: 8px; }
+
+/* FAQ page */
+.faq-toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 24px; }
+.faq-toc a { padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: var(--text); font-weight: 600; font-size: .95rem; }
+.faq-toc a:hover { border-color: var(--text); }
+.faq-group { scroll-margin-top: 84px; margin-top: 32px; }
 
 /* Tabs (CSS-only, radio) */
 .tabs > input { position: absolute; opacity: 0; pointer-events: none; }
@@ -185,6 +206,7 @@ ul { padding-left: 1.2em; }
 .ptable th, .ptable td { text-align: left; padding: 12px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .ptable td:last-child, .ptable th:last-child { text-align: right; white-space: nowrap; }
 .ptable a { color: var(--text); font-weight: 600; }
+.ptable.info td:last-child { white-space: normal; overflow-wrap: anywhere; }
 
 /* Article layout */
 .page-head { padding-top: 24px; padding-bottom: 8px; }
@@ -225,13 +247,15 @@ ul { padding-left: 1.2em; }
 .preview { white-space: pre-wrap; background: #f6f7f8; border-radius: 10px; padding: 14px; font-size: .95rem; }
 
 /* Footer */
-.footer { background: linear-gradient(160deg, var(--biz) 0%, var(--biz-2) 100%); color: #c9d4e3; padding: 40px 0 24px; font-size: .95rem; }
+.footer { background: linear-gradient(160deg, var(--biz) 0%, var(--biz-2) 100%); color: #c9d4e3; padding: 32px 0 20px; font-size: .95rem; }
 .footer a { color: #fff; }
 .footer h3 { color: #fff; font-size: 1.05rem; text-transform: uppercase; }
 .footer .cols { display: grid; gap: 28px; }
 .footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
-@media (min-width: 760px) { .footer .cols { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
-.footer .base { border-top: 1px solid rgba(255,255,255,.15); margin-top: 28px; padding-top: 16px; font-size: .85rem; }
+@media (min-width: 760px) { .footer .cols { grid-template-columns: 1.5fr 1fr 1.2fr; align-items: start; } }
+.footer p { margin: 0 0 8px; }
+.footer .flinks { grid-template-columns: repeat(2, max-content); column-gap: 28px; }
+.footer .base { border-top: 1px solid rgba(255,255,255,.15); margin-top: 20px; padding-top: 14px; font-size: .85rem; }
 
 /* Prose (guides) */
 .prose { max-width: 720px; }

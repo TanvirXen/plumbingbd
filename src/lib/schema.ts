@@ -40,6 +40,19 @@ export const organization = () => ({
   telephone: company.phoneIntl,
   ...(company.email ? { email: company.email } : {}),
   sameAs: sameAs(),
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: company.phoneIntl,
+    contactType: "customer service",
+    areaServed: "BD",
+    availableLanguage: ["Bengali", "English"],
+    hoursAvailable: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: company.hours.opens,
+      closes: company.hours.closes,
+    },
+  },
   department: [
     { "@id": `${sites.electric.url}/#business` },
     { "@id": `${sites.plumbing.url}/#business` },

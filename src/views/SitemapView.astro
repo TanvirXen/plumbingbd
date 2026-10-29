@@ -34,7 +34,7 @@ const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name
   <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
   <section class="wrap smap" style="padding-bottom:48px">
     <h1>{bn ? "সাইটম্যাপ" : "Sitemap"}</h1>
-    <p class="muted">XML: <a href="/sitemap.xml">{site.url}/sitemap.xml</a></p>
+    <p class="muted" style="overflow-wrap:anywhere">XML: <a href="/sitemap.xml">{site.url}/sitemap.xml</a></p>
     <div class="smap-grid">
       <div>
         <h2>{bn ? "প্রধান পেজ" : "Main pages"}</h2>

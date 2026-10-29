@@ -66,6 +66,8 @@
 .eps .service-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 @media (max-width: 860px) { .eps .service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 480px) { .eps .service-grid { grid-template-columns: 1fr; } }
+.eps .service-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 640px) { .eps .service-grid.two { grid-template-columns: 1fr; } }
 .eps .service {
   position: relative; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto;
   column-gap: 0.9rem; align-items: center; padding: 1.1rem 2.75rem 1.1rem 1.1rem;
@@ -73,6 +75,10 @@
   text-decoration: none; transition: border-color 0.15s, box-shadow 0.15s;
 }
 .eps .service:hover { border-color: var(--text); box-shadow: 0 6px 18px -10px rgba(0, 0, 0, 0.3); }
+/* Service cards: light yellow (not the green "Order now" card) */
+.eps .service:not(.service-wa) { background: #fffae6; border-color: #f2e2a4; }
+.eps .service:not(.service-wa):hover { background: #fff5d1; border-color: #c9a227; }
+.eps .service:not(.service-wa) .service-icon { background: #fff; }
 .eps .service .service-icon { grid-row: span 2; }
 .eps .service-name { font-weight: 700; font-size: 1.1rem; line-height: 1.25; }
 .eps .service-short { color: var(--muted); font-size: 0.9rem; }
@@ -101,6 +107,7 @@
 .eps .card { border: 1px solid var(--line); border-radius: var(--radius); padding: 1.5rem; background: var(--white); min-width: 0; }
 .eps .card h2 { display: flex; align-items: center; gap: 0.6rem; font-size: 1.35rem; margin: 0; }
 .eps .letter { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--text); color: var(--white); font-size: 1rem; flex: none; }
+.eps #details { scroll-margin-top: 84px; } /* below the sticky header (home "Order with details" link) */
 .eps .bubble { display: inline-block; background: var(--bubble); padding: 0.5rem 0.9rem; border-radius: 10px 10px 10px 2px; margin: 0 0 1.25rem; }
 
 .eps .form { display: grid; gap: 1.75rem; margin-top: 0.5rem; }

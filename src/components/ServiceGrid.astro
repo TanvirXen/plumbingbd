@@ -4,12 +4,16 @@
 import EpsIcon from "./EpsIcon.astro";
 import { waLink } from "../data/company";
 import { orderCategories, orderNow, orderText } from "../data/order";
+import { site } from "../data/sites";
 import { lp, type Lang } from "../i18n";
 import "../styles/eps.css";
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const T = orderText[lang];
+// This site's own service first, then AC, Home, Commercial; the other trade last
+const order = [site.key, "ac", "home", "commercial", site.key === "electric" ? "plumbing" : "electric"];
+const cards = [...orderCategories].sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
 ---
 <div class="service-grid">
   <a class="service service-wa" href={waLink(orderNow.message[lang])} target="_blank" rel="noopener" data-track="whatsapp_order_now"
@@ -18,7 +22,7 @@ const T = orderText[lang];
     <span class="service-name">{T.orderNow}</span>
     <span class="service-short">{T.orderNowShort}</span>
   </a>
-  {orderCategories.map((c) => (
+  {cards.map((c) => (
     <a class={`service icon-${c.icon}`} href={lp(lang, `/order/${c.key}/`)} data-order-link>
       <span class="service-icon"><EpsIcon name={c.icon} /></span>
       <span class="service-name">{c.name[lang]}</span>

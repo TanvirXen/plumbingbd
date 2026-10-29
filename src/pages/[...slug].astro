@@ -16,6 +16,8 @@ import GuidesView from "../views/GuidesView.astro";
 import GuideView from "../views/GuideView.astro";
 import ToolView from "../views/ToolView.astro";
 import SitemapView from "../views/SitemapView.astro";
+import FaqView from "../views/FaqView.astro";
+import HowView from "../views/HowView.astro";
 import { getRoutes } from "../lib/routes";
 import type { Lang } from "../i18n";
 
@@ -47,3 +49,5 @@ const { view, data, lang, path } = Astro.props as { view: string; data?: any; la
 {view === "guide" && <GuideView lang={lang} slug={data} />}
 {view === "tool" && <ToolView lang={lang} path={path} />}
 {view === "sitemap" && <SitemapView lang={lang} />}
+{view === "faq" && <FaqView lang={lang} />}
+{view === "how" && <HowView lang={lang} />}

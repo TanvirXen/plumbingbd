@@ -1,0 +1,46 @@
+---
+// "Our work" photos as an auto-sliding carousel. Swipe/scroll works without JavaScript (scroll-snap);
+// the script adds auto-advance (paused on hover, touch, keyboard focus, when off-screen or with reduced motion) and the arrows.
+import Img from "./Img.astro";
+import type { Lang } from "../i18n";
+interface Props { images: string[]; label: string; lang: Lang }
+const { images, label, lang } = Astro.props;
+const bn = lang === "bn";
+---
+<div class="carousel" data-carousel aria-roledescription="carousel" aria-label={label}>
+  <div class="carousel-track" tabindex="0">
+    {images.map((g, i) => (
+      <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label={`${i + 1} / ${images.length}`}>
+        <Img name={g} sizes="(min-width: 960px) 33vw, (min-width: 600px) 50vw, 85vw" />
+      </div>
+    ))}
+  </div>
+  <button class="carousel-btn prev" type="button" aria-label={bn ? "আগের ছবি" : "Previous photo"}>‹</button>
+  <button class="carousel-btn next" type="button" aria-label={bn ? "পরের ছবি" : "Next photo"}>›</button>
+</div>
+<script>
+  document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((c) => {
+    const track = c.querySelector<HTMLElement>(".carousel-track")!;
+    const step = (dir: 1 | -1) => {
+      const w = (track.children[0] as HTMLElement).offsetWidth + parseFloat(getComputedStyle(track).columnGap || "0");
+      const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      if (dir > 0 && atEnd) track.scrollTo({ left: 0, behavior: "smooth" });
+      else if (dir < 0 && track.scrollLeft <= 4) track.scrollTo({ left: track.scrollWidth, behavior: "smooth" });
+      else track.scrollBy({ left: dir * w, behavior: "smooth" });
+    };
+    c.querySelector(".prev")!.addEventListener("click", () => step(-1));
+    c.querySelector(".next")!.addEventListener("click", () => step(1));
+
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let hover = false, focus = false, touchedAt = 0, visible = false;
+    c.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") hover = true; });
+    c.addEventListener("pointerleave", () => (hover = false));
+    c.addEventListener("focusin", () => (focus = true));
+    c.addEventListener("focusout", () => (focus = false));
+    track.addEventListener("touchstart", () => (touchedAt = Date.now()), { passive: true });
+    new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0.4 }).observe(c);
+    setInterval(() => {
+      if (visible && !hover && !focus && !document.hidden && Date.now() - touchedAt > 6000) step(1);
+    }, 3500);
+  });
+</script>

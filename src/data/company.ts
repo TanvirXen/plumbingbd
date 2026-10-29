@@ -23,11 +23,11 @@ export const company = {
   // Approximate base location from job-photo GPS (Uttara). PLACEHOLDER: replace with the real office location.
   geo: { lat: 23.8728, lng: 90.4005 },
   hours: {
-    // PLACEHOLDER: real working hours. Only claim 24/7 if the phone is answered 24/7.
-    opens: "08:00",
-    closes: "22:00",
-    label: "Every day, 8 AM – 10 PM · urgent calls answered",
-    labelBn: "প্রতিদিন সকাল ৮টা – রাত ১০টা · জরুরি কল গ্রহণ করা হয়",
+    // Open 24 hours, every day (confirmed by the owner, 29 Oct 2026). 00:00–23:59 is how Google reads "open 24 hours".
+    opens: "00:00",
+    closes: "23:59",
+    label: "Open 24 hours, every day",
+    labelBn: "২৪ ঘণ্টা খোলা, প্রতিদিন",
   },
   responseMinutes: 60, // PLACEHOLDER: typical arrival time in Uttara
   payments: ["Cash", "bKash", "Nagad"], // PLACEHOLDER
