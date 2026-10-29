@@ -14,6 +14,7 @@ export interface OrderData {
   name?: string;
   contact?: string;
   address?: string;
+  location?: string; // Google Maps link
   date?: string; // YYYY-MM-DD
   time?: string;
   urgent?: boolean;
@@ -77,6 +78,7 @@ document.addEventListener("click", async (e) => {
   e.preventDefault();
   if (busy.has(a)) return;
   busy.add(a);
+  a.setAttribute("aria-busy", "true");
 
   // New tab must open now (inside the click), or the browser blocks it
   const tab = a.target === "_blank" ? window.open("about:blank", "_blank") : null;
@@ -89,5 +91,8 @@ document.addEventListener("click", async (e) => {
   } else {
     window.location.href = url;
   }
-  setTimeout(() => busy.delete(a), 2500);
+  setTimeout(() => {
+    busy.delete(a);
+    a.removeAttribute("aria-busy");
+  }, 2500);
 });

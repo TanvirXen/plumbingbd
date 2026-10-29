@@ -8,6 +8,7 @@ import AreaChips from "../components/AreaChips.astro";
 import ServiceList from "../components/ServiceList.astro";
 import SisterCard from "../components/SisterCard.astro";
 import { commercialOrder, company } from "../data/company";
+import { categoryFor } from "../data/order";
 import { site, sister, sites } from "../data/sites";
 import { findService, servicesFor, servicePath, contentUpdated } from "../data/services";
 import { areas, topAreas } from "../data/areas";
@@ -138,7 +139,7 @@ const sheetOrder = isCom ? commercialOrder(s.name) : { letters: owner.orderLette
         <h3>{name}</h3>
         <p class="muted small">{bn ? "সমস্যার ছবি বা ভিডিও পাঠালে দ্রুত উত্তর দিতে পারি।" : "Send a photo or video of the problem for a faster reply."}</p>
         <CallButtons lang={lang} message={waText} order={sheetOrder} compact />
-        <p class="small" style="margin:12px 0 0"><a href={lp(lang, "/order/")}>{bn ? "ফর্ম দিয়ে অর্ডার করুন" : "Or order with a form"} →</a></p>
+        <p class="small" style="margin:12px 0 0"><a href={`${lp(lang, "/order/")}?for=${categoryFor(s)}&s=${encodeURIComponent(name)}`}>{bn ? "ফর্ম দিয়ে অর্ডার করুন" : "Or order with a form"} →</a></p>
         <p class="small muted" style="margin:8px 0 0">{bn ? company.hours.labelBn : company.hours.label}</p>
       </div>
     </aside>
