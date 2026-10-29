@@ -1,0 +1,299 @@
+---
+// /order/<service>/ – exactly the emergencyeps.com order page (WhatsApp-Order-Flowchart-3):
+//   A: one tap on WhatsApp · B: order form (work chips, issue, details, date, time / Urgent, location)
+//   → live message preview → "Send order on WhatsApp".
+// src/scripts/order.ts saves every order in the Google Sheet first and adds the Order ID to the message.
+import Base from "../layouts/Base.astro";
+import EpsIcon from "../components/EpsIcon.astro";
+import { company, waLink } from "../data/company";
+import { site } from "../data/sites";
+import { bookingDays, categoryOptions, findCategory, orderText, timeSlots } from "../data/order";
+import { breadcrumbLd } from "../lib/schema";
+import { lp, t, type Lang } from "../i18n";
+import "../styles/eps.css";
+
+interface Props { lang: Lang; slug: string }
+const { lang, slug } = Astro.props;
+const bn = lang === "bn";
+const c = findCategory(slug)!;
+const T = orderText[lang];
+const options = categoryOptions(c);
+const crumbs = [
+  { name: t(lang, "breadcrumbHome"), href: lp(lang, "/") },
+  { name: t(lang, "order"), href: lp(lang, "/order/") },
+  { name: c.name[lang], href: lp(lang, `/order/${c.key}/`) },
+];
+const config = {
+  lang, wa: company.whatsapp, days: bookingDays, slots: timeSlots, T,
+  cat: { letters: c.letters, name: c.name, options },
+};
+---
+<Base lang={lang} title={`${c.name[lang]} | ${bn ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`}`}
+  description={bn ? `${c.name.bn}: ${c.short.bn}। হোয়াটসঅ্যাপে অর্ডার করুন।` : `${c.name.en} in Uttara, Dhaka: ${c.short.en}. Order on WhatsApp.`}
+  path={`/order/${c.key}/`} schema={[breadcrumbLd(crumbs.map((x) => ({ name: x.name, url: site.url + x.href })))]}>
+  <div class="eps">
+    <section class="order-top">
+      <div class="wrap">
+        <a href={lp(lang, "/order/")} class="back"><EpsIcon name="back" /> {T.back}</a>
+        <div class="order-title">
+          <span class={`service-icon big icon-${c.icon}`}><EpsIcon name={c.icon} /></span>
+          <div>
+            <h1>{c.name[lang]}</h1>
+            <p>{c.short[lang]}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap order-body">
+      <p class="order-choose">{T.twoWays}</p>
+
+      <!-- A – one tap -->
+      <section class="card">
+        <h2><span class="letter">A</span> {T.aTitle}</h2>
+        <p class="muted">{T.aText}</p>
+        <p class="bubble">{c.message[lang]}</p>
+        <a class="btn btn-green btn-wide" href={waLink(c.message[lang])} target="_blank" rel="noopener" data-track="whatsapp_a"
+          data-order={JSON.stringify({ letters: c.letters, service: c.name.en, orderType: "WhatsApp (A)" })}>
+          <EpsIcon name="whatsapp" /> {T.aButton}
+        </a>
+      </section>
+
+      <!-- B – order form -->
+      <section class="card">
+        <h2><span class="letter">B</span> {T.bTitle}</h2>
+        <p class="muted">{T.bText}</p>
+
+        <form class="form" id="order" novalidate>
+          <fieldset>
+            <legend>{T.workTitle}</legend>
+            <div class="chips" id="work">
+              {options.map((o) => (
+                <button type="button" class="chip" aria-pressed="false" data-work={o.en}><EpsIcon name="check" class="tick" />{o[lang]}</button>
+              ))}
+            </div>
+            <label class="field">
+              <span>{T.issueLabel}</span>
+              <textarea name="issue" rows="3" maxlength="500" placeholder={T.issueHint}></textarea>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>{T.detailsTitle}</legend>
+            <label class="field"><span>{T.name}</span><input name="name" autocomplete="name" maxlength="80" /></label>
+            <label class="field"><span>{T.address}</span><input name="address" autocomplete="street-address" maxlength="200" placeholder={T.addressHint} /></label>
+            <label class="field">
+              <span>{T.contact}</span>
+              <input name="contact" id="contact" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="01XXXXXXXXX" />
+              <em class="error" id="contact-error" hidden>{T.contactError}</em>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>{T.dateTitle}</legend>
+            <div class="chips" id="dates"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{T.timeTitle}</legend>
+            <div class="chips" id="times">
+              <button type="button" class="chip chip-urgent" aria-pressed="false" data-time="urgent">{T.urgent}</button>
+              {timeSlots.map((s) => <button type="button" class="chip" aria-pressed="false" data-time={`${s.start}-${s.end}`}>{s[lang]}</button>)}
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{T.locationTitle}</legend>
+            <div class="location-ok" id="loc-ok" hidden>
+              <EpsIcon name="check" />
+              <a id="loc-link" href="#" target="_blank" rel="noopener">{T.locationAdded}</a>
+              <button type="button" class="link-btn" id="loc-remove">{T.remove}</button>
+            </div>
+            <button type="button" class="btn btn-line" id="loc-add"><EpsIcon name="target" /> <span>{T.addLocation}</span></button>
+            <p class="error" id="loc-error" hidden></p>
+          </fieldset>
+
+          <div class="preview" aria-live="polite">
+            <p class="preview-title">{T.preview}</p>
+            <div class="preview-box" id="preview"></div>
+            <p class="muted small">{T.previewNote}</p>
+          </div>
+
+          <a class="btn btn-green btn-wide btn-big" id="send" href="#" data-order="{}" data-track="whatsapp_b"><EpsIcon name="whatsapp" /> {T.send}</a>
+          <button type="button" class="link-btn center" id="clear">{T.clear}</button>
+        </form>
+      </section>
+
+      {c.fullList.length > 0 && (
+        <details class="card full-list">
+          <summary>{T.fullList}</summary>
+          <ul>{c.fullList.map((item) => <li>{item}</li>)}</ul>
+        </details>
+      )}
+    </div>
+  </div>
+  <script type="application/json" id="order-config" set:html={JSON.stringify(config)} />
+</Base>
+<style is:global>
+  #work .tick { display: none; }
+  #work .chip[aria-pressed="true"] .tick { display: block; }
+</style>
+<script>
+  // Same logic as emergencyeps.com (src/components/OrderPage.tsx + src/lib/order.ts there)
+  type Text = { en: string; bn: string };
+  type Slot = { start: number; end: number } & Text;
+  const cfg = JSON.parse(document.getElementById("order-config")!.textContent!);
+  const lang: "en" | "bn" = cfg.lang;
+  const T = cfg.T;
+  const cat: { letters: string; name: Text; options: Text[] } = cfg.cat;
+  const $ = <E extends HTMLElement>(id: string) => document.getElementById(id) as E;
+  const form = $<HTMLFormElement>("order");
+  const send = $<HTMLAnchorElement>("send");
+  const PHONE_RE = /^(?:\+?88)?01[3-9]\d{8}$/;
+  const URGENT = "urgent";
+
+  let work: string[] = [];
+  let date: string | undefined;
+  let time: string | undefined;
+  let loc: string | undefined;
+
+  // ---------- Dates (Dhaka time) ----------
+  const TZ = "Asia/Dhaka";
+  const dayKey = (d: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+  const keyDate = (k: string) => new Date(`${k}T12:00:00+06:00`);
+  const hourNow = () => Number(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hourCycle: "h23" }).format(new Date()));
+  const locale = lang === "bn" ? "bn-BD" : "en-GB";
+  const today = dayKey(new Date());
+  const dates = Array.from({ length: cfg.days }, (_, i) => dayKey(new Date(keyDate(today).getTime() + i * 86_400_000)));
+  function dateLabel(k: string): string {
+    const d = keyDate(k);
+    const dm = new Intl.DateTimeFormat(locale, { timeZone: TZ, day: "numeric", month: "short" }).format(d);
+    const i = dates.indexOf(k);
+    if (i === 0) return `${T.today}, ${dm}`;
+    if (i === 1) return `${T.tomorrow}, ${dm}`;
+    return `${new Intl.DateTimeFormat(locale, { timeZone: TZ, weekday: "short" }).format(d)}, ${dm}`;
+  }
+  const slot = (id?: string): Slot | undefined => cfg.slots.find((s: Slot) => `${s.start}-${s.end}` === id);
+  const timeText = (id: string | undefined, l: "en" | "bn") => (id === URGENT ? (l === "en" ? "Urgent" : T.urgent) : slot(id)?.[l]);
+
+  // ---------- Chips ----------
+  const press = (b: HTMLElement, on: boolean) => b.setAttribute("aria-pressed", String(on));
+  document.querySelectorAll<HTMLButtonElement>("#work .chip").forEach((b) => b.addEventListener("click", () => {
+    const w = b.dataset.work!;
+    work = work.includes(w) ? work.filter((x) => x !== w) : [...work, w];
+    press(b, work.includes(w));
+    update();
+  }));
+  $("dates").replaceChildren(...dates.map((d) => {
+    const b = Object.assign(document.createElement("button"), { type: "button", className: "chip", textContent: dateLabel(d) });
+    b.dataset.date = d;
+    press(b, false);
+    b.addEventListener("click", () => { date = date === d ? undefined : d; update(); });
+    return b;
+  }));
+  document.querySelectorAll<HTMLButtonElement>("#times .chip").forEach((b) => b.addEventListener("click", () => {
+    time = time === b.dataset.time ? undefined : b.dataset.time;
+    update();
+  }));
+  function drawWhen() {
+    document.querySelectorAll<HTMLButtonElement>("#dates .chip").forEach((b) => press(b, b.dataset.date === date));
+    document.querySelectorAll<HTMLButtonElement>("#times .chip").forEach((b) => {
+      const s = slot(b.dataset.time);
+      b.disabled = !!s && date === today && hourNow() >= s.end; // slot already finished today
+      if (b.disabled && time === b.dataset.time) time = undefined;
+      press(b, b.dataset.time === time);
+    });
+  }
+
+  // ---------- Location ----------
+  const locAdd = $<HTMLButtonElement>("loc-add");
+  const locText = locAdd.querySelector("span")!;
+  function drawLoc(state: "idle" | "loading" | "denied" | "failed" = "idle") {
+    $("loc-ok").hidden = !loc;
+    locAdd.hidden = !!loc;
+    if (loc) $<HTMLAnchorElement>("loc-link").href = `https://maps.google.com/?q=${loc}`;
+    locAdd.disabled = state === "loading";
+    locText.textContent = state === "loading" ? T.gettingLocation : T.addLocation;
+    $("loc-error").hidden = state !== "denied" && state !== "failed";
+    $("loc-error").textContent = state === "denied" ? T.locationDenied : T.locationFailed;
+  }
+  locAdd.addEventListener("click", () => {
+    if (!("geolocation" in navigator)) return drawLoc("failed");
+    drawLoc("loading");
+    navigator.geolocation.getCurrentPosition(
+      (p) => { loc = `${p.coords.latitude.toFixed(5)},${p.coords.longitude.toFixed(5)}`; drawLoc(); update(); },
+      (err) => drawLoc(err.code === err.PERMISSION_DENIED ? "denied" : "failed"),
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
+    );
+  });
+  $("loc-remove").addEventListener("click", () => { loc = undefined; drawLoc(); update(); });
+
+  // ---------- Message (only filled fields) + sheet row ----------
+  const val = (name: string) => String(new FormData(form).get(name) ?? "").replace(/\s+/g, " ").trim() || undefined;
+  function build(): string {
+    const lines: string[] = [];
+    const add = (label: string, v?: string) => v && lines.push(`*${label}:* ${v}`);
+    if (time === URGENT) lines.push(T.msgUrgent);
+    add(T.msgService, cat.name[lang]);
+    add(T.msgWork, cat.options.filter((o) => work.includes(o.en)).map((o) => o[lang]).join(", "));
+    add(T.msgIssue, val("issue"));
+    add(T.msgName, val("name"));
+    add(T.msgContact, val("contact"));
+    add(T.msgAddress, val("address"));
+    if (loc) add(T.msgLocation, `https://maps.google.com/?q=${loc}`);
+    if (date) add(T.msgDate, dateLabel(date));
+    add(T.msgTime, timeText(time, lang));
+    lines.push(T.msgFooter);
+    return lines.join("\n");
+  }
+  function update() {
+    drawWhen();
+    const msg = build();
+    send.href = `https://wa.me/${cfg.wa}?text=${encodeURIComponent(msg)}`;
+    send.dataset.order = JSON.stringify({
+      letters: cat.letters, orderType: "Order form (B)", service: cat.name.en,
+      work: cat.options.filter((o) => work.includes(o.en)).map((o) => o.en).join(", ") || undefined,
+      issue: val("issue"), name: val("name"), contact: val("contact"), address: val("address"),
+      location: loc && `https://maps.google.com/?q=${loc}`,
+      date: time === URGENT ? undefined : date, time: timeText(time, "en"), urgent: time === URGENT,
+    });
+    // Preview: *bold* like WhatsApp
+    $("preview").replaceChildren(...msg.split("\n").map((line) => {
+      const div = document.createElement("div");
+      line.split(/(\*[^*]+\*)/g).forEach((part) => {
+        if (part.length > 2 && part.startsWith("*") && part.endsWith("*")) div.append(Object.assign(document.createElement("strong"), { textContent: part.slice(1, -1) }));
+        else if (part) div.append(part);
+      });
+      return div;
+    }));
+  }
+
+  // ---------- Phone check (before src/scripts/order.ts sends it) ----------
+  const contact = $<HTMLInputElement>("contact");
+  const phoneOk = () => !contact.value.trim() || PHONE_RE.test(contact.value.replace(/[\s-]/g, ""));
+  contact.addEventListener("input", () => { $("contact-error").hidden = true; contact.removeAttribute("aria-invalid"); });
+  send.addEventListener("click", (e) => {
+    if (phoneOk()) return;
+    e.preventDefault();
+    e.stopPropagation();
+    $("contact-error").hidden = false;
+    contact.setAttribute("aria-invalid", "true");
+    contact.focus();
+  });
+
+  $("clear").addEventListener("click", () => {
+    form.reset();
+    work = []; date = undefined; time = undefined; loc = undefined;
+    document.querySelectorAll<HTMLButtonElement>("#work .chip").forEach((b) => press(b, false));
+    drawLoc(); update();
+  });
+  form.addEventListener("input", update);
+
+  // From a "Book" button on another page: ?s=<service name> fills the issue, ?area=<area> the address
+  const params = new URLSearchParams(location.search);
+  if (params.get("s")) (form.elements.namedItem("issue") as HTMLTextAreaElement).value = params.get("s")!.slice(0, 200);
+  if (params.get("area")) (form.elements.namedItem("address") as HTMLInputElement).value = params.get("area")!.slice(0, 100);
+
+  drawLoc(); update();
+  setInterval(drawWhen, 60_000); // hide slots as time passes
+</script>

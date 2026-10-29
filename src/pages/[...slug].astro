@@ -10,6 +10,7 @@ import WorkView from "../views/WorkView.astro";
 import AboutView from "../views/AboutView.astro";
 import ContactView from "../views/ContactView.astro";
 import OrderView from "../views/OrderView.astro";
+import OrderServiceView from "../views/OrderServiceView.astro";
 import AmcView from "../views/AmcView.astro";
 import GuidesView from "../views/GuidesView.astro";
 import GuideView from "../views/GuideView.astro";
@@ -40,6 +41,7 @@ const { view, data, lang, path } = Astro.props as { view: string; data?: any; la
 {view === "about" && <AboutView lang={lang} />}
 {view === "contact" && <ContactView lang={lang} />}
 {view === "order" && <OrderView lang={lang} />}
+{view === "order-service" && <OrderServiceView lang={lang} slug={data} />}
 {view === "amc" && <AmcView lang={lang} />}
 {view === "guides" && <GuidesView lang={lang} />}
 {view === "guide" && <GuideView lang={lang} slug={data} />}

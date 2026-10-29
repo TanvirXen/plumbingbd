@@ -8,7 +8,10 @@ import MapEmbed from "../components/MapEmbed.astro";
 import SisterCard from "../components/SisterCard.astro";
 import Faq from "../components/Faq.astro";
 import JsonLd from "../components/JsonLd.astro";
-import { company } from "../data/company";
+import EpsIcon from "../components/EpsIcon.astro";
+import ServiceGrid from "../components/ServiceGrid.astro";
+import { company, telLink, waLink } from "../data/company";
+import { orderNow, orderText } from "../data/order";
 import { site, sister } from "../data/sites";
 import { servicesFor } from "../data/services";
 import { areas } from "../data/areas";
@@ -20,6 +23,7 @@ import { lp, num, pick, t, type Lang } from "../i18n";
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const bn = lang === "bn";
+const T = orderText[lang];
 const all = servicesFor(site.key);
 const homeList = all.filter((s) => s.group === "residential");
 const homeServ = all.filter((s) => s.group === "home");
@@ -40,26 +44,29 @@ const description = bn
 <Base lang={lang} title={title} description={description} path="/">
   <JsonLd slot="head" data={graph(faqLd(faqs))} />
 
-  <section class="wrap hero">
-    <div class="hero-img"><Img name={site.heroImage} priority sizes="(min-width: 860px) 50vw, 100vw" /></div>
-    <div>
-      <p class="muted small" style="margin:0 0 6px">{site.icon} {bn ? site.divisionBn : site.division}</p>
-      <h1>{bn ? site.taglineBn : site.tagline}</h1>
-      <p class="sub">
-        {bn
-          ? `বাসা, অফিস ও প্রতিষ্ঠানের জন্য অভিজ্ঞ ${site.tradeBn}। হোয়াটসঅ্যাপে সমস্যা জানান — উত্তরায় সাধারণত ${num(lang, company.responseMinutes)} মিনিটে পৌঁছাই।`
-          : `Experienced ${site.tradePlural} for homes, offices and businesses. Send us the problem on WhatsApp — in Uttara we usually arrive in ${company.responseMinutes} minutes.`}
-      </p>
-      <CallButtons lang={lang} />
-      <div class="choice">
-        <a href={lp(lang, "/services/")}>🏠 {t(lang, "forHome")}<span>{bn ? "ফ্ল্যাট ও বাড়ি" : "Flats & houses"}</span></a>
-        <a href={lp(lang, "/commercial/")}>🏢 {t(lang, "forBusiness")}<span>{bn ? "অফিস, দোকান, বিল্ডিং" : "Offices, shops, buildings"}</span></a>
+  <!-- First two sections: same format as emergencyeps.com (hero + "Choose a service") -->
+  <section class="eps eps-hero">
+    <div class="wrap hero-row">
+      <div>
+        <p class="tag"><EpsIcon name="clock" /> {T.open24}</p>
+        <h1>{bn ? `${site.workBn} সমস্যায়, যেকোনো সময়` : `${site.work[0].toUpperCase()}${site.work.slice(1)} help, any time`}</h1>
+        <p class="lead">{T.heroText}</p>
+        <div class="btn-row">
+          <a class="btn btn-green" href={waLink(orderNow.message[lang])} target="_blank" rel="noopener" data-track="whatsapp_order_now"
+            data-order={JSON.stringify({ letters: orderNow.letters, service: "Order now", orderType: "Order now" })}>
+            <EpsIcon name="whatsapp" /> {T.orderNow}
+          </a>
+          <a class="btn btn-line" href={telLink} data-track="call"><EpsIcon name="phone" /> {T.callUs}</a>
+        </div>
       </div>
-      <ul class="trust">
-        <li>{bn ? "ইউনিফর্ম পরা টেকনিশিয়ান" : "Uniformed technicians"}</li>
-        <li>{bn ? "কাজ শেষে পেমেন্ট" : "Pay after the job"}</li>
-        <li>{bn ? "ইঞ্জিনিয়ারের তত্ত্বাবধান" : "Engineer-supervised"}</li>
-      </ul>
+      <img class="hero-logo" src={company.logo} alt={bn ? company.nameBn : company.name} width="512" height="512" fetchpriority="high" />
+    </div>
+  </section>
+
+  <section class="eps eps-section" id="choose">
+    <div class="wrap">
+      <h2>{T.chooseService}</h2>
+      <ServiceGrid lang={lang} />
     </div>
   </section>
 
