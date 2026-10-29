@@ -318,7 +318,7 @@ body:has(.book-form) .callbar { display: none; } /* the form has its own Send ba
 body:has(.book-form) { padding-bottom: 0; }
 .book-h { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; margin: 28px 0 12px; text-transform: none; }
 .book-h .num, .book-progress span { display: inline-grid; place-items: center; width: 30px; height: 30px; flex: none; border-radius: 50%; background: var(--line); color: var(--text); font: 700 .95rem/1 var(--body); transition: background .2s, color .2s; }
-.book-progress { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 0; margin: 20px 0 0; font-size: .85rem; font-weight: 600; color: var(--muted); }
+.book-progress { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 0; margin: 20px 0 0; font-size: .85rem; font-weight: 600; color: var(--muted); }
 .book-progress li { display: grid; justify-items: center; gap: 6px; text-align: center; position: relative; }
 .book-progress li + li::before { content: ""; position: absolute; top: 15px; right: calc(50% + 18px); width: calc(100% - 30px); height: 2px; background: var(--line); }
 .book-progress li.done { color: var(--text); }
@@ -336,12 +336,8 @@ body:has(.book-form) { padding-bottom: 0; }
 .cat:last-child:nth-child(odd) { grid-column: 1 / -1; }
 @media (min-width: 760px) { .cat:last-child:nth-child(odd) { grid-column: auto; } }
 
-.book-ways { margin-top: 20px; }
 .book .card h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; text-transform: none; font-size: 1.15rem; }
 .letter { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--text); color: #fff; font: 700 .9rem/1 var(--body); }
-.quick .btn { width: 100%; }
-.book-or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-weight: 600; margin: 18px 0; }
-.book-or::before, .book-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .book-form { border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; background: #fff; }
 .book-form h3 { display: flex; align-items: center; gap: 10px; margin: 0; text-transform: none; font-size: 1.15rem; }
 .book-form fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 12px; min-width: 0; }
@@ -374,10 +370,25 @@ body:has(.book-form) { padding-bottom: 0; }
 .wa-chat { background: #efeae2; border-radius: 12px; padding: 14px; }
 .wa-bubble { position: relative; background: #fff; border-radius: 10px; padding: 10px 12px; font-size: .95rem; line-height: 1.5; max-width: 92%; box-shadow: 0 1px 1px rgba(0,0,0,.08); word-break: break-word; margin: 0; }
 .wa-bubble.out { background: #d9fdd3; margin-left: auto; }
-.quick .wa-bubble { background: #d9fdd3; margin: 10px 0 14px; }
 
 .book-send { position: sticky; bottom: 0; z-index: 5; display: grid; gap: 6px; margin: 0 -20px -20px; padding: 12px 20px 14px; background: rgba(255,255,255,.97); border-top: 1px solid var(--line); border-radius: 0 0 var(--radius) var(--radius); }
 .book-summary { margin: 0; font-size: .88rem; font-weight: 600; color: var(--muted); text-align: center; }
 .btn-big { min-height: 56px; width: 100%; font-size: 1.1rem; }
 .btn[aria-busy="true"], a[data-order][aria-busy="true"] { opacity: .7; pointer-events: none; }
 .book-form input, .book-form select, .book-form textarea { font-weight: 400; }
+
+/* Booking wizard: one step at a time (the script adds .wizard; without it every step shows) */
+.direct { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin: 18px 0 0; padding: 14px 16px; border: 1.5px dashed var(--wa); border-radius: var(--radius); background: #f1fdf5; }
+.direct p { margin: 2px 0 0; }
+.direct-msg { font-style: italic; }
+.book-progress button { display: grid; justify-items: center; gap: 6px; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+.book-progress button[aria-current] { color: var(--text); }
+.book-progress button[aria-current] span { background: var(--text); color: #fff; box-shadow: 0 0 0 4px var(--soft); }
+.book-form .step { display: grid; gap: 12px; }
+.book-form .step[hidden] { display: none; }
+.book-form .step .book-h { margin: 4px 0 0; }
+.step-nav { display: none; }
+.wizard .step-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 4px; }
+.step-nav #next { margin-left: auto; }
+.step-of { font-size: .85rem; color: var(--muted); font-weight: 600; }
+@media (max-width: 420px) { .step-of { display: none; } }

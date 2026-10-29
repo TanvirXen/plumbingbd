@@ -61,11 +61,15 @@ async function saveOrder(o: OrderData): Promise<string | undefined> {
   return undefined;
 }
 
-/** Put "Order ID: …" at the top of the message (under the urgent line, if there is one) */
-function withOrderId(href: string, id: string, urgent?: boolean): string {
+/**
+ * Add "Order ID: …" like the flowchart: form orders at the top (under the urgent line),
+ * one-line "Hi I need …" messages at the end.
+ */
+function withOrderId(href: string, id: string, o: OrderData): string {
   const url = new URL(href);
   const lines = (url.searchParams.get("text") ?? "").split("\n");
-  lines.splice(urgent ? 1 : 0, 0, `*${cfg!.idLabel}:* ${id}`);
+  const at = o.orderType === "Order form (B)" ? (o.urgent ? 1 : 0) : lines.length;
+  lines.splice(at, 0, `*${cfg!.idLabel}:* ${id}`);
   url.searchParams.set("text", lines.join("\n"));
   return url.toString();
 }
@@ -84,7 +88,7 @@ document.addEventListener("click", async (e) => {
   const tab = a.target === "_blank" ? window.open("about:blank", "_blank") : null;
   const order: OrderData = JSON.parse(a.dataset.order || "{}");
   const id = await saveOrder(order);
-  const url = id ? withOrderId(a.href, id, order.urgent) : a.href;
+  const url = id ? withOrderId(a.href, id, order) : a.href;
   if (tab) {
     tab.opener = null;
     tab.location.href = url;

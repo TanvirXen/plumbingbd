@@ -1,5 +1,6 @@
 ---
-import { company, orderNow, waLink } from "../data/company";
+import { company } from "../data/company";
+import { bookHref } from "../data/order";
 import { site, sites } from "../data/sites";
 import Icon from "./Icon.astro";
 import { lp, t, type Lang } from "../i18n";
@@ -17,7 +18,6 @@ const links = [
 ];
 const divisionLink = (key: "electric" | "plumbing") =>
   site.key === key ? lp(lang, "/") : sites[key].url + lp(lang, "/");
-const waText = lang === "bn" ? `হ্যালো, আমার ${site.tradeBn} সার্ভিস দরকার। এলাকা: ` : `Hi, I need ${site.tradeA}. My area: `;
 ---
 <a class="skip" href="#main">{t(lang, "skip")}</a>
 <div class="topbar">
@@ -44,7 +44,7 @@ const waText = lang === "bn" ? `হ্যালো, আমার ${site.tradeBn}
     <nav class="nav" aria-label="Main">
       {links.map((l) => <a href={l.href}>{l.label}</a>)}
     </nav>
-    <a class="btn btn-wa header-call" href={waLink(waText)} data-order={JSON.stringify(orderNow)} target="_blank" rel="noopener" data-track="whatsapp"><Icon name="whatsapp" />{t(lang, "whatsapp")}</a>
+    <a class="btn btn-wa header-call" href={bookHref(lang)} data-track="book"><Icon name="whatsapp" />{t(lang, "bookNow")}</a>
     <details class="menu">
       <summary>{t(lang, "menu")}</summary>
       <nav class="menu-panel" aria-label="Mobile">

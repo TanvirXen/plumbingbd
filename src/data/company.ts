@@ -54,9 +54,3 @@ export const waLink = (text: string) =>
   `https://wa.me/${company.whatsapp}?text=${encodeURIComponent(text)}`;
 export const telLink = `tel:${company.phoneIntl}`;
 
-// Google Sheet fields for a WhatsApp order button (see src/scripts/order.ts).
-// letters: GS = general "order now", CS = commercial; empty = this site's letters (ES / PS).
-export type SheetOrder = { letters?: string; service?: string; orderType?: string; address?: string };
-export const orderNow: SheetOrder = { letters: "GS", service: "Order now", orderType: "Order now" };
-export const commercialOrder = (service = "Commercial Space Service"): SheetOrder =>
-  ({ letters: "CS", service, orderType: "WhatsApp (A)" });

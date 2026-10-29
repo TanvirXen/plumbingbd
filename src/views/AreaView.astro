@@ -72,7 +72,6 @@ const areaService = {
     ...(parent ? { containedInPlace: { "@type": "Place", name: `${parent.name}, Dhaka, Bangladesh` } } : {}),
   },
 };
-const waText = bn ? `হ্যালো, ${area} এলাকায় ${site.tradeBn} দরকার।` : `Hi, I need ${site.tradeA} in ${a.name}.`;
 ---
 <Base lang={lang} title={title} description={answer.slice(0, 155)} path={path}
   schema={[areaService, breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href }))), faqLd(faqs)]}>
@@ -81,7 +80,7 @@ const waText = bn ? `হ্যালো, ${area} এলাকায় ${site.tr
     <article>
       <h1>{h1}</h1>
       <p class="answer">{answer}</p>
-      <CallButtons lang={lang} message={waText} order={{ letters: site.orderLetters, service: site.trade, orderType: "WhatsApp (A)", address: a.name }} />
+      <CallButtons lang={lang} book={{ area }} />
       {(bn ? a.noteBn : a.note) && <p class="lead" style="margin-top:24px">{bn ? a.noteBn : a.note}</p>}
 
       {children.length > 0 && (
@@ -129,7 +128,7 @@ const waText = bn ? `হ্যালো, ${area} এলাকায় ${site.tr
         <Img name={site.heroImage} sizes="340px" />
         <h3 style="margin-top:12px">{h1}</h3>
         <p class="small muted">{bn ? company.hours.labelBn : company.hours.label}</p>
-        <CallButtons lang={lang} message={waText} order={{ letters: site.orderLetters, service: site.trade, orderType: "WhatsApp (A)", address: a.name }} />
+        <CallButtons lang={lang} book={{ area }} />
       </div>
     </aside>
   </div>

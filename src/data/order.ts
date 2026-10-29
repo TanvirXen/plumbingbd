@@ -2,6 +2,7 @@
 // (WhatsApp-Order-Flowchart-3). letters = first part of the Order ID in the Google Sheet (ES-301026-1).
 import type { Group, Service } from "./services";
 import type { SiteKey } from "./sites";
+import { lp, type Lang } from "../i18n";
 
 type Text = { en: string; bn: string };
 export interface OrderCategory {
@@ -103,6 +104,16 @@ export const timeSlots = [
 
 /** How many days the customer can pick (today + next days) */
 export const bookingDays = 7;
+
+/**
+ * Every "Book" button on the site opens the booking form (no direct WhatsApp links).
+ * for = service card to preselect · s = text for the issue box · area = area to preselect
+ */
+export type BookParams = { for?: OrderCategory["key"]; s?: string; area?: string };
+export function bookHref(lang: Lang, p: BookParams = {}): string {
+  const q = new URLSearchParams(Object.entries(p).filter((e): e is [string, string] => !!e[1])).toString();
+  return lp(lang, "/order/") + (q ? `?${q}` : "");
+}
 
 /** Which booking category a service page belongs to (for /order/?for=… links) */
 export function categoryFor(s: Pick<Service, "slug" | "site" | "group">): OrderCategory["key"] {

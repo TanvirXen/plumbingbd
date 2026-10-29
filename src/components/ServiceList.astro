@@ -3,10 +3,10 @@
 // Every service has a page on both sites. With `external`, services owned by the sister site link to the
 // sister site (cross-domain links); otherwise they link to the local copy. Sister services show their trade icon.
 import Icon from "./Icon.astro";
-import { commercialOrder, waLink } from "../data/company";
+import { bookHref, categoryFor } from "../data/order";
 import { site, sites } from "../data/sites";
 import { servicePath, type Service } from "../data/services";
-import { lp, pick, serviceMessage, t, type Lang } from "../i18n";
+import { lp, pick, t, type Lang } from "../i18n";
 interface Props { items: Service[]; lang: Lang; two?: boolean; external?: boolean }
 const { items, lang, two = true, external = false } = Astro.props;
 ---
@@ -18,7 +18,7 @@ const { items, lang, two = true, external = false } = Astro.props;
     return (
       <li>
         <a class="sname" href={href}>{foreign && <span aria-hidden="true">{sites[s.site].icon} </span>}{name}</a>
-        <a class="swa" href={waLink(serviceMessage(lang, name))} data-order={JSON.stringify(s.group === "commercial" ? commercialOrder(s.name) : { letters: sites[s.site].orderLetters, service: s.name, orderType: "WhatsApp (A)" })} target="_blank" rel="noopener" data-track="whatsapp" aria-label={`${t(lang, "bookWhatsapp")}: ${name}`}>
+        <a class="swa" href={bookHref(lang, { for: categoryFor(s), s: name })} data-track="book" aria-label={`${t(lang, "bookNow")}: ${name}`}>
           <Icon name="whatsapp" /><span>{t(lang, "book")}</span>
         </a>
       </li>

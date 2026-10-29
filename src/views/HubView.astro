@@ -7,7 +7,7 @@ import ServiceList from "../components/ServiceList.astro";
 import SisterCard from "../components/SisterCard.astro";
 import BusinessForm from "../components/BusinessForm.astro";
 import Faq from "../components/Faq.astro";
-import { commercialOrder, company } from "../data/company";
+import { company } from "../data/company";
 import { site, sister } from "../data/sites";
 import { servicesFor } from "../data/services";
 import { industries, businessBenefits } from "../data/industries";
@@ -20,7 +20,7 @@ const bn = lang === "bn";
 const all = servicesFor(site.key);
 const by = (g: string) => all.filter((s) => s.group === g);
 const brand = bn ? company.nameBn : company.name;
-const bizMsg = bn ? "হ্যালো, আমাদের প্রতিষ্ঠানের জন্য সাইট সার্ভে / প্রস্তাব চাই।" : "Hi, we'd like a site survey / proposal for our business.";
+const bizNeed = bn ? "প্রতিষ্ঠানের জন্য সাইট সার্ভে / প্রস্তাব" : "Site survey / proposal for our business";
 
 const copy = {
   all: {
@@ -80,7 +80,7 @@ const sisterHeading = bn
     <div>
       <h1>{copy.h1}</h1>
       <p class="sub">{copy.intro}</p>
-      <CallButtons lang={lang} message={kind === "commercial" ? bizMsg : undefined} order={kind === "commercial" ? commercialOrder() : undefined} label={kind === "commercial" ? t(lang, "surveyWhatsapp") : undefined} />
+      <CallButtons lang={lang} book={kind === "commercial" ? { for: "commercial", s: bizNeed } : kind === "home" ? { for: "home" } : undefined} label={kind === "commercial" ? t(lang, "surveyWhatsapp") : undefined} />
     </div>
   </section>
 

@@ -5,7 +5,7 @@ import Breadcrumbs from "../components/Breadcrumbs.astro";
 import CallButtons from "../components/CallButtons.astro";
 import Img from "../components/Img.astro";
 import Faq from "../components/Faq.astro";
-import { commercialOrder, company } from "../data/company";
+import { company } from "../data/company";
 import { site, sites } from "../data/sites";
 import { breadcrumbLd, faqLd } from "../lib/schema";
 import { lp, t, type Lang } from "../i18n";
@@ -36,7 +36,7 @@ const faqs = bn
       { q: "How is the monthly fee calculated?", a: "By site size, equipment and number of visits per month. We give a written quote after a free survey." },
       { q: "Are parts included?", a: "Labour is covered by the contract; we always get your approval before replacing any part." },
     ];
-const waText = bn ? "হ্যালো, রক্ষণাবেক্ষণ চুক্তির জন্য ফ্রি সার্ভে চাই।" : "Hi, we'd like a free survey for a maintenance contract.";
+const need = bn ? "রক্ষণাবেক্ষণ চুক্তির জন্য ফ্রি সার্ভে" : "Free survey for a maintenance contract";
 ---
 <Base lang={lang} title={`${h1} | ${company.name}`} description={intro.slice(0, 155)} path={path} image={site.commercialImage}
   schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href }))), faqLd(faqs)]}>
@@ -46,7 +46,7 @@ const waText = bn ? "হ্যালো, রক্ষণাবেক্ষণ �
     <div>
       <h1>{h1}</h1>
       <p class="answer">{intro}</p>
-      <CallButtons lang={lang} message={waText} order={commercialOrder("Maintenance contract (AMC)")} />
+      <CallButtons lang={lang} book={{ for: "commercial", s: need }} />
     </div>
   </section>
   <section class="section soft">
