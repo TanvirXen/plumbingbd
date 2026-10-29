@@ -1,5 +1,5 @@
 ---
-import { company, waLink } from "../data/company";
+import { company, orderNow, waLink } from "../data/company";
 import { site, sites } from "../data/sites";
 import Icon from "./Icon.astro";
 import { lp, t, type Lang } from "../i18n";
@@ -44,7 +44,7 @@ const waText = lang === "bn" ? `হ্যালো, আমার ${site.tradeBn}
     <nav class="nav" aria-label="Main">
       {links.map((l) => <a href={l.href}>{l.label}</a>)}
     </nav>
-    <a class="btn btn-wa header-call" href={waLink(waText)} target="_blank" rel="noopener" data-track="whatsapp"><Icon name="whatsapp" />{t(lang, "whatsapp")}</a>
+    <a class="btn btn-wa header-call" href={waLink(waText)} data-order={JSON.stringify(orderNow)} target="_blank" rel="noopener" data-track="whatsapp"><Icon name="whatsapp" />{t(lang, "whatsapp")}</a>
     <details class="menu">
       <summary>{t(lang, "menu")}</summary>
       <nav class="menu-panel" aria-label="Mobile">

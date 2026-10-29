@@ -6,7 +6,7 @@ import Breadcrumbs from "../components/Breadcrumbs.astro";
 import CallButtons from "../components/CallButtons.astro";
 import ServiceList from "../components/ServiceList.astro";
 import BusinessForm from "../components/BusinessForm.astro";
-import { company } from "../data/company";
+import { commercialOrder, company } from "../data/company";
 import { site, sister } from "../data/sites";
 import { findService } from "../data/services";
 import { industries, findIndustry, businessBenefits } from "../data/industries";
@@ -55,7 +55,7 @@ const ld = {
       <p class="muted small" style="margin:0 0 6px"><span aria-hidden="true">{ind.icon}</span> {t(lang, "corporate")}</p>
       <h1>{h1}</h1>
       <p class="answer">{bn ? ind.introBn : ind.intro}</p>
-      <CallButtons lang={lang} message={msg} label={t(lang, "surveyWhatsapp")} />
+      <CallButtons lang={lang} message={msg} order={commercialOrder(`Commercial – ${ind.name}`)} label={t(lang, "surveyWhatsapp")} />
     </div>
   </section>
 

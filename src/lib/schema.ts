@@ -38,6 +38,7 @@ export const organization = () => ({
   url: sites.electric.url + "/",
   logo: sites.electric.url + company.logo,
   telephone: company.phoneIntl,
+  ...(company.email ? { email: company.email } : {}),
   sameAs: sameAs(),
   department: [
     { "@id": `${sites.electric.url}/#business` },
@@ -61,6 +62,7 @@ export const localBusiness = () => ({
   parentOrganization: { "@id": ORG_ID },
   url: site.url + "/",
   telephone: company.phoneIntl,
+  ...(company.email ? { email: company.email } : {}),
   image: `${site.url}/img/${site.heroImage}-1600.webp`,
   logo: site.url + company.logo,
   address: address(),

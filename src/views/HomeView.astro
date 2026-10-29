@@ -8,7 +8,7 @@ import MapEmbed from "../components/MapEmbed.astro";
 import SisterCard from "../components/SisterCard.astro";
 import Faq from "../components/Faq.astro";
 import JsonLd from "../components/JsonLd.astro";
-import { company } from "../data/company";
+import { commercialOrder, company } from "../data/company";
 import { site, sister } from "../data/sites";
 import { servicesFor } from "../data/services";
 import { areas } from "../data/areas";
@@ -79,7 +79,7 @@ const description = bn
               <li><a href={lp(lang, `/commercial/${i.slug}/`)}><span class="ic" aria-hidden="true">{i.icon}</span>{pick(lang, i.name, i.nameBn)}</a></li>
             ))}
           </ul>
-          <CallButtons lang={lang} message={bizMsg} label={t(lang, "surveyWhatsapp")} />
+          <CallButtons lang={lang} message={bizMsg} order={commercialOrder()} label={t(lang, "surveyWhatsapp")} />
         </div>
         <div class="biz-img"><Img name={site.commercialImage} sizes="(min-width: 900px) 50vw, 100vw" /></div>
       </div>

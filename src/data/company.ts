@@ -9,9 +9,10 @@ export const company = {
   phone: process.env.PHONE || "01609-993537",
   phoneIntl: process.env.PHONE_INTL || "+8801609993537",
   whatsapp: process.env.WHATSAPP_NUMBER || "8801609993537", // country code, no + or spaces
-  email: "", // optional
+  email: "electricianandplumberbd@gmail.com", // optional
   address: {
-    street: "", // PLACEHOLDER: leave empty if service-area only (address hidden on Google)
+    street: "House-67, Road-12/A, Sector-10", // leave empty if service-area only (address hidden on Google)
+    streetBn: "বাড়ি-৬৭, রোড-১২/এ, সেক্টর-১০",
     locality: "Uttara",
     localityBn: "উত্তরা",
     region: "Dhaka",
@@ -38,10 +39,10 @@ export const company = {
     titleBn: "প্রধান ইলেকট্রিক্যাল ইঞ্জিনিয়ার",
   },
   social: {
-    // PLACEHOLDER: add real profile links. Empty values are hidden on the site.
-    googleBusiness: "",
+    // Empty values are hidden on the site. YouTube / Instagram / TikTok: PLACEHOLDER, add when available.
+    googleBusiness: "https://share.google/0Q82bfZLFurpw6t36",
     googleReview: "",
-    facebook: "",
+    facebook: "https://www.facebook.com/profile.php?id=100095419443718",
     youtube: "",
     instagram: "",
     tiktok: "",
@@ -52,3 +53,10 @@ export const company = {
 export const waLink = (text: string) =>
   `https://wa.me/${company.whatsapp}?text=${encodeURIComponent(text)}`;
 export const telLink = `tel:${company.phoneIntl}`;
+
+// Google Sheet fields for a WhatsApp order button (see src/scripts/order.ts).
+// letters: GS = general "order now", CS = commercial; empty = this site's letters (ES / PS).
+export type SheetOrder = { letters?: string; service?: string; orderType?: string; address?: string };
+export const orderNow: SheetOrder = { letters: "GS", service: "Order now", orderType: "Order now" };
+export const commercialOrder = (service = "Commercial Space Service"): SheetOrder =>
+  ({ letters: "CS", service, orderType: "WhatsApp (A)" });

@@ -28,7 +28,8 @@ const description = bn
       <table class="ptable" style="margin-top:24px">
         <tbody>
           <tr><td>{t(lang, "hours")}</td><td>{bn ? company.hours.labelBn : company.hours.label}</td></tr>
-          <tr><td>{bn ? "ঠিকানা" : "Location"}</td><td>{company.address.street ? `${company.address.street}, ` : ""}{bn ? `${company.address.localityBn}, ${company.address.regionBn}` : `${company.address.locality}, ${company.address.region}`}</td></tr>
+          <tr><td>{bn ? "ঠিকানা" : "Location"}</td><td>{company.address.street ? `${bn ? company.address.streetBn : company.address.street}, ` : ""}{bn ? `${company.address.localityBn}, ${company.address.regionBn}` : `${company.address.locality}, ${company.address.region}`}</td></tr>
+          {company.email && <tr><td>{bn ? "ইমেইল" : "Email"}</td><td><a href={`mailto:${company.email}`}>{company.email}</a></td></tr>}
           <tr><td>{t(lang, "payments")}</td><td>{(bn ? company.paymentsBn : company.payments).join(", ")}</td></tr>
           <tr><td>{t(lang, "division")}</td><td>{bn ? site.divisionBn : site.division}</td></tr>
           <tr><td>{bn ? sister.divisionBn : sister.division}</td><td><a href={sister.url + lp(lang, "/contact/")}>{sister.domain}</a></td></tr>

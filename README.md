@@ -37,6 +37,7 @@ npm run build
 | `PHONE` / `PHONE_INTL` | `01609-993537` / `+8801609993537` | Shown number / tap-to-call number |
 | `GA_MEASUREMENT_ID` | `G-XXXXXXX` | Optional Google Analytics 4 |
 | `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION` | | Optional Search Console / Bing verification |
+| `GOOGLE_SHEET_WEBHOOK_URL` | `https://script.google.com/macros/s/…/exec` | Optional. Orders Google Sheet (Apps Script web app). Every WhatsApp order button saves a row first and adds an Order ID (`ES-301026-1`) to the message. Empty = WhatsApp only. Same URL on both sites; setup in the emergency-eps `google-sheet` folder. Code: `src/scripts/order.ts` |
 
 If there is no `.env`, the defaults in `astro.config.mjs` are used (the live domains above).
 

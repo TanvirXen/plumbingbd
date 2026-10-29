@@ -1,14 +1,14 @@
 ---
 // Main call-to-action: WhatsApp first (pre-filled message), phone call second.
 import Icon from "./Icon.astro";
-import { telLink, waLink } from "../data/company";
+import { orderNow, telLink, waLink, type SheetOrder } from "../data/company";
 import { site } from "../data/sites";
 import { t, type Lang } from "../i18n";
-interface Props { lang: Lang; message?: string; label?: string; compact?: boolean; noCall?: boolean }
-const { lang, message, label, compact, noCall } = Astro.props;
+interface Props { lang: Lang; message?: string; label?: string; compact?: boolean; noCall?: boolean; order?: SheetOrder }
+const { lang, message, label, compact, noCall, order = orderNow } = Astro.props;
 const text = message ?? (lang === "bn" ? `হ্যালো, আমার ${site.tradeBn} সার্ভিস দরকার। এলাকা: ` : `Hi, I need ${site.tradeA}. My area: `);
 ---
 <div class={compact ? "btn-row compact" : "btn-row"}>
-  <a class="btn btn-wa" href={waLink(text)} data-track="whatsapp" target="_blank" rel="noopener"><Icon name="whatsapp" />{label ?? t(lang, "bookWhatsapp")}</a>
+  <a class="btn btn-wa" href={waLink(text)} data-order={JSON.stringify(order)} data-track="whatsapp" target="_blank" rel="noopener"><Icon name="whatsapp" />{label ?? t(lang, "bookWhatsapp")}</a>
   {!noCall && <a class="btn btn-ghost" href={telLink} data-track="call"><Icon name="phone" />{t(lang, compact ? "call" : "callNow")}</a>}
 </div>

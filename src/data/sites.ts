@@ -5,6 +5,7 @@ export type SiteKey = "electric" | "plumbing";
 export interface SiteConfig {
   key: SiteKey;
   domain: string;
+  orderLetters: string; // Order ID letters in the Google Sheet (ES-301026-1)
   url: string;
   division: string;
   divisionBn: string;
@@ -28,6 +29,7 @@ export const sites: Record<SiteKey, SiteConfig> = {
   electric: {
     key: "electric",
     domain: "electricservicebd.com",
+    orderLetters: "ES",
     url: "https://www.electricservicebd.com",
     division: "Electrical Division",
     divisionBn: "ইলেকট্রিক্যাল বিভাগ",
@@ -49,6 +51,7 @@ export const sites: Record<SiteKey, SiteConfig> = {
   plumbing: {
     key: "plumbing",
     domain: "plumbingservicebd.com",
+    orderLetters: "PS",
     url: "https://www.plumbingservicebd.com",
     division: "Plumbing Division",
     divisionBn: "প্লাম্বিং বিভাগ",

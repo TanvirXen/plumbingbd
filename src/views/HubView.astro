@@ -7,7 +7,7 @@ import ServiceList from "../components/ServiceList.astro";
 import SisterCard from "../components/SisterCard.astro";
 import BusinessForm from "../components/BusinessForm.astro";
 import Faq from "../components/Faq.astro";
-import { company } from "../data/company";
+import { commercialOrder, company } from "../data/company";
 import { site, sister } from "../data/sites";
 import { servicesFor } from "../data/services";
 import { industries, businessBenefits } from "../data/industries";
@@ -80,7 +80,7 @@ const sisterHeading = bn
     <div>
       <h1>{copy.h1}</h1>
       <p class="sub">{copy.intro}</p>
-      <CallButtons lang={lang} message={kind === "commercial" ? bizMsg : undefined} label={kind === "commercial" ? t(lang, "surveyWhatsapp") : undefined} />
+      <CallButtons lang={lang} message={kind === "commercial" ? bizMsg : undefined} order={kind === "commercial" ? commercialOrder() : undefined} label={kind === "commercial" ? t(lang, "surveyWhatsapp") : undefined} />
     </div>
   </section>
 

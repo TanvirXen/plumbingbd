@@ -57,6 +57,27 @@ PHOTOS = {
     "commode-1": ("Photos/IMG_20261010_152924_227.jpg", "New commode installed in a bathroom"),
     "commode-2": ("Photos/IMG_20261010_152930_208.jpg", "Commode installation with flush tank fitting"),
     "tap-1": ("Photos/IMG_20261018_221132_107.jpg", "New basin tap installed by our plumber"),
+    # Service-labelled photos (one per service)
+    "basin-mixer-drip": ("Services/basin-mixer-drip.jpg", "Dripping basin mixer tap that needs repair"),
+    "basin-install": ("Services/basin-install.png", "Plumber installing a wash basin and its water lines"),
+    "concealed-wiring": ("Services/concealed-wiring.png", "Electrician cutting wall channels for concealed wiring"),
+    "door-lock": ("Services/door-lock.jpg", "Technician installing and repairing a door lock"),
+    "sink-mixer": ("Services/sink-mixer.png", "Plumber installing a kitchen sink mixer tap"),
+    "thai-glass": ("Services/thai-glass.jpg", "Technician repairing a Thai aluminium glass window lock"),
+    "washing-machine": ("Services/washing-machine.jpg", "Plumber connecting a washing machine inlet and drain"),
+    "commode-blockage": ("Services/commode-blockage.png", "Plumber clearing a commode blockage with a drain machine"),
+    "electrical-drawing": ("Services/electrical-drawing.png", "Engineer preparing an electrical drawing for a commercial space"),
+    "restaurant-electrical": ("Services/restaurant-electrical.png", "Complete electrical work for a restaurant, discussed with the owner"),
+    "electrical-fault": ("Services/electrical-fault.png", "Electrician finding an electrical fault in a DB box with a multimeter"),
+    "gas-stove": ("Services/gas-stove.jpg", "Technician installing and repairing a gas stove"),
+    "project-visit": ("Services/project-visit.png", "Engineer inspecting a distribution board on a site visit with the client"),
+    "panel-shower": ("Services/panel-shower.png", "Plumber installing a shower panel in a bathroom"),
+    "tv-wall-mount": ("Services/tv-wall-mount.png", "Technician fitting a TV wall mount bracket"),
+    "water-filter": ("Services/water-filter.jpg", "Technician installing a water purifier in a kitchen"),
+    "water-heater": ("Services/water-heater.png", "Plumber installing a water heater (geyser) in a bathroom"),
+    "ac-indoor": ("Services/ac-indoor.jpg", "Technician installing an AC indoor unit"),
+    "ac-outdoor-gas": ("Services/ac-outdoor-gas.jpg", "Technician connecting an AC outdoor unit and refilling gas"),
+    "ac-outdoor-wall": ("Services/ac-outdoor-wall.jpg", "Technician fitting an AC outdoor unit on an outside wall"),
 }
 
 

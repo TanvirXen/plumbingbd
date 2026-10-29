@@ -23,7 +23,7 @@ const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name
 const labels = bn
   ? { service: "সার্ভিস", problem: "সমস্যা", name: "নাম", phone: "ফোন", area: "এলাকা", address: "ঠিকানা", date: "তারিখ", time: "সময়" }
   : { service: "Service", problem: "Problem", name: "Name", phone: "Phone", area: "Area", address: "Address", date: "Date", time: "Time" };
-const config = { wa: company.whatsapp, hi: L.hi, urgentTag: L.urgentTag, labels, division: bn ? site.divisionBn : site.division };
+const config = { wa: company.whatsapp, hi: L.hi, urgentTag: L.urgentTag, labels, division: bn ? site.divisionBn : site.division, letters: site.orderLetters };
 ---
 <Base lang={lang} title={`${L.h1} | ${bn ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`}`} description={L.intro} path="/order/"
   schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href })))]}>
@@ -64,7 +64,7 @@ const config = { wa: company.whatsapp, hi: L.hi, urgentTag: L.urgentTag, labels,
         <p style="font-weight:600;margin:0 0 6px">{L.preview}</p>
         <div class="preview" id="preview" aria-live="polite"></div>
       </div>
-      <a class="btn btn-wa" id="send" href="#" data-track="whatsapp_order">{L.send}</a>
+      <a class="btn btn-wa" id="send" href="#" data-order="{}" data-track="whatsapp_order">{L.send}</a>
     </form>
   </section>
   <script type="application/json" id="order-config" set:html={JSON.stringify(config)} />
@@ -88,6 +88,13 @@ const config = { wa: company.whatsapp, hi: L.hi, urgentTag: L.urgentTag, labels,
     const msg = lines.join("\n");
     preview.textContent = msg;
     send.href = `https://wa.me/${cfg.wa}?text=${encodeURIComponent(msg)}`;
+    // Google Sheet row (src/scripts/order.ts)
+    const v = (f: string) => String(d.get(f) ?? "").trim() || undefined;
+    send.dataset.order = JSON.stringify({
+      letters: cfg.letters, orderType: "Order form (B)", service: v("service"), issue: v("problem"), name: v("name"),
+      contact: v("phone"), address: [v("address"), v("area")].filter(Boolean).join(", ") || undefined,
+      date: v("date"), time: d.get("urgent") && !v("time") ? "Urgent" : v("time"), urgent: !!d.get("urgent"),
+    });
   }
   form.addEventListener("input", build);
   form.addEventListener("change", build);

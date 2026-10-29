@@ -47,7 +47,7 @@ const pre = industries.find((i) => i.slug === industry);
     </div>
   </fieldset>
   <label>{L.details}<textarea name="details" maxlength="600"></textarea></label>
-  <a class="btn btn-wa" href="#" data-send target="_blank" rel="noopener" data-track="whatsapp_business">{L.send}</a>
+  <a class="btn btn-wa" href="#" data-send data-order="{}" target="_blank" rel="noopener" data-track="whatsapp_business">{L.send}</a>
   <script type="application/json" data-cfg set:html={JSON.stringify(cfg)} />
 </form>
 <script>
@@ -66,6 +66,13 @@ const pre = industries.find((i) => i.slug === industry);
       const det = String(d.get("details") ?? "").trim();
       if (det) lines.push(`${cfg.labels.details}: ${det}`);
       send.href = `https://wa.me/${cfg.wa}?text=${encodeURIComponent(lines.join("\n"))}`;
+      // Google Sheet row (src/scripts/order.ts)
+      const v = (f: string) => String(d.get(f) ?? "").trim() || undefined;
+      send.dataset.order = JSON.stringify({
+        letters: "CS", orderType: "Order form (B)", service: v("type") ? `Commercial – ${v("type")}` : "Commercial Space Service",
+        name: [v("person"), v("company")].filter(Boolean).join(" – ") || undefined, contact: v("phone"), address: v("area"),
+        work: needs.join(", ") || undefined, issue: det || undefined,
+      });
     };
     form.addEventListener("input", build);
     form.addEventListener("change", build);

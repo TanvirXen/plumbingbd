@@ -41,7 +41,7 @@ export const services: Service[] = [
       { q: "ইলেকট্রিক্যাল ইন্সপেকশনে কত সময় লাগে?", a: "বেশিরভাগ ফ্ল্যাটে ৪৫–৯০ মিনিট। বড় ডুপ্লেক্স বা পুরোনো বিল্ডিংয়ে একটু বেশি সময় লাগতে পারে।" },
       { q: "মেরামত কি আপনাদের দিয়েই করাতে হবে?", a: "না। সমস্যার তালিকা পেয়ে আপনি সিদ্ধান্ত নেবেন। চাইলে সাধারণত একই ভিজিটে আমরা ঠিক করে দিই।" },
     ],
-    images: ["socket-1", "panel-2"], pairs: ["plumbing-checkup-inspection"],
+    images: ["project-visit", "socket-1", "panel-2"], pairs: ["plumbing-checkup-inspection"],
   },
   {
     slug: "ceiling-fan-installation", site: "electric", group: "residential",
@@ -160,7 +160,7 @@ export const services: Service[] = [
       { q: "শর্ট সার্কিটের পরপরই কী করব?", a: "মেইন ব্রেকার বন্ধ করুন, যন্ত্রের প্লাগ খুলুন এবং পোড়া জায়গা ছোঁবেন না। তারপর হোয়াটসঅ্যাপে আমাদের জানান।" },
       { q: "পানি চুইয়ে পড়লে কি শর্ট সার্কিট হতে পারে?", a: "হ্যাঁ। দেয়াল বা সিলিংয়ে পানি ঢোকা একটি সাধারণ কারণ। আমাদের প্লাম্বিং টিম একই ভিজিটে লিক ঠিক করতে পারে।" },
     ],
-    images: ["panel-8", "panel-9"], pairs: ["water-leakage-detection-repair"],
+    images: ["electrical-fault", "panel-8", "panel-9"], pairs: ["water-leakage-detection-repair"],
   },
   {
     slug: "ac-geyser-electrical-connection", site: "electric", group: "residential",
@@ -177,7 +177,26 @@ export const services: Service[] = [
       { q: "গিজারের কি আলাদা ব্রেকার লাগে?", a: "হ্যাঁ। গিজার বেশি কারেন্ট টানে; নিরাপত্তার জন্য আলাদা ব্রেকার ও আর্থিং জরুরি।" },
       { q: "গিজার নিজে কি আপনারা লাগান?", a: "আমাদের প্লাম্বিং বিভাগ গিজার ও পানির লাইন লাগায়; একই ভিজিটে আমরা ইলেকট্রিক্যাল অংশ করি।" },
     ],
-    images: ["panel-6", "socket-2"], pairs: ["geyser-installation"],
+    images: ["ac-outdoor-wall", "water-heater", "panel-6"], pairs: ["geyser-installation"],
+  },
+  {
+    slug: "ac-installation-servicing", site: "electric", group: "residential",
+    name: "AC Installation & Servicing", nameBn: "এসি লাগানো ও সার্ভিসিং",
+    summary: "Split AC installation, shifting and servicing: indoor and outdoor unit mounting, copper piping, gas check and refill, cleaning, and a safe power line with its own breaker.",
+    summaryBn: "স্প্লিট এসি লাগানো, স্থানান্তর ও সার্ভিসিং — ইনডোর ও আউটডোর ইউনিট লাগানো, কপার পাইপিং, গ্যাস চেক ও রিফিল, পরিষ্কার এবং আলাদা ব্রেকার সহ নিরাপদ পাওয়ার লাইন।",
+    includes: ["Indoor and outdoor unit mounting", "Copper pipe, drain pipe and insulation", "Gas pressure check and refill", "Filter, coil and drain cleaning", "Dedicated breaker and cable check", "Old AC removal and shifting"],
+    includesBn: ["ইনডোর ও আউটডোর ইউনিট লাগানো", "কপার পাইপ, ড্রেন পাইপ ও ইনসুলেশন", "গ্যাস প্রেশার চেক ও রিফিল", "ফিল্টার, কয়েল ও ড্রেন পরিষ্কার", "আলাদা ব্রেকার ও তার চেক", "পুরোনো এসি খোলা ও স্থানান্তর"],
+    faqs: [
+      { q: "How often should an AC be serviced?", a: "At least once a year, ideally before summer. In dusty areas or heavy use, every 4–6 months keeps cooling strong and bills lower." },
+      { q: "My AC is not cooling. Does it need gas?", a: "Not always. Dirty filters, a blocked coil or a weak capacitor are common causes. We check gas pressure first and only refill if it is low." },
+      { q: "Can you install the outdoor unit on an outside wall of a high floor?", a: "Yes. We use a proper wall bracket and safety harness, and check the wall before drilling." },
+    ],
+    faqsBn: [
+      { q: "এসি কতদিন পরপর সার্ভিস করা উচিত?", a: "অন্তত বছরে একবার, ভালো হয় গরমের আগে। ধুলাবালির এলাকায় বা বেশি ব্যবহারে ৪–৬ মাস পরপর করলে ঠান্ডা ভালো হয় ও বিল কম আসে।" },
+      { q: "এসি ঠান্ডা করছে না, গ্যাস লাগবে?", a: "সবসময় না। ময়লা ফিল্টার, বন্ধ কয়েল বা দুর্বল ক্যাপাসিটর সাধারণ কারণ। আগে গ্যাস প্রেশার চেক করি, কম থাকলে তবেই রিফিল করি।" },
+      { q: "উঁচু তলার বাইরের দেয়ালে কি আউটডোর ইউনিট লাগাতে পারেন?", a: "হ্যাঁ। সঠিক ওয়াল ব্র্যাকেট ও সেফটি হার্নেস ব্যবহার করি, এবং ড্রিল করার আগে দেয়াল চেক করি।" },
+    ],
+    images: ["ac-indoor", "ac-outdoor-wall", "ac-outdoor-gas"], pairs: ["water-line-installation-repair"],
   },
   {
     slug: "electrical-wiring-rewiring", site: "electric", group: "residential",
@@ -194,7 +213,7 @@ export const services: Service[] = [
       { q: "রিওয়্যারিংয়ের এস্টিমেট কীভাবে হয়?", a: "ফ্ল্যাটের আকার, পয়েন্ট সংখ্যা ও তারের ব্র্যান্ড অনুযায়ী। হোয়াটসঅ্যাপে ছবি পাঠান বা সাইট ভিজিট বুক করুন, লিখিত এস্টিমেট দেব।" },
       { q: "কখন ফ্ল্যাটে রিওয়্যারিং দরকার?", a: "ওয়্যারিং ২০ বছরের বেশি পুরোনো হলে, তার গরম হলে, ঘন ঘন ব্রেকার ট্রিপ করলে বা সকেট পুড়ে গেলে।" },
     ],
-    images: ["panel-10", "drilling-1"], pairs: ["water-pump-installation"],
+    images: ["concealed-wiring", "panel-10", "drilling-1"], pairs: ["water-pump-installation"],
   },
   {
     slug: "ips-installation", site: "electric", group: "residential",
@@ -264,7 +283,7 @@ export const services: Service[] = [
       { q: "ব্র্যাকেট কি আপনারা আনেন?", a: "বেশিরভাগ টিভির সাথে ব্র্যাকেট থাকে। না থাকলে আমরা ফিক্সড বা টিল্ট ব্র্যাকেট এনে দিতে পারি।" },
       { q: "পার্টিশন দেয়ালে কি টিভি লাগানো যায়?", a: "ইটের দেয়ালে সমস্যা নেই। বোর্ড/পার্টিশন দেয়ালে শক্তি চেক করে বিশেষ অ্যাংকর ব্যবহার করি।" },
     ],
-    images: ["drilling-2", "drilling-3"], pairs: ["wall-mirror-installation"],
+    images: ["tv-wall-mount", "drilling-2", "drilling-3"], pairs: ["wall-mirror-installation"],
   },
   {
     slug: "kitchen-hood-installation-cleaning", site: "electric", group: "home",
@@ -349,7 +368,7 @@ export const services: Service[] = [
       { q: "চাবি হারালে কি শুধু সিলিন্ডার বদলানো যায়?", a: "হ্যাঁ, বেশিরভাগ সিলিন্ডার লকে শুধু সিলিন্ডার বদলাই।" },
       { q: "লক কি আপনারা আনেন?", a: "পছন্দের ব্র্যান্ড আপনি কিনতে পারেন, অথবা আমরা এনে দিতে পারি।" },
     ],
-    images: ["drilling-3"], pairs: [],
+    images: ["door-lock"], pairs: [],
   },
   {
     slug: "thai-glass-lock-installation-repair", site: "electric", group: "home",
@@ -366,7 +385,7 @@ export const services: Service[] = [
       { q: "থাই জানালা লক হচ্ছে না, ঠিক করা যাবে?", a: "সাধারণত যায় — প্রায়ই ভাঙা লক, ক্ষয়ে যাওয়া রোলার বা ফ্রেম সরে যাওয়ার কারণে হয়।" },
       { q: "থাই গ্লাস কি বদলে দেন?", a: "আমরা লক, হ্যান্ডেল ও রোলারের কাজ করি। গ্লাস বদলের জন্য হোয়াটসঅ্যাপে জিজ্ঞেস করুন।" },
     ],
-    images: ["drilling-1"], pairs: [],
+    images: ["thai-glass"], pairs: [],
   },
 
   // ───────────── ELECTRIC · commercial ─────────────
@@ -385,7 +404,7 @@ export const services: Service[] = [
       { q: "ইলেকট্রিক্যাল ও প্লাম্বিং কি একসাথে চেক করেন?", a: "হ্যাঁ। আমাদের প্লাম্বিং বিভাগ একই ভিজিটে পানির লাইন ও ড্রেন অডিট করতে পারে।" },
       { q: "অফিস সময়ের বাইরে কি কাজ করেন?", a: "হ্যাঁ, সকালে বা বন্ধের পর কাজ করি, যাতে ব্যবসায় ব্যাঘাত না হয়।" },
     ],
-    images: ["panel-room-1", "panel-3"], pairs: ["commercial-plumbing-checkup"],
+    images: ["project-visit", "panel-room-1", "panel-3"], pairs: ["commercial-plumbing-checkup"],
   },
   {
     slug: "office-electrical-wiring", site: "electric", group: "commercial",
@@ -402,7 +421,7 @@ export const services: Service[] = [
       { q: "চালু অফিসে কি কাজ করতে পারবেন?", a: "হ্যাঁ, ধাপে ধাপে বা অফিস সময়ের পরে, যাতে কাজে ব্যাঘাত না হয়।" },
       { q: "ওয়্যারিং ডায়াগ্রাম কি দেন?", a: "হ্যাঁ, শেষে সহজ সার্কিট ও ডিবি লেআউট হস্তান্তর করি।" },
     ],
-    images: ["panel-10", "drilling-1"], pairs: ["commercial-plumbing-installation-repair"],
+    images: ["electrical-drawing", "concealed-wiring", "panel-10"], pairs: ["commercial-plumbing-installation-repair"],
   },
   {
     slug: "commercial-lighting-installation", site: "electric", group: "commercial",
@@ -419,7 +438,7 @@ export const services: Service[] = [
       { q: "এলইডি লাইটে কি বিদ্যুৎ বিল কমবে?", a: "হ্যাঁ, টিউব লাইট ও হ্যালোজেনের বদলে এলইডি লাগালে লাইটিংয়ের বিদ্যুৎ খরচ অনেক কমে।" },
       { q: "সুপার শপের লাইটিং কি করেন?", a: "হ্যাঁ, উত্তরার সুপার শপে কাজ করেছি — শেলফ, সিলিং ও সাইনবোর্ড লাইটিং।" },
     ],
-    images: ["supershop-2", "light-1"], pairs: [],
+    images: ["restaurant-electrical", "supershop-2", "light-1"], pairs: [],
   },
   {
     slug: "mdb-db-sdb-installation-servicing", site: "electric", group: "commercial",
@@ -470,7 +489,7 @@ export const services: Service[] = [
       { q: "দোকানের জরুরি কাজ কি করেন?", a: "হ্যাঁ। হোয়াটসঅ্যাপে জরুরি লিখে জানান — বিদ্যুৎহীন ব্যবসাকে আমরা অগ্রাধিকার দিই।" },
       { q: "মাঝে মাঝে হওয়া সমস্যা কি খুঁজে পান?", a: "হ্যাঁ, সময় নিয়ে টেস্ট ও লোড চেক করে।" },
     ],
-    images: ["panel-8", "panel-9"], pairs: [],
+    images: ["electrical-fault", "panel-8", "panel-9"], pairs: [],
   },
   {
     slug: "power-distribution-cable-management", site: "electric", group: "commercial",
@@ -504,7 +523,7 @@ export const services: Service[] = [
       { q: "মাসিক প্ল্যান কি আছে?", a: "হ্যাঁ, দোকান ও অফিসের জন্য মাসিক রক্ষণাবেক্ষণ প্ল্যান আছে।" },
       { q: "অতিরিক্ত লাইট কি রাখেন?", a: "একই রকম অতিরিক্ত লাইট রাখতে পারি, যাতে বদলালেও দেখতে একই রকম হয়।" },
     ],
-    images: ["supershop-3", "chandelier-3"], pairs: [],
+    images: ["restaurant-electrical", "supershop-3", "chandelier-3"], pairs: [],
   },
   {
     slug: "ac-power-wiring", site: "electric", group: "commercial",
@@ -521,7 +540,7 @@ export const services: Service[] = [
       { q: "কয়েকটি এসি কি এক লাইনে চলতে পারে?", a: "নিরাপদ নয়। প্রতিটি এসির নিজস্ব সঠিক রেটিংয়ের লাইন ও ব্রেকার থাকা উচিত।" },
       { q: "এসি ইউনিট কি আপনারা লাগান?", a: "আমরা ইলেকট্রিক্যাল অংশ করি; এসি ফিটিং করেন আপনার এসি ইনস্টলার, আমরা তাদের সাথে সমন্বয় করি।" },
     ],
-    images: ["panel-6"], pairs: [],
+    images: ["ac-outdoor-wall", "ac-indoor", "ac-outdoor-gas", "panel-6"], pairs: [],
   },
   {
     slug: "electrical-load-assessment", site: "electric", group: "commercial",
@@ -538,7 +557,7 @@ export const services: Service[] = [
       { q: "কখন লোড অ্যাসেসমেন্ট দরকার?", a: "এসি, মেশিন বা নতুন ফ্লোর যোগের আগে, অথবা ঘন ঘন ব্রেকার ট্রিপ করলে।" },
       { q: "মিটারের লোড বাড়ানোর আবেদনে কি সাহায্য করেন?", a: "আবেদনের জন্য প্রয়োজনীয় লোড হিসাব আমরা করে দিই।" },
     ],
-    images: ["panel-7", "panel-room-4"], pairs: [],
+    images: ["electrical-drawing", "panel-7", "panel-room-4"], pairs: [],
   },
   {
     slug: "office-building-maintenance", site: "electric", group: "commercial",
@@ -608,7 +627,7 @@ export const services: Service[] = [
       { q: "ট্যাপ দিয়ে ফোঁটা ফোঁটা পানি পড়ে, নতুন লাগবে?", a: "অনেক সময় শুধু ওয়াশার বা কার্ট্রিজ বদলালেই হয়।" },
       { q: "ট্যাপ কি আপনারা আনেন?", a: "পছন্দের ব্র্যান্ড আপনি কিনতে পারেন, অথবা আমরা এনে দিতে পারি।" },
     ],
-    images: ["tap-1"], pairs: [],
+    images: ["sink-mixer", "tap-1", "basin-mixer-drip"], pairs: [],
   },
   {
     slug: "basin-installation-repair", site: "plumbing", group: "residential",
@@ -625,7 +644,7 @@ export const services: Service[] = [
       { q: "বেসিন কি অন্য দেয়ালে সরানো যায়?", a: "হ্যাঁ, নতুন পানি ও ড্রেন লাইন দিয়ে। হোয়াটসঅ্যাপে ছবি পাঠান, পরামর্শ দেব।" },
       { q: "বেসিন নড়ছে, এটা কি বিপজ্জনক?", a: "ফেটে যেতে বা পড়ে যেতে পারে। সঠিক ব্র্যাকেট দিয়ে আবার শক্ত করে লাগাই।" },
     ],
-    images: ["tap-1"], pairs: [],
+    images: ["basin-install", "tap-1"], pairs: [],
   },
   {
     slug: "commode-installation-repair", site: "plumbing", group: "residential",
@@ -642,7 +661,7 @@ export const services: Service[] = [
       { q: "কমোডে সারাক্ষণ পানি চলে, ঠিক করা যাবে?", a: "হ্যাঁ — সাধারণত ফ্লাশ ভালভ বা ফ্লোট ঠিক বা বদল করতে হয়।" },
       { q: "প্যানের জায়গায় কি কমোড বসানো যায়?", a: "হ্যাঁ। কিছুটা মেঝের কাজ লাগে; হোয়াটসঅ্যাপে ছবি পাঠান, পরামর্শ দেব।" },
     ],
-    images: ["commode-1", "commode-2"], pairs: [],
+    images: ["commode-1", "commode-2", "commode-blockage"], pairs: [],
   },
   {
     slug: "bathroom-kitchen-plumbing", site: "plumbing", group: "residential",
@@ -659,7 +678,7 @@ export const services: Service[] = [
       { q: "টাইলস ও রেনোভেশন কন্ট্রাক্টরের সাথে কি কাজ করেন?", a: "হ্যাঁ। টাইলসের আগে প্লাম্বিং করে লাইন টেস্ট করি, যাতে পরে লিক না হয়।" },
       { q: "বাথরুমের ইলেকট্রিক কাজও কি করেন?", a: "আমাদের ইলেকট্রিক্যাল বিভাগ বাথরুমের লাইট, এগজস্ট ফ্যান ও গিজার লাইন করে।" },
     ],
-    images: ["kitchen-sink", "commode-1"], pairs: ["light-installation-repair"],
+    images: ["sink-mixer", "basin-install", "kitchen-sink", "commode-1"], pairs: ["light-installation-repair"],
   },
   {
     slug: "shower-installation-repair", site: "plumbing", group: "residential",
@@ -676,7 +695,7 @@ export const services: Service[] = [
       { q: "শাওয়ারে পানির চাপ কম কেন?", a: "সাধারণ কারণ — শাওয়ার হেড আটকে যাওয়া, ভালভ আধা বন্ধ, বা ট্যাংক কম উঁচু। আমরা কারণ খুঁজে বের করি।" },
       { q: "শাওয়ার কি গিজারের সাথে যুক্ত করা যায়?", a: "হ্যাঁ, মিক্সারের মাধ্যমে গরম ও ঠান্ডা লাইন দিয়ে।" },
     ],
-    images: ["tap-1"], pairs: ["ac-geyser-electrical-connection"],
+    images: ["panel-shower", "tap-1"], pairs: ["ac-geyser-electrical-connection"],
   },
   {
     slug: "mixer-bib-cock-installation", site: "plumbing", group: "residential",
@@ -693,7 +712,7 @@ export const services: Service[] = [
       { q: "পুরোনো লাইনে কি মিক্সার লাগানো যায়?", a: "সাধারণত যায়, যদি গরম ও ঠান্ডা লাইনের দূরত্ব ঠিক থাকে। প্রয়োজনে ঠিক করে নিই।" },
       { q: "বিব কক কী?", a: "সাধারণ দেয়াল ট্যাপ, সাধারণত বালতি, ধোয়ার জায়গা ও বারান্দার জন্য।" },
     ],
-    images: ["tap-1"], pairs: [],
+    images: ["basin-mixer-drip", "sink-mixer", "tap-1"], pairs: [],
   },
   {
     slug: "water-line-installation-repair", site: "plumbing", group: "residential",
@@ -744,7 +763,7 @@ export const services: Service[] = [
       { q: "আটকানো ড্রেনে কি অ্যাসিড বা কেমিক্যাল ঢালব?", a: "না। কেমিক্যাল পাইপ নষ্ট করে এবং বিপজ্জনক। যন্ত্র দিয়ে পরিষ্কার বেশি নিরাপদ ও টেকসই।" },
       { q: "বেসিন ও সিংকের জন্যও কি এটা?", a: "শুধু বেসিন ও কিচেন সিংকের জন্য 'বেসিন ও সিংক ড্রেন পরিষ্কার' দেখুন।" },
     ],
-    images: ["kitchen-sink"], pairs: [],
+    images: ["commode-blockage", "kitchen-sink"], pairs: [],
   },
   {
     slug: "basin-sink-drain-cleaning", site: "plumbing", group: "residential",
@@ -761,7 +780,7 @@ export const services: Service[] = [
       { q: "কিচেন সিংক বারবার আটকায় কেন?", a: "রান্নার তেল ও খাবারের টুকরো পাইপের ভেতরে জমে শক্ত হয়ে যায়। সিংক ছাঁকনি ও মাঝে মাঝে গরম পানি ঢাললে উপকার হয়।" },
       { q: "সিংকের ওয়েস্ট পাইপ কি বদলে দেন?", a: "হ্যাঁ, পুরোনো পাইপ ফাটা বা লিক হলে।" },
     ],
-    images: ["kitchen-sink"], pairs: [],
+    images: ["kitchen-sink", "sink-mixer"], pairs: [],
   },
   {
     slug: "geyser-installation", site: "plumbing", group: "residential",
@@ -778,7 +797,7 @@ export const services: Service[] = [
       { q: "ইলেকট্রিক সংযোগ কি এর মধ্যে আছে?", a: "একই ভিজিটে আমাদের ইলেকট্রিক্যাল বিভাগ তার, ব্রেকার ও আর্থিং চেক করে — নিরাপত্তার জন্য খুব জরুরি।" },
       { q: "বাসা বদলালে কি গিজার সরিয়ে দেন?", a: "হ্যাঁ, খুলে নতুন ফ্ল্যাটে আবার লাগিয়ে দিই।" },
     ],
-    images: ["pipe-1"], pairs: ["ac-geyser-electrical-connection"],
+    images: ["water-heater", "pipe-1"], pairs: ["ac-geyser-electrical-connection"],
   },
   {
     slug: "water-pump-installation", site: "plumbing", group: "residential",
@@ -831,7 +850,7 @@ export const services: Service[] = [
       { q: "আলাদা সকেট কি লাগবে?", a: "আর্থিংসহ আলাদা সকেট ভালো। আমাদের ইলেকট্রিক্যাল বিভাগ একই ভিজিটে লাগিয়ে দিতে পারে।" },
       { q: "পানির পয়েন্ট না থাকলে কি লাগানো যাবে?", a: "হ্যাঁ, পানির লাইন ও ড্রেন বাড়িয়ে সেখানে নিয়ে যাই।" },
     ],
-    images: ["tap-1"], pairs: ["switch-socket-installation"],
+    images: ["washing-machine"], pairs: ["switch-socket-installation"],
   },
   {
     slug: "water-purifier-installation-servicing", site: "plumbing", group: "home",
@@ -848,7 +867,7 @@ export const services: Service[] = [
       { q: "আরও ফিল্টার কতদিন পরপর বদলাতে হয়?", a: "পানির মান অনুযায়ী প্রি-ফিল্টার ৩–৬ মাসে এবং মেমব্রেন ১–২ বছরে।" },
       { q: "আরও পিউরিফায়ারে কি বিদ্যুৎ লাগে?", a: "হ্যাঁ। আমাদের ইলেকট্রিক্যাল বিভাগ পিউরিফায়ারের কাছে সকেট লাগিয়ে দিতে পারে।" },
     ],
-    images: ["kitchen-sink"], pairs: ["ips-installation"],
+    images: ["water-filter", "kitchen-sink"], pairs: ["ips-installation"],
   },
   {
     slug: "gas-stove-installation-repair", site: "plumbing", group: "home",
@@ -865,7 +884,7 @@ export const services: Service[] = [
       { q: "গ্যাসের গন্ধ পাচ্ছি, কী করব?", a: "চুলা ও সিলিন্ডার/রেগুলেটর বন্ধ করুন, জানালা খুলে দিন, লাইটের সুইচ চালু-বন্ধ করবেন না, এবং দ্রুত সাহায্য নিন।" },
       { q: "কিচেন হুডও কি লাগান?", a: "হ্যাঁ — আমাদের ইলেকট্রিক্যাল বিভাগ কিচেন হুড লাগায় ও পরিষ্কার করে।" },
     ],
-    images: ["kitchen-sink"], pairs: ["kitchen-hood-installation-cleaning"],
+    images: ["gas-stove", "kitchen-sink"], pairs: ["kitchen-hood-installation-cleaning"],
   },
   {
     slug: "wall-mirror-installation", site: "plumbing", group: "home",
@@ -986,7 +1005,7 @@ export const services: Service[] = [
       { q: "রেস্টুরেন্টের গ্রিজ ট্র্যাপ কতদিন পরপর পরিষ্কার করা উচিত?", a: "রান্নার পরিমাণ অনুযায়ী সাধারণত প্রতি ২–৪ সপ্তাহে।" },
       { q: "বন্ধের পরে কি আসতে পারবেন?", a: "হ্যাঁ, রেস্টুরেন্ট ও দোকানের জন্য রাতে কাজ করি।" },
     ],
-    images: ["supershop-1"], pairs: [],
+    images: ["commode-blockage", "supershop-1"], pairs: [],
   },
   {
     slug: "shop-restaurant-supershop-maintenance", site: "plumbing", group: "commercial",

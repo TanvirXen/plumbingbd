@@ -5,7 +5,7 @@ import Breadcrumbs from "../components/Breadcrumbs.astro";
 import CallButtons from "../components/CallButtons.astro";
 import Img from "../components/Img.astro";
 import Faq from "../components/Faq.astro";
-import { company } from "../data/company";
+import { commercialOrder, company } from "../data/company";
 import { site, sites } from "../data/sites";
 import { breadcrumbLd, faqLd } from "../lib/schema";
 import { lp, t, type Lang } from "../i18n";
@@ -46,7 +46,7 @@ const waText = bn ? "হ্যালো, রক্ষণাবেক্ষণ �
     <div>
       <h1>{h1}</h1>
       <p class="answer">{intro}</p>
-      <CallButtons lang={lang} message={waText} />
+      <CallButtons lang={lang} message={waText} order={commercialOrder("Maintenance contract (AMC)")} />
     </div>
   </section>
   <section class="section soft">

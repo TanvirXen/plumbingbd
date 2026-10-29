@@ -225,13 +225,13 @@ ul { padding-left: 1.2em; }
 .preview { white-space: pre-wrap; background: #f6f7f8; border-radius: 10px; padding: 14px; font-size: .95rem; }
 
 /* Footer */
-.footer { background: #111317; color: #c8ccd1; padding: 40px 0 24px; font-size: .95rem; }
+.footer { background: linear-gradient(160deg, var(--biz) 0%, var(--biz-2) 100%); color: #c9d4e3; padding: 40px 0 24px; font-size: .95rem; }
 .footer a { color: #fff; }
 .footer h3 { color: #fff; font-size: 1.05rem; text-transform: uppercase; }
 .footer .cols { display: grid; gap: 28px; }
 .footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
 @media (min-width: 760px) { .footer .cols { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
-.footer .base { border-top: 1px solid #2a2e35; margin-top: 28px; padding-top: 16px; font-size: .85rem; }
+.footer .base { border-top: 1px solid rgba(255,255,255,.15); margin-top: 28px; padding-top: 16px; font-size: .85rem; }
 
 /* Prose (guides) */
 .prose { max-width: 720px; }

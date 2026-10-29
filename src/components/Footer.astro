@@ -27,7 +27,8 @@ const place = bn ? `${company.address.localityBn}, ${company.address.regionBn}` 
           {t(lang, "whatsapp")}: <a href={waLink(bn ? "হ্যালো" : "Hi")} target="_blank" rel="noopener">{company.phone}</a><br />
           {t(lang, "phone")}: <a href={telLink}>{company.phone}</a><br />
           {t(lang, "hours")}: {bn ? company.hours.labelBn : company.hours.label}<br />
-          {company.address.street ? `${company.address.street}, ` : ""}{place}
+          {company.email && <>{bn ? "ইমেইল" : "Email"}: <a href={`mailto:${company.email}`}>{company.email}</a><br /></>}
+          {company.address.street ? `${bn ? company.address.streetBn : company.address.street}, ` : ""}{place}
         </p>
         <p>{t(lang, "payments")}: {(bn ? company.paymentsBn : company.payments).join(" · ")}</p>
         <p>

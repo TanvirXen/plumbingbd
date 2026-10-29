@@ -56,7 +56,7 @@ export const industries: Industry[] = [
       plumbingBn: ["গ্রিজ ট্র্যাপ পরিষ্কার", "কিচেন ড্রেন ও স্যুয়ার পরিষ্কার", "গ্যাস লাইন ও চুলা চেক", "গরম পানি ও গিজার লাইন", "অতিথিদের ওয়াশরুম রক্ষণাবেক্ষণ"],
     },
     services: ["commercial-electrical-fault-repair", "mcb-mccb-circuit-breaker-installation", "kitchen-hood-installation-cleaning", "commercial-drainage-blockage-removal", "shop-restaurant-supershop-maintenance", "gas-stove-installation-repair"],
-    image: { electric: "panel-6", plumbing: "kitchen-sink" },
+    image: { electric: "restaurant-electrical", plumbing: "kitchen-sink" },
   },
   {
     slug: "super-shops-retail", icon: "🛒",

@@ -7,7 +7,7 @@ import Faq from "../components/Faq.astro";
 import AreaChips from "../components/AreaChips.astro";
 import ServiceList from "../components/ServiceList.astro";
 import SisterCard from "../components/SisterCard.astro";
-import { company } from "../data/company";
+import { commercialOrder, company } from "../data/company";
 import { site, sister, sites } from "../data/sites";
 import { findService, servicesFor, servicePath, contentUpdated } from "../data/services";
 import { areas, topAreas } from "../data/areas";
@@ -46,6 +46,7 @@ const crumbs = [
   { name, href: lp(lang, path) },
 ];
 const waText = serviceMessage(lang, name);
+const sheetOrder = isCom ? commercialOrder(s.name) : { letters: owner.orderLetters, service: s.name, orderType: "WhatsApp (A)" };
 ---
 <Base
   lang={lang}
@@ -70,7 +71,7 @@ const waText = serviceMessage(lang, name);
       )}
       <h1>{bn ? `${s.nameBn} — উত্তরা ও বসুন্ধরা` : `${s.name} in Uttara & Bashundhara`}</h1>
       <p class="answer">{answer}</p>
-      <CallButtons lang={lang} message={waText} label={isCom ? t(lang, "surveyWhatsapp") : undefined} />
+      <CallButtons lang={lang} message={waText} order={sheetOrder} label={isCom ? t(lang, "surveyWhatsapp") : undefined} />
       <p class="small muted" style="margin-top:12px">{t(lang, "noPriceNote")}</p>
 
       {s.images.length > 0 && (
@@ -136,7 +137,7 @@ const waText = serviceMessage(lang, name);
       <div class="card">
         <h3>{name}</h3>
         <p class="muted small">{bn ? "সমস্যার ছবি বা ভিডিও পাঠালে দ্রুত উত্তর দিতে পারি।" : "Send a photo or video of the problem for a faster reply."}</p>
-        <CallButtons lang={lang} message={waText} compact />
+        <CallButtons lang={lang} message={waText} order={sheetOrder} compact />
         <p class="small" style="margin:12px 0 0"><a href={lp(lang, "/order/")}>{bn ? "ফর্ম দিয়ে অর্ডার করুন" : "Or order with a form"} →</a></p>
         <p class="small muted" style="margin:8px 0 0">{bn ? company.hours.labelBn : company.hours.label}</p>
       </div>
