@@ -47,34 +47,46 @@ alter table public.orders         enable row level security;
 alter table public.order_counters enable row level security;
 alter table public.admins         enable row level security;
 
+-- Visitors get no table access at all (they only call create_order); signed-in users go through the policies below.
+-- Admins may only change status and notes; the order itself stays as the customer sent it.
+revoke all on public.orders, public.order_counters, public.admins from anon, authenticated;
+grant select, delete on public.orders to authenticated;
+grant update (status, owner_notes) on public.orders to authenticated;
+grant select on public.admins to authenticated;
+
 -- ── Admin access ─────────────────────────────────────────────────────────────
-create or replace function public.is_admin()
+-- The admin check lives in a schema the API doesn't expose, so it can't be called from outside.
+create schema if not exists private;
+revoke all on schema private from public;
+grant usage on schema private to authenticated;
+
+create or replace function private.is_admin()
 returns boolean
-language sql stable security definer set search_path = public
-as $$ select exists (select 1 from public.admins where user_id = auth.uid()) $$;
+language sql stable security definer set search_path = ''
+as $$ select exists (select 1 from public.admins where user_id = (select auth.uid())) $$;
+revoke all on function private.is_admin() from public;
+grant execute on function private.is_admin() to authenticated;
+drop function if exists public.is_admin();
 
 drop policy if exists "admins read orders"   on public.orders;
 drop policy if exists "admins update orders" on public.orders;
 drop policy if exists "admins delete orders" on public.orders;
 drop policy if exists "see own admin row"    on public.admins;
-create policy "admins read orders"   on public.orders for select to authenticated using (public.is_admin());
-create policy "admins update orders" on public.orders for update to authenticated using (public.is_admin()) with check (public.is_admin());
-create policy "admins delete orders" on public.orders for delete to authenticated using (public.is_admin());
-create policy "see own admin row"    on public.admins for select to authenticated using (user_id = auth.uid());
-
--- Admins may only change status and notes; the order itself stays as the customer sent it.
-revoke update on public.orders from authenticated;
-grant  update (status, owner_notes) on public.orders to authenticated;
+create policy "admins read orders"   on public.orders for select to authenticated using ((select private.is_admin()));
+create policy "admins update orders" on public.orders for update to authenticated using ((select private.is_admin())) with check ((select private.is_admin()));
+create policy "admins delete orders" on public.orders for delete to authenticated using ((select private.is_admin()));
+create policy "see own admin row"    on public.admins for select to authenticated using (user_id = (select auth.uid()));
 
 create or replace function public.touch_updated_at()
-returns trigger language plpgsql as $$ begin new.updated_at := now(); return new; end $$;
+returns trigger language plpgsql set search_path = '' as $$ begin new.updated_at := now(); return new; end $$;
+revoke all on function public.touch_updated_at() from public, anon, authenticated;
 drop trigger if exists orders_touch on public.orders;
 create trigger orders_touch before update on public.orders for each row execute function public.touch_updated_at();
 
 -- ── New order (called by the websites) ───────────────────────────────────────
 create or replace function public.create_order(o jsonb)
 returns text
-language plpgsql security definer set search_path = public
+language plpgsql security definer set search_path = ''
 as $$
 declare
   v_letters text := upper(coalesce(nullif(o ->> 'letters', ''), 'GS'));
@@ -140,6 +152,24 @@ exception when duplicate_object or undefined_object then null;
 end $$;
 
 -- ── Add an admin ─────────────────────────────────────────────────────────────
--- 1. Authentication → Users → Add user → "Create new user" (email + password, tick Auto Confirm).
--- 2. Put that email below and run just this statement:
+-- Emails in private.admin_emails become admins automatically when their login is created.
+create table if not exists private.admin_emails (email text primary key);
+insert into private.admin_emails (email) values ('tanvirishtiaq5@gmail.com') on conflict do nothing;
+
+create or replace function private.add_listed_admin()
+returns trigger language plpgsql security definer set search_path = ''
+as $$
+begin
+  if exists (select 1 from private.admin_emails where email = lower(new.email)) then
+    insert into public.admins (user_id, email) values (new.id, new.email) on conflict do nothing;
+  end if;
+  return new;
+end $$;
+revoke all on function private.add_listed_admin() from public, anon, authenticated;
+drop trigger if exists on_auth_user_created_add_admin on auth.users;
+create trigger on_auth_user_created_add_admin after insert on auth.users
+  for each row execute function private.add_listed_admin();
+
+-- Then: Authentication → Users → Add user → "Create new user" (email + password, tick Auto Confirm).
+-- For a login that already exists, run:
 -- insert into public.admins (user_id, email) select id, email from auth.users where email = 'owner@example.com' on conflict do nothing;
