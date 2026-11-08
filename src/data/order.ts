@@ -8,13 +8,16 @@ import { lp, type Lang } from "../i18n";
 
 type Text = { en: string; bn: string };
 export interface OrderCategory {
-  key: "electric" | "plumbing" | "ac" | "home" | "commercial";
+  key: "electric" | "plumbing" | "ac" | "home" | "commercial" | "trending" | "checkup";
   letters: string;
-  icon: "bolt" | "tap" | "snow" | "house" | "building";
+  icon: "bolt" | "tap" | "snow" | "house" | "building" | "trend" | "check";
   name: Text;
   short: Text;
   message: Text; // "Order on WhatsApp" (A) message
-  options: Text[]; // form chips; "Checkup" first and "Others" last are added automatically
+  options: Text[]; // form chips, most popular first; "Checkup" first and "Others" are added automatically
+  tail?: Text[]; // big jobs shown near the end (just before "Others")
+  others: Text; // the last chip: "Others or any kind of … service"
+  noCheckup?: boolean; // don't add the automatic "Checkup" chip first
   fullList: string[]; // "All work we do" on the service's order page
 }
 
@@ -30,53 +33,65 @@ export const orderCategories: OrderCategory[] = [
     name: { en: "Electric Service", bn: "ইলেকট্রিক সার্ভিস" },
     short: { en: "Wiring, board, lights, fans", bn: "ওয়্যারিং, বোর্ড, লাইট, ফ্যান" },
     message: { en: "Hi I need Electric Service", bn: "হ্যালো, আমার ইলেকট্রিক সার্ভিস প্রয়োজন" },
+    others: { en: "Others or any kind of electrical service", bn: "অন্যান্য বা যেকোনো ইলেকট্রিক্যাল সার্ভিস" },
     options: [
+      { en: "Fans", bn: "ফ্যান" },
+      { en: "Lights", bn: "লাইট" },
+      { en: "Switch & Socket", bn: "সুইচ ও সকেট" },
+      { en: "No Power / Short Circuit", bn: "বিদ্যুৎ নেই / শর্ট সার্কিট" },
+      { en: "IPS", bn: "আইপিএস" },
+      { en: "AC / Geyser Line", bn: "এসি / গিজার লাইন" },
+    ],
+    // the bigger jobs: near the end, just before "Others"
+    tail: [
       { en: "Wiring", bn: "ওয়্যারিং" },
       { en: "DB Board", bn: "ডিবি বোর্ড" },
       { en: "Breaker (MCB)", bn: "ব্রেকার (MCB)" },
-      { en: "Switch & Socket", bn: "সুইচ ও সকেট" },
-      { en: "Lights", bn: "লাইট" },
-      { en: "Fans", bn: "ফ্যান" },
     ],
     fullList: [
       "Electrical Checkup & Inspection",
       "Ceiling Fan Installation & Uninstallation",
       "Ceiling Fan Servicing & Repair",
       "Light Installation & Repair",
-      "Main Circuit Breaker (MCB) Installation",
-      "Main Distribution Board (MDB) Servicing",
       "Switch, Socket & Power Point Installation",
       "Short Circuit Repair",
-      "AC & Geyser Electrical Connection Checkup",
-      "Electrical Wiring & Rewiring",
       "IPS Installation & Uninstallation",
-      "Distribution Board (DB) Servicing",
+      "AC & Geyser Electrical Connection Checkup",
       "Profile Light Installation",
+      "Electrical Wiring & Rewiring",
+      "Distribution Board (DB) Servicing",
+      "Main Distribution Board (MDB) Servicing",
+      "Main Circuit Breaker (MCB) Installation",
     ],
   },
   {
     key: "plumbing", letters: "PS", icon: "tap",
     name: { en: "Plumbing Service", bn: "প্লাম্বিং সার্ভিস" },
-    short: { en: "Leakage, lines, drain, geyser", bn: "লিকেজ, লাইন, ড্রেন, গিজার" },
+    short: { en: "Geyser, leakage, lines, drain", bn: "গিজার, লিকেজ, লাইন, ড্রেন" },
     message: { en: "Hi I need plumbing service", bn: "হ্যালো, আমার প্লাম্বিং সার্ভিস প্রয়োজন" },
+    others: { en: "Others or any kind of plumbing service", bn: "অন্যান্য বা যেকোনো প্লাম্বিং সার্ভিস" },
     options: [
+      { en: "Geyser", bn: "গিজার" }, // geyser always first (right after the automatic "Checkup")
       { en: "Leakage", bn: "লিকেজ" },
+      { en: "Tap & Shower", bn: "ট্যাপ ও শাওয়ার" },
+      { en: "Commode & Flush", bn: "কমোড ও ফ্লাশ" },
+      { en: "Drain Block", bn: "ড্রেন ব্লক" },
+      { en: "Basin & Sink", bn: "বেসিন ও সিংক" },
       { en: "Water Line", bn: "পানির লাইন" },
+      { en: "Water Pump", bn: "পানির পাম্প" },
       { en: "Bathroom", bn: "বাথরুম" },
       { en: "Kitchen", bn: "রান্নাঘর" },
-      { en: "Drain Block", bn: "ড্রেন ব্লক" },
-      { en: "Water Pump", bn: "পানির পাম্প" },
-      { en: "Geyser", bn: "গিজার" },
     ],
     fullList: [
-      "Water Leakage Repair",
-      "Water Line Installation & Repair",
-      "Bathroom & Kitchen Plumbing",
-      "Basin & Commode Installation & Repair",
-      "Mixer, Shower, Tap & Valve Replacement",
-      "Drain Blockage Removal",
-      "Water Pump Connection",
+      "Plumbing Checkup & Inspection",
       "Geyser Service & Installation",
+      "Water Leakage Repair",
+      "Mixer, Shower, Tap & Valve Replacement",
+      "Basin & Commode Installation & Repair",
+      "Drain Blockage Removal",
+      "Bathroom & Kitchen Plumbing",
+      "Water Line Installation & Repair",
+      "Water Pump Connection",
     ],
   },
   {
@@ -84,9 +99,12 @@ export const orderCategories: OrderCategory[] = [
     name: { en: "AC Service", bn: "এসি সার্ভিস" },
     short: { en: "Servicing, gas, install, repair", bn: "সার্ভিসিং, গ্যাস, ইনস্টল, মেরামত" },
     message: { en: "Hi I need AC service", bn: "হ্যালো, আমার এসি সার্ভিস প্রয়োজন" },
+    others: { en: "Others or any kind of AC service", bn: "অন্যান্য বা যেকোনো এসি সার্ভিস" },
     options: [
       { en: "Servicing", bn: "সার্ভিসিং" },
       { en: "Gas Refill", bn: "গ্যাস রিফিল" },
+      { en: "Not Cooling", bn: "ঠান্ডা হচ্ছে না" },
+      { en: "Water Leaking", bn: "পানি পড়ছে" },
       { en: "Installation", bn: "ইনস্টলেশন" },
       { en: "Shifting", bn: "শিফটিং" },
       { en: "Repair", bn: "মেরামত" },
@@ -98,27 +116,33 @@ export const orderCategories: OrderCategory[] = [
     name: { en: "Home Service", bn: "হোম সার্ভিস" },
     short: { en: "Thai glass, IPS, gas stove, more", bn: "থাই গ্লাস, আইপিএস, গ্যাস চুলা, আরও" },
     message: { en: "Hi I need home service", bn: "হ্যালো, আমার হোম সার্ভিস প্রয়োজন" },
+    others: { en: "Others or any kind of home service", bn: "অন্যান্য বা যেকোনো হোম সার্ভিস" },
     options: [
-      { en: "Thai Glass", bn: "থাই গ্লাস" },
-      { en: "IPS", bn: "আইপিএস" },
       { en: "Gas Stove", bn: "গ্যাস চুলা" },
       { en: "Washing Machine", bn: "ওয়াশিং মেশিন" },
+      { en: "TV Wall Mount", bn: "টিভি ওয়াল মাউন্ট" },
+      { en: "IPS", bn: "আইপিএস" },
+      { en: "Thai Glass", bn: "থাই গ্লাস" },
+      { en: "Door Lock", bn: "দরজার লক" },
+      { en: "Water Purifier", bn: "পানির ফিল্টার" },
+      { en: "Kitchen Hood", bn: "কিচেন হুড" },
+      { en: "Furniture Assembly", bn: "ফার্নিচার সংযোজন" },
     ],
     fullList: [
-      "Washing Machine Installation",
-      "Water Purifier Installation & Servicing",
       "Gas Stove Installation & Repair",
-      "Kitchen Hood Installation & Cleaning",
+      "Washing Machine Installation",
       "TV Wall Mount Installation",
-      "Wall Mirror Installation",
-      "Wall Shelf Installation",
+      "IPS & Inverter Installation",
       "Thai Glass Lock Installation & Repair",
       "Door Lock Installation & Replacement",
+      "Water Purifier Installation & Servicing",
+      "Kitchen Hood Installation & Cleaning",
       "Bathroom Accessories Installation",
       "Towel Rack & Soap Holder Installation",
-      "Furniture Assembly & Installation",
+      "Wall Mirror Installation",
+      "Wall Shelf Installation",
       "Picture Frame Installation",
-      "IPS & Inverter Installation",
+      "Furniture Assembly & Installation",
       "Minor Home Maintenance & Repair",
     ],
   },
@@ -127,40 +151,101 @@ export const orderCategories: OrderCategory[] = [
     name: { en: "Commercial Space Service", bn: "কমার্শিয়াল স্পেস সার্ভিস" },
     short: { en: "Offices, shops, restaurants", bn: "অফিস, দোকান, রেস্টুরেন্ট" },
     message: { en: "Hi I need commercial space service", bn: "হ্যালো, আমার কমার্শিয়াল স্পেস সার্ভিস প্রয়োজন" },
+    others: { en: "Others or any kind of commercial service", bn: "অন্যান্য বা যেকোনো কমার্শিয়াল সার্ভিস" },
     options: [
       { en: "Electrical", bn: "ইলেকট্রিক্যাল" },
       { en: "Plumbing", bn: "প্লাম্বিং" },
       { en: "AC", bn: "এসি" },
+      { en: "Lighting", bn: "লাইটিং" },
+      { en: "Maintenance", bn: "রক্ষণাবেক্ষণ" },
       { en: "New Setup", bn: "নতুন সেটআপ" },
       { en: "Renovation", bn: "সংস্কার" },
     ],
     fullList: [
       "Commercial Electric / Plumbing Check Up",
-      "Office Electrical Wiring & Rewiring",
-      "Commercial Lighting Installation",
-      "MDB, DB & SDB Installation and Servicing",
-      "MCB, MCCB & Circuit Breaker Installation",
       "Commercial Electrical Fault Finding & Repair",
-      "Power Distribution & Cable Management",
-      "Commercial Plumbing Installation & Repair",
-      "Water Supply Line Installation & Repair",
-      "Commercial Drainage & Blockage Removal",
+      "Commercial Lighting Installation",
       "Office & Shop Lighting Maintenance",
+      "Commercial Plumbing Installation & Repair",
+      "Commercial Drainage & Blockage Removal",
+      "Water Supply Line Installation & Repair",
       "AC Electrical Connection & Power Wiring",
       "Shop, Restaurant & Super Shop Maintenance",
       "Office & Commercial Building Maintenance",
       "Electrical Load Assessment & Distribution",
+      "Power Distribution & Cable Management",
+      "Office Electrical Wiring & Rewiring",
+      "MDB, DB & SDB Installation and Servicing",
+      "MCB, MCCB & Circuit Breaker Installation",
     ],
   },
 ];
 
-export const findCategory = (key: string) => orderCategories.find((c) => c.key === key);
+/* Trending Services (home-page ticker). cat/work = which service form opens with which chips ticked. */
+export const trendingItems: (Text & { cat: OrderCategory["key"]; work: string[] })[] = [
+  { en: "Geyser Service/Checkup", bn: "গিজার সার্ভিস/চেকআপ", cat: "plumbing", work: ["Geyser"] },
+  { en: "Geyser Installation", bn: "গিজার ইনস্টলেশন", cat: "plumbing", work: ["Geyser"] },
+  { en: "Power Point for Heater & Geyser", bn: "হিটার ও গিজারের পাওয়ার পয়েন্ট", cat: "electric", work: ["Switch & Socket", "AC / Geyser Line"] },
+  { en: "Geyser Repair & Leakage", bn: "গিজার মেরামত ও লিকেজ", cat: "plumbing", work: ["Geyser", "Leakage"] },
+  { en: "Electrical Safety Checkup", bn: "ইলেকট্রিক্যাল সেফটি চেকআপ", cat: "electric", work: ["Checkup"] },
+  { en: "Hot Water Line & Mixer Tap", bn: "গরম পানির লাইন ও মিক্সার ট্যাপ", cat: "plumbing", work: ["Tap & Shower", "Water Line"] },
+  { en: "IPS Installation & Repair", bn: "আইপিএস ইনস্টলেশন ও মেরামত", cat: "electric", work: ["IPS"] },
+  { en: "Shower Installation & Repair", bn: "শাওয়ার ইনস্টলেশন ও মেরামত", cat: "plumbing", work: ["Tap & Shower"] },
+  { en: "No Power / Short Circuit", bn: "বিদ্যুৎ নেই / শর্ট সার্কিট", cat: "electric", work: ["No Power / Short Circuit"] },
+  { en: "Gas Stove Servicing", bn: "গ্যাস চুলা সার্ভিসিং", cat: "home", work: ["Gas Stove"] },
+  { en: "Water Leakage Repair", bn: "পানির লিকেজ মেরামত", cat: "plumbing", work: ["Leakage"] },
+  { en: "Switch & Socket Repair", bn: "সুইচ ও সকেট মেরামত", cat: "electric", work: ["Switch & Socket"] },
+  { en: "Commode & Basin Repair", bn: "কমোড ও বেসিন মেরামত", cat: "plumbing", work: ["Commode & Flush", "Basin & Sink"] },
+  { en: "Light Installation", bn: "লাইট লাগানো", cat: "electric", work: ["Lights"] },
+  { en: "Drain Blockage Removal", bn: "ড্রেন ব্লক পরিষ্কার", cat: "plumbing", work: ["Drain Block"] },
+  { en: "Wiring Fault Repair", bn: "ওয়্যারিং সমস্যা মেরামত", cat: "electric", work: ["Wiring"] },
+];
+
+/* Extra order forms (not in the service boxes): opened from the "Trending Services" and "Checkup" labels.
+   Order ID letters: GS (general). */
+export const extraOrderForms: OrderCategory[] = [
+  {
+    key: "trending", letters: "GS", icon: "trend", noCheckup: true,
+    name: { en: "Trending Services", bn: "ট্রেন্ডিং সার্ভিস" },
+    short: { en: "Most wanted jobs this season", bn: "এই মৌসুমে সবচেয়ে বেশি চাওয়া কাজ" },
+    message: { en: "Hi, I need a trending service", bn: "হ্যালো, আমার একটি ট্রেন্ডিং সার্ভিস প্রয়োজন" },
+    others: { en: "Others or any kind of service", bn: "অন্যান্য বা যেকোনো সার্ভিস" },
+    options: trendingItems.map(({ en, bn }) => ({ en, bn })),
+    fullList: [],
+  },
+  {
+    key: "checkup", letters: "GS", icon: "check", noCheckup: true,
+    name: { en: "Checkup Service", bn: "চেকআপ সার্ভিস" },
+    short: { en: "Any kind of checkup only 350 Tk", bn: "যেকোনো চেকআপ মাত্র ৩৫০ টাকা" },
+    message: { en: "Hi, I need a checkup", bn: "হ্যালো, আমার একটি চেকআপ প্রয়োজন" },
+    others: { en: "Others or any kind of checkup", bn: "অন্যান্য বা যেকোনো চেকআপ" },
+    options: [
+      { en: "Electrical Checkup", bn: "ইলেকট্রিক্যাল চেকআপ" },
+      { en: "Plumbing Checkup", bn: "প্লাম্বিং চেকআপ" },
+      { en: "Geyser Checkup", bn: "গিজার চেকআপ" },
+      { en: "AC Checkup", bn: "এসি চেকআপ" },
+      { en: "IPS Checkup", bn: "আইপিএস চেকআপ" },
+      { en: "Gas Stove Checkup", bn: "গ্যাস চুলা চেকআপ" },
+      { en: "Thai Glass Checkup", bn: "থাই গ্লাস চেকআপ" },
+      { en: "Water Pump Checkup", bn: "পানির পাম্প চেকআপ" },
+      { en: "Commercial Electrical Checkup", bn: "কমার্শিয়াল ইলেকট্রিক্যাল চেকআপ" },
+      { en: "Commercial Plumbing Checkup", bn: "কমার্শিয়াল প্লাম্বিং চেকআপ" },
+      { en: "Restaurant / Shop Checkup", bn: "রেস্টুরেন্ট / দোকান চেকআপ" },
+      { en: "Office Checkup", bn: "অফিস চেকআপ" },
+    ],
+    fullList: [],
+  },
+];
+export const allOrderForms = [...orderCategories, ...extraOrderForms];
+export const findCategory = (key: string) => allOrderForms.find((c) => c.key === key);
 
 export const firstOption: Text = { en: "Checkup", bn: "চেকআপ" };
-export const lastOption: Text = { en: "Others", bn: "অন্যান্য" };
 
-/** Checkup first, Others last – always */
-export const categoryOptions = (c: OrderCategory) => [firstOption, ...c.options, lastOption];
+/** Checkup first, then the popular jobs, then the "tail" big jobs, and "Others or any kind of …" always last */
+export type Option = Text & { others?: boolean };
+export const categoryOptions = (c: OrderCategory): Option[] => [
+  ...(c.noCheckup ? [] : [firstOption]), ...c.options, ...(c.tail ?? []), { ...c.others, others: true },
+];
 
 /** start / end = hour (24h). Used to hide slots that are already over today. */
 export const timeSlots = [
@@ -182,8 +267,19 @@ const en = {
   orderNowShort: "Direct WhatsApp",
   callUs: "Call us",
   orderDetails: "Order with details",
+  priceEnquiry: "Price Enquiry",
+  enquiryPick: "Pick a service — we'll tell you the cost",
+  enquiryOff: "Order instead",
+  enquiryWaShort: "Ask the price on WhatsApp",
+  enquiryMessage: "Hi, I need Price Enquiry",
+  enquiryNote: "Asking for a price? Fill what you know, then tap Price Enquiry.",
+  checkupNote: "Any electric or plumbing checkup is only 350 Tk — it can be reduced depending on the work.",
+  checkupBar: ["Any kind of electric or plumbing checkup only ", "350 Tk", " — can be reduced depending on the work"],
+  optional: "(optional)",
+  chooseEnquiry: "Choose a service for Price Enquiry",
+  enquiryNow: "Price Enquiry now",
   open24: "Open 24 hours",
-  heroText: "Tap a service, send the WhatsApp message, and our technician comes to you.",
+  heroText: "Tap Order now, share a few details, and our technician comes to you.",
   chooseService: "Choose a service",
   back: "All services",
   twoWays: "Choose how to order",
@@ -213,12 +309,13 @@ const en = {
   locationFailed: "Could not find your location. Please write your address.",
   preview: "Message preview",
   previewNote: "Only filled fields are sent. The Order ID is added when you tap Send. You can still edit it in WhatsApp.",
-  send: "Send order on WhatsApp",
+  send: "Send order",
   clear: "Clear form",
   fullList: "All work we do",
   today: "Today",
   tomorrow: "Tomorrow",
   msgUrgent: "*URGENT – PLEASE COME ASAP*",
+  msgEnquiry: "*I need Price Enquiry*",
   msgService: "Service",
   msgWork: "Work",
   msgIssue: "Issue",
@@ -235,8 +332,19 @@ const bn: typeof en = {
   orderNowShort: "সরাসরি হোয়াটসঅ্যাপ",
   callUs: "কল করুন",
   orderDetails: "বিস্তারিত দিয়ে অর্ডার",
+  priceEnquiry: "খরচ জানুন",
+  enquiryPick: "সার্ভিস বেছে নিন — আমরা খরচ জানিয়ে দেব",
+  enquiryOff: "অর্ডার করুন",
+  enquiryWaShort: "হোয়াটসঅ্যাপে খরচ জানুন",
+  enquiryMessage: "হ্যালো, আমি খরচ জানতে চাই",
+  enquiryNote: "খরচ জানতে চান? যা জানেন লিখে 'খরচ জানুন' চাপুন।",
+  checkupNote: "যেকোনো ইলেকট্রিক বা প্লাম্বিং চেকআপ মাত্র ৩৫০ টাকা — কাজের প্রয়োজন অনুযায়ী কমানো হতে পারে।",
+  checkupBar: ["যেকোনো ইলেকট্রিক বা প্লাম্বিং চেকআপ মাত্র ", "৩৫০ টাকা", " — কাজের প্রয়োজন অনুযায়ী কমানো হতে পারে"],
+  optional: "(ঐচ্ছিক)",
+  chooseEnquiry: "খরচ জানতে সার্ভিস বেছে নিন",
+  enquiryNow: "এখনই খরচ জানুন",
   open24: "২৪ ঘণ্টা খোলা",
-  heroText: "সার্ভিস বেছে নিন, হোয়াটসঅ্যাপ মেসেজ পাঠান, আমাদের টেকনিশিয়ান আপনার কাছে আসবে।",
+  heroText: "এখনই অর্ডার করুন চাপুন, কিছু তথ্য দিন, আমাদের টেকনিশিয়ান আপনার কাছে আসবে।",
   chooseService: "সার্ভিস বেছে নিন",
   back: "সব সার্ভিস",
   twoWays: "কীভাবে অর্ডার করবেন বেছে নিন",
@@ -266,12 +374,13 @@ const bn: typeof en = {
   locationFailed: "লোকেশন পাওয়া যায়নি। অনুগ্রহ করে ঠিকানা লিখুন।",
   preview: "মেসেজ দেখুন",
   previewNote: "শুধু পূরণ করা ঘর পাঠানো হবে। পাঠানোর সময় অর্ডার আইডি যোগ হবে। হোয়াটসঅ্যাপে এডিট করতে পারবেন।",
-  send: "হোয়াটসঅ্যাপে অর্ডার পাঠান",
+  send: "অর্ডার পাঠান",
   clear: "ফর্ম মুছুন",
   fullList: "আমাদের সব কাজ",
   today: "আজ",
   tomorrow: "আগামীকাল",
   msgUrgent: "*জরুরি – দ্রুত আসুন*",
+  msgEnquiry: "*আমি খরচ জানতে চাই*",
   msgService: "সার্ভিস",
   msgWork: "কাজ",
   msgIssue: "সমস্যা",

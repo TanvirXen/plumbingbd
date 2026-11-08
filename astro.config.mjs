@@ -19,4 +19,7 @@ export default defineConfig({
   site: process.env.SITE_URL,
   trailingSlash: "always",
   build: { format: "directory" },
+  // Older phones / browsers used in Bangladesh (old Samsung Internet, UC, Opera, Facebook in-app, Android 7+ WebView):
+  // compile JS down to ES2017 and CSS for Chrome 61 / Safari 11 so nothing fails on them.
+  vite: { build: { target: ["chrome61", "safari11", "firefox60", "edge79"], cssTarget: ["chrome61", "safari11", "firefox60", "edge79"] } },
 });

@@ -7,6 +7,8 @@ import ServiceList from "../components/ServiceList.astro";
 import SisterCard from "../components/SisterCard.astro";
 import BusinessForm from "../components/BusinessForm.astro";
 import Faq from "../components/Faq.astro";
+import ServiceGrid from "../components/ServiceGrid.astro";
+import { orderText } from "../data/order";
 import { company } from "../data/company";
 import { site, sister } from "../data/sites";
 import { servicesFor } from "../data/services";
@@ -75,6 +77,15 @@ const sisterHeading = bn
 ---
 <Base lang={lang} title={copy.title} description={copy.intro.slice(0, 155)} path={path} image={copy.image} schema={schema}>
   <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
+  <!-- Services page: same "Choose a service" grid as the home page, shown first (order follows each site: see ServiceGrid.astro) -->
+  {kind === "all" && (
+    <section class="eps eps-section services-choose" id="choose">
+      <div class="wrap">
+        <h2 data-choose-title data-t-order={orderText[lang].chooseService} data-t-enquiry={orderText[lang].chooseEnquiry}>{orderText[lang].chooseService}</h2>
+        <ServiceGrid lang={lang} />
+      </div>
+    </section>
+  )}
   <section class="wrap hero" style="padding-top:0">
     <div class="hero-img"><Img name={copy.image} priority /></div>
     <div>

@@ -1,4 +1,15 @@
 {
+ "chandelier-hero": {
+  "alt": "Our electrician fixing a chandelier on a wooden ceiling",
+  "altBn": "কাঠের সিলিংয়ে ঝাড়বাতি ঠিক করছেন আমাদের ইলেকট্রিশিয়ান",
+  "w": 1600,
+  "h": 2131,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
  "fan-install-1": {
   "alt": "Technician installing a ceiling fan in a flat in Uttara",
   "altBn": "উত্তরার একটি ফ্ল্যাটে সিলিং ফ্যান লাগাচ্ছেন টেকনিশিয়ান",

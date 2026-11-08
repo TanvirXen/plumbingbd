@@ -11,16 +11,25 @@ import "../styles/eps.css";
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const T = orderText[lang];
-// This site's own service first, then AC, Home, Commercial; the other trade last
-const order = [site.key, "ac", "home", "commercial", site.key === "electric" ? "plumbing" : "electric"];
+// Electrician site: Electric, Plumbing, AC, Home, Commercial.
+// Plumber site: Plumbing first, then AC, Home, Commercial, Electric last.
+const order = site.key === "electric"
+  ? ["electric", "plumbing", "ac", "home", "commercial"]
+  : ["plumbing", "ac", "home", "commercial", "electric"];
 const cards = [...orderCategories].sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
 ---
+<p class="enquiry-banner" data-enquiry-banner hidden>
+  <EpsIcon name="tag" /> <span>{T.enquiryPick}<small class="checkup-note">{T.checkupNote}</small></span>
+  <button type="button" class="link-btn" data-enquiry-off>{T.enquiryOff}</button>
+</p>
 <div class="service-grid">
   <a class="service service-wa" href={waLink(orderNow.message[lang])} target="_blank" rel="noopener" data-track="whatsapp_order_now"
-    data-order={JSON.stringify({ letters: orderNow.letters, service: "Order now", orderType: "Order now" })}>
+    data-order={JSON.stringify({ letters: orderNow.letters, service: "Order now", orderType: "Order now" })}
+    data-letters={orderNow.letters}
+    data-wa-order={waLink(orderNow.message[lang])} data-wa-enquiry={waLink(T.enquiryMessage)}>
     <span class="service-icon"><EpsIcon name="whatsapp" /></span>
-    <span class="service-name">{T.orderNow}</span>
-    <span class="service-short">{T.orderNowShort}</span>
+    <span class="service-name" data-name-order={T.orderNow} data-name-enquiry={T.enquiryNow}>{T.orderNow}</span>
+    <span class="service-short" data-short-order={T.orderNowShort} data-short-enquiry={T.enquiryWaShort}>{T.orderNowShort}</span>
   </a>
   {cards.map((c) => (
     <a class={`service icon-${c.icon}`} href={lp(lang, `/order/${c.key}/`)} data-order-link>
@@ -32,6 +41,48 @@ const cards = [...orderCategories].sort((a, b) => order.indexOf(a.key) - order.i
   ))}
 </div>
 <script>
-  // Keep ?area=… / ?s=… when the customer came from a "Book" button on another page
+  // Keep ?area=… / ?s=… (and ?enquiry=1) when going on to a service's order page
+  const links = () => document.querySelectorAll<HTMLAnchorElement>("a[data-order-link], a[data-trend-link]");
   if (location.search) document.querySelectorAll<HTMLAnchorElement>("a[data-order-link]").forEach((a) => (a.search = location.search));
+
+  // Price Enquiry mode: the "Price Enquiry" button (data-enquiry) or ?enquiry=1 turns the grid into
+  // "ask the price": service pages open with ?enquiry=1 and the WhatsApp card asks for the price.
+  function setEnquiry(on: boolean) {
+    // "Choose a service" <-> "Choose a service for Price Enquiry"
+    document.querySelectorAll<HTMLElement>("[data-choose-title]").forEach((h) => (h.textContent = on ? h.dataset.tEnquiry! : h.dataset.tOrder!));
+    document.querySelectorAll<HTMLElement>("[data-enquiry-banner]").forEach((b) => (b.hidden = !on));
+    document.querySelectorAll<HTMLElement>(".service-grid").forEach((g) => g.classList.toggle("is-enquiry", on));
+    links().forEach((a) => {
+      const q = new URLSearchParams(a.search);
+      if (on) q.set("enquiry", "1"); else q.delete("enquiry");
+      a.search = q.toString();
+    });
+    document.querySelectorAll<HTMLAnchorElement>("a[data-wa-enquiry]").forEach((a) => {
+      a.href = on ? a.dataset.waEnquiry! : a.dataset.waOrder!;
+      // Order ID: GS-… for "Order now", PE-GS-… (Price Enquiry ID) for "Price Enquiry now"
+      a.dataset.order = JSON.stringify(on
+        ? { letters: a.dataset.letters, service: "Price enquiry", orderType: "Price enquiry", enquiry: true }
+        : { letters: a.dataset.letters, service: "Order now", orderType: "Order now" });
+      const name = a.querySelector<HTMLElement>("[data-name-order]");
+      if (name) name.textContent = on ? name.dataset.nameEnquiry! : name.dataset.nameOrder!;
+      const short = a.querySelector<HTMLElement>("[data-short-order]");
+      if (short) short.textContent = on ? short.dataset.shortEnquiry! : short.dataset.shortOrder!;
+    });
+    const url = new URL(location.href);
+    if (on) url.searchParams.set("enquiry", "1"); else url.searchParams.delete("enquiry");
+    history.replaceState(history.state, "", url);
+  }
+  if (new URLSearchParams(location.search).has("enquiry")) setEnquiry(true);
+  document.addEventListener("click", (e) => {
+    const t = e.target as HTMLElement;
+    if (t.closest("[data-enquiry-off]")) return setEnquiry(false);
+    const go = t.closest<HTMLAnchorElement>("a[data-enquiry]");
+    if (!go) return;
+    e.preventDefault();
+    setEnquiry(true);
+    document.getElementById("choose")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  document.querySelectorAll<HTMLAnchorElement>('a[href="#choose"]:not([data-enquiry])').forEach((a) =>
+    a.addEventListener("click", () => setEnquiry(false)),
+  );
 </script>

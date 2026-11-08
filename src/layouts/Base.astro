@@ -23,8 +23,9 @@ interface Props {
   hasAlt?: boolean; // English/Bangla counterpart exists
   noindex?: boolean;
   canonicalBase?: string; // set to the sister site's URL for pages it owns
+  callbar?: boolean; // phone call bar at the bottom (the order page has its own send bar)
 }
-const { lang, title, description, path, image = site.heroImage, schema = [], hasAlt = true, noindex = false, canonicalBase = site.url } = Astro.props;
+const { lang, title, description, path, image = site.heroImage, schema = [], hasAlt = true, noindex = false, canonicalBase = site.url, callbar = true } = Astro.props;
 const canonical = canonicalBase + lp(lang, path);
 const ogImage = `${site.url}/img/${image}-1600.webp`;
 const ld = graph(organization(), website(lang), localBusiness(), ...schema);
@@ -41,21 +42,53 @@ const sheetCfg = {
   letters: site.orderLetters,
   lang,
   idLabel: lang === "bn" ? "অর্ডার আইডি" : "Order ID",
+  idLabelEnquiry: lang === "bn" ? "খরচ জানার আইডি" : "Price Enquiry ID",
 };
 ---
 <!doctype html>
 <html lang={lang === "bn" ? "bn-BD" : "en-BD"} data-site={site.key}>
 <head>
   <meta charset="utf-8" />
+  {lang === "en" && path === "/" && (
+    // Bangla is the default: the English home page sends visitors to /bn/ unless they picked English.
+    // (On Vercel the redirect in vercel.json does this before the page loads; this covers everywhere else.)
+    <script is:inline>
+      if (/[?&]lang=en(?:&|$)/.test(location.search)) {
+        try { localStorage.setItem("lang", "en"); } catch (e) {}
+        document.cookie = "lang=en; path=/; max-age=31536000; samesite=lax";
+      } else {
+        try { var l = localStorage.getItem("lang"); } catch (e) {}
+        if (l !== "en" && !/(?:^|; )lang=en(?:;|$)/.test(document.cookie)) location.replace("/bn/" + location.hash);
+      }
+    </script>
+  )}
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- The site is already dark: stops Samsung Internet / other browsers' forced "dark mode" from re-colouring it -->
+  <meta name="color-scheme" content="dark" />
+  <!-- Small fixes for older browsers (old Samsung Internet, UC, Android WebView): runs before the page scripts -->
+  <script is:inline>
+    (function () {
+      var E = window.Element && Element.prototype;
+      if (!E) return;
+      if (!E.matches) E.matches = E.msMatchesSelector || E.webkitMatchesSelector;
+      if (!E.closest) E.closest = function (s) { var el = this; while (el && el.nodeType === 1) { if (el.matches(s)) return el; el = el.parentElement; } return null; };
+      if (window.NodeList && !NodeList.prototype.forEach) NodeList.prototype.forEach = Array.prototype.forEach;
+      function add(p, a) { for (var i = 0; i < a.length; i++) { var n = a[i]; p.appendChild(typeof n === "string" ? document.createTextNode(n) : n); } }
+      if (!E.append) E.append = function () { add(this, arguments); };
+      if (!E.replaceChildren) E.replaceChildren = function () { while (this.lastChild) this.removeChild(this.lastChild); add(this, arguments); };
+      if (window.AbortController && window.AbortSignal && !AbortSignal.timeout)
+        AbortSignal.timeout = function (ms) { var c = new AbortController(); setTimeout(function () { c.abort(); }, ms); return c.signal; };
+    })();
+  </script>
   <title>{title}</title>
   <meta name="description" content={description} />
   <meta name="robots" content={noindex ? "noindex" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
   {!noindex && <link rel="canonical" href={canonical} />}
   {hasAlt && !noindex && <link rel="alternate" hreflang="en" href={canonicalBase + lp("en", path)} />}
   {hasAlt && !noindex && <link rel="alternate" hreflang="bn" href={canonicalBase + lp("bn", path)} />}
-  {hasAlt && !noindex && <link rel="alternate" hreflang="x-default" href={canonicalBase + lp("en", path)} />}
-  <meta name="theme-color" content={site.key === "electric" ? "#FDB601" : "#0074FD"} />
+  {hasAlt && !noindex && <link rel="alternate" hreflang="x-default" href={canonicalBase + lp("bn", path)} />}
+  <meta name="theme-color" content="#0B1220" />
+  {lang === "bn" && <link rel="preload" href="/fonts/solaiman-lipi.woff2" as="font" type="font/woff2" crossorigin />}
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
   <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
@@ -78,13 +111,13 @@ const sheetCfg = {
   {gaId && <script is:inline define:vars={{ gaId }}>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag("js", new Date()); gtag("config", gaId);</script>}
   <slot name="head" />
 </head>
-<body>
+<body class={callbar ? undefined : "no-callbar"}>
   <Header lang={lang} path={path} hasAlt={hasAlt} />
   <main id="main">
     <slot />
   </main>
   <Footer lang={lang} />
-  <div class="callbar"><CallButtons lang={lang} compact /></div>
+  {callbar && <div class="callbar"><CallButtons lang={lang} compact /></div>}
   <script>
     // Sends Call / WhatsApp click events if Google Analytics (gtag) is added later.
     document.addEventListener("click", (e) => {

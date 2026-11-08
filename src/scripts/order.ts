@@ -1,5 +1,7 @@
 // Every WhatsApp order button (any link with data-order) first saves the order and gets an Order ID
-// (ES-301026-1), which is added to the WhatsApp message.
+// (ES-301026-1), which is added to the WhatsApp message. Price Enquiry gets a Price Enquiry ID (PE-ES-301026-1),
+// counted separately. Letters: ES Electric · PS Plumbing · AS AC · HS Home · CS Commercial · GS Order now.
+// Date = the job date picked (no date or Urgent = today); the number starts at 1 for each service and date.
 //   1. Supabase (SUPABASE_URL + SUPABASE_ANON_KEY): create_order() in supabase/schema.sql, no backend needed.
 //   2. Otherwise the Google Sheet (GOOGLE_SHEET_WEBHOOK_URL, Apps Script web app).
 //   3. Neither set up or not reachable: a backup ID made here (ES-301026-K7Q2), so the message always has one.
@@ -20,16 +22,20 @@ export interface OrderData {
   date?: string; // YYYY-MM-DD
   time?: string;
   urgent?: boolean;
+  enquiry?: boolean; // Price Enquiry: PE- ID
 }
 
-interface SheetCfg { supabaseUrl: string; supabaseKey: string; url: string; website: string; letters: string; lang: "en" | "bn"; idLabel: string }
+interface SheetCfg { supabaseUrl: string; supabaseKey: string; url: string; website: string; letters: string; lang: "en" | "bn"; idLabel: string; idLabelEnquiry: string }
 
 const cfgEl = document.getElementById("sheet-cfg");
 const cfg: SheetCfg | null = cfgEl ? JSON.parse(cfgEl.textContent || "null") : null;
 
 /** YYYY-MM-DD in Dhaka */
-const dhakaDay = (d: Date) =>
-  new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dhaka", year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+const dhakaDay = (d: Date) => {
+  const x = new Date(d.getTime() + 6 * 3_600_000); // Dhaka = UTC+6 all year
+  const two = (n: number) => (n < 10 ? "0" : "") + n;
+  return `${x.getUTCFullYear()}-${two(x.getUTCMonth() + 1)}-${two(x.getUTCDate())}`;
+};
 
 /** "2026-10-30" -> "301026". No date or Urgent = today. */
 function jobDate(o: OrderData): string {
@@ -38,12 +44,17 @@ function jobDate(o: OrderData): string {
   return `${d}${m}${y.slice(2)}`;
 }
 
-const ID_RE = /^[A-Z]{2}-\d{6}-\d+$/;
+const ID_RE = /^(PE-)?[A-Z]{2}-\d{6}-\d+$/;
+const isEnquiry = (o: OrderData) => !!o.enquiry || /^Price enquiry/i.test(o.orderType ?? "");
+/** right kind of ID: PE- only for a Price Enquiry */
+const goodId = (id: unknown, o: OrderData): id is string =>
+  typeof id === "string" && ID_RE.test(id) && id.startsWith("PE-") === isEnquiry(o);
 
 async function saveOrder(o: OrderData): Promise<string | undefined> {
   const body = {
     ...o,
     letters: o.letters || cfg!.letters,
+    enquiry: isEnquiry(o),
     jobDate: jobDate(o),
     contact: o.contact?.replace(/[\s-]/g, "").replace(/^\+?88/, ""),
     date: o.urgent ? undefined : o.date,
@@ -59,7 +70,7 @@ async function saveOrder(o: OrderData): Promise<string | undefined> {
         signal: AbortSignal.timeout(10000),
       });
       const id = await res.json();
-      if (res.ok && typeof id === "string" && ID_RE.test(id)) return id;
+      if (res.ok && goodId(id, o)) return id;
     } else if (cfg!.url) {
       const res = await fetch(cfg!.url, {
         method: "POST",
@@ -68,7 +79,7 @@ async function saveOrder(o: OrderData): Promise<string | undefined> {
         signal: AbortSignal.timeout(10000),
       });
       const data = await res.json();
-      if (data?.ok && ID_RE.test(data.orderId)) return data.orderId;
+      if (data?.ok && goodId(data.orderId, o)) return data.orderId;
     }
   } catch {
     // Not reachable: backup ID below
@@ -80,7 +91,7 @@ async function saveOrder(o: OrderData): Promise<string | undefined> {
 function backupId(o: OrderData): string {
   const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O, 1/I
   const r = Array.from(crypto.getRandomValues(new Uint8Array(4)), (n) => abc[n % abc.length]).join("");
-  return `${o.letters || cfg!.letters}-${jobDate(o)}-${r}`;
+  return `${isEnquiry(o) ? "PE-" : ""}${o.letters || cfg!.letters}-${jobDate(o)}-${r}`;
 }
 
 /**
@@ -90,8 +101,10 @@ function backupId(o: OrderData): string {
 function withOrderId(href: string, id: string, o: OrderData): string {
   const url = new URL(href);
   const lines = (url.searchParams.get("text") ?? "").split("\n");
-  const at = o.orderType === "Order form (B)" ? (o.urgent ? 1 : 0) : lines.length;
-  lines.splice(at, 0, `*${cfg!.idLabel}:* ${id}`);
+  // form messages: at the top (under "I need Price Enquiry" and the urgent line); one-line messages: at the end
+  const enquiryForm = o.orderType === "Price enquiry (B)";
+  const at = o.orderType === "Order form (B)" || enquiryForm ? (enquiryForm ? 1 : 0) + (o.urgent ? 1 : 0) : lines.length;
+  lines.splice(at, 0, `*${isEnquiry(o) ? cfg!.idLabelEnquiry : cfg!.idLabel}:* ${id}`);
   url.searchParams.set("text", lines.join("\n"));
   return url.toString();
 }

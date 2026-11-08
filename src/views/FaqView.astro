@@ -18,8 +18,8 @@ const title = bn
   ? `প্রশ্ন ও উত্তর — ${site.tradeBn} উত্তরা ও বসুন্ধরা | ${company.nameBn}`
   : `FAQ — ${site.trade} in Uttara & Bashundhara | ${company.name}`;
 const description = bn
-  ? "বুকিং, ২৪ ঘণ্টা সার্ভিস, খরচ, বিকাশ/নগদ পেমেন্ট, পার্টস, ওয়ারেন্টি ও এলাকা নিয়ে ঢাকার গ্রাহকদের সাধারণ প্রশ্নের উত্তর।"
-  : "Answers to what Dhaka customers ask most: booking, 24-hour service, cost, bKash/Nagad payment, parts, warranty and areas covered.";
+  ? "বুকিং, ২৪ ঘণ্টা সার্ভিস, খরচ, বিকাশ/নগদ/ব্যাংক ট্রান্সফার পেমেন্ট, পার্টস, ওয়ারেন্টি ও এলাকা নিয়ে ঢাকার গ্রাহকদের সাধারণ প্রশ্নের উত্তর।"
+  : "Answers to what Dhaka customers ask most: booking, 24-hour service, cost, bKash/Nagad/bank transfer payment, parts, warranty and areas covered.";
 ---
 <Base lang={lang} title={title} description={description} path="/faq/"
   schema={[breadcrumbLd(crumbs.map((c) => ({ name: c.name, url: site.url + c.href }))), faqLd(allFaqs(site.key, lang))]}>

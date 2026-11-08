@@ -7,7 +7,7 @@ import { services, servicePath } from "../data/services";
 import { allAreas } from "../data/areas";
 import { industries } from "../data/industries";
 import { guidesFor } from "./guides";
-import { orderCategories } from "../data/order";
+import { allOrderForms } from "../data/order";
 
 export interface Route {
   path: string;
@@ -42,7 +42,7 @@ export function getRoutes(): Route[] {
     r("/how-it-works/", "how", { priority: 0.5 }),
     r("/contact/", "contact", { priority: 0.6 }),
     r("/order/", "order", { priority: 0.5 }),
-    ...orderCategories.map((c) => r(`/order/${c.key}/`, "order-service", { data: c.key, priority: 0.5 })),
+    ...allOrderForms.map((c) => r(`/order/${c.key}/`, "order-service", { data: c.key, priority: 0.5 })),
     r("/guides/", "guides", { priority: 0.5, changefreq: "weekly" }),
     r("/sitemap/", "sitemap", { priority: 0.3 }),
     r(site.key === "electric" ? "/tools/ips-load-calculator/" : "/tools/water-pump-calculator/", "tool", { priority: 0.5 }),

@@ -41,7 +41,7 @@ export const sites: Record<SiteKey, SiteConfig> = {
     workBn: "ইলেকট্রিক্যাল",
     schemaType: "Electrician",
     icon: "⚡",
-    heroImage: "fan-install-1",
+    heroImage: "chandelier-hero",
     commercialImage: "panel-room-1",
     stepImages: ["socket-3", "fan-install-2", "panel-5"],
     sister: "plumbing",

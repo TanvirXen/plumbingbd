@@ -23,13 +23,13 @@ const details = bn
       ["দুইভাবে অর্ডার", "এক চাপে হোয়াটসঅ্যাপ মেসেজ (A), অথবা কাজ, ঠিকানা, তারিখ ও সময়সহ ছোট ফর্ম (B)। কোনো লগইন নেই।"],
       ["অর্ডার আইডি", "প্রতিটি অর্ডারে একটি আইডি থাকে, যেমন ES-301026-1। ওই কাজ নিয়ে কথা বলতে আইডিটি বলুন।"],
       ["আগে খরচ, পরে কাজ", "ছবি বা সরেজমিনে দেখে খরচ জানাই। আপনি রাজি হলে তবেই কাজ শুরু।"],
-      ["কাজ শেষে পেমেন্ট", `চেক করে নেওয়ার পর ${company.paymentsBn.join(", ")}।`],
+      ["কাজ শেষে পেমেন্ট", `কাজ সম্পূর্ণ হলে ${company.paymentsBn.join(", ")}।`],
     ]
   : [
       ["Two ways to order", "One-tap WhatsApp message (A), or a short form with work, address, date and time (B). No login."],
       ["An Order ID", "Every order gets an ID like ES-301026-1. Quote it whenever you contact us about that job."],
       ["Cost first, then work", "We price the job from photos or on site. Work starts only when you agree."],
-      ["Pay after the job", `Once you've checked the work: ${company.payments.join(", ")}.`],
+      ["Pay after the job", `Once the work is completed: ${company.payments.join(", ")}.`],
     ];
 const howTo = {
   "@type": "HowTo",

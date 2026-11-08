@@ -43,17 +43,17 @@ const cost: Group = {
   en: [
     { q: "Will I know the cost before work starts?", a: "Yes. We look at the problem (on WhatsApp photos or on site), tell you the cost and agree it with you before starting. Nothing extra is added without asking you first." },
     // policy
-    { q: "Is there a visit or checkup charge?", a: "A small checkup charge may apply for a visit. We tell you the exact amount on WhatsApp before we come. If you go ahead with the work, we tell you how it's counted in the bill." },
+    { q: "Is there a visit or checkup charge?", a: "Any electric or plumbing checkup is 350 Tk, and it can be reduced depending on the work. We confirm the amount on WhatsApp before we come." },
     { q: "Why are there no prices on the website?", a: "Every job is different — cable length, pipe type, wall, height, parts. Send a photo or short video on WhatsApp and we give you a clear estimate first." },
-    { q: "How do I pay — is bKash or Nagad accepted?", a: `You pay after the work is done and checked, by ${pay}.` },
+    { q: "How do I pay — are bKash, Nagad or bank transfer accepted?", a: `You pay after the work is completed, by ${pay}.` },
     { q: "Do I get a bill or memo?", a: "Yes, on request we give a memo for home jobs. Offices and companies get a written quotation before work and a bill with the Order ID after." },
   ],
   bn: [
     { q: "কাজ শুরুর আগে কি খরচ জানতে পারব?", a: "হ্যাঁ। সমস্যা দেখে (হোয়াটসঅ্যাপের ছবিতে বা সরেজমিনে) খরচ জানাই এবং আপনার সম্মতি নিয়ে তারপর কাজ শুরু করি। আপনাকে না জানিয়ে কিছু যোগ হয় না।" },
     // policy
-    { q: "ভিজিট বা চেকআপ চার্জ আছে কি?", a: "ভিজিটে সামান্য চেকআপ চার্জ লাগতে পারে। আসার আগে হোয়াটসঅ্যাপে সঠিক পরিমাণ জানিয়ে দিই। কাজ করালে বিলে সেটি কীভাবে ধরা হবে তাও জানাই।" },
+    { q: "ভিজিট বা চেকআপ চার্জ আছে কি?", a: "যেকোনো ইলেকট্রিক বা প্লাম্বিং চেকআপ ৩৫০ টাকা, কাজের প্রয়োজন অনুযায়ী এটি কমানো হতে পারে। আসার আগে হোয়াটসঅ্যাপে পরিমাণ জানিয়ে দিই।" },
     { q: "ওয়েবসাইটে দাম দেওয়া নেই কেন?", a: "প্রতিটি কাজ আলাদা — তারের দৈর্ঘ্য, পাইপের ধরন, দেয়াল, উচ্চতা, পার্টস। হোয়াটসঅ্যাপে একটি ছবি বা ছোট ভিডিও পাঠান, আগে পরিষ্কার একটি আনুমানিক খরচ জানিয়ে দেব।" },
-    { q: "পেমেন্ট কীভাবে — বিকাশ বা নগদে কি দেওয়া যায়?", a: `কাজ শেষ করে চেক করার পর ${payBn} — যেকোনোভাবে পেমেন্ট করতে পারেন।` },
+    { q: "পেমেন্ট কীভাবে — বিকাশ, নগদ বা ব্যাংক ট্রান্সফারে কি দেওয়া যায়?", a: `কাজ সম্পূর্ণ হলে ${payBn} — যেকোনোভাবে পেমেন্ট করতে পারেন।` },
     { q: "বিল বা মেমো পাব কি?", a: "হ্যাঁ, চাইলে বাসার কাজে মেমো দিই। অফিস ও প্রতিষ্ঠান কাজের আগে লিখিত কোটেশন এবং কাজের পরে অর্ডার আইডিসহ বিল পায়।" },
   ],
 };
@@ -75,7 +75,7 @@ const trust: Group = {
     { q: "কাজের কি ওয়ারেন্টি আছে?", a: "পার্টসে কোম্পানির ওয়ারেন্টি থাকে। আমাদের কাজের কারণে একই সমস্যা আবার হলে অর্ডার আইডিসহ মেসেজ দিন, আবার এসে দেখে দেব।" },
     { q: "টেকনিশিয়ানরা কি আপনাদের নিজস্ব লোক? বাসায় ঢুকতে দেওয়া কি নিরাপদ?", a: "হ্যাঁ — আমাদের নিজস্ব প্রশিক্ষিত টিম, কোম্পানির ইউনিফর্মে আসে। ভিজিটের আগে টেকনিশিয়ানের নাম ও ফোন নম্বর পাঠিয়ে দিই, আর যেকোনো সময় আমাদের মূল নম্বরে কল করে নিশ্চিত হতে পারেন।" },
     { q: "বাংলায় কথা বলা যাবে?", a: "অবশ্যই। বাংলা বা ইংরেজি — যেটা সুবিধা, সেভাবেই মেসেজ বা কল করুন।" },
-    { q: "আপনারা কি ইলেকট্রিক ও প্লাম্বিং দুটো কাজই করেন?", a: "হ্যাঁ। ইমার্জেন্সি ইলেকট্রিক অ্যান্ড প্লাম্বিং সার্ভিসের ইলেকট্রিক্যাল বিভাগ (electricservicebd.com) ও প্লাম্বিং বিভাগ (plumbingservicebd.com) আছে, সাথে এসি ও হোম সার্ভিস। এক মেসেজে, এক টিম।" },
+    { q: "আপনারা কি ইলেকট্রিক ও প্লাম্বিং দুটো কাজই করেন?", a: "হ্যাঁ। ইমার্জেন্সি ইলেকট্রিক এন্ড প্লাম্বিং সার্ভিসের ইলেকট্রিক্যাল বিভাগ (electricservicebd.com) ও প্লাম্বিং বিভাগ (plumbingservicebd.com) আছে, সাথে এসি ও হোম সার্ভিস। এক মেসেজে, এক টিম।" },
   ],
 };
 

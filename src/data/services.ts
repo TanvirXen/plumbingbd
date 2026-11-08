@@ -25,6 +25,7 @@ export interface Service {
 }
 
 export const services: Service[] = [
+  // Inside each site and group: most popular first. Checkup first; electric wiring / DB / MCB last; plumbing geyser right after checkup.
   // ───────────── ELECTRIC · residential ─────────────
   {
     slug: "electrical-checkup-inspection", site: "electric", group: "residential",
@@ -95,40 +96,6 @@ export const services: Service[] = [
     images: ["chandelier-1", "chandelier-2", "light-1"], pairs: ["bathroom-kitchen-plumbing"],
   },
   {
-    slug: "mcb-installation", site: "electric", group: "residential",
-    name: "Main Circuit Breaker (MCB) Installation", nameBn: "মেইন সার্কিট ব্রেকার (এমসিবি) লাগানো",
-    summary: "Correctly rated MCBs for your flat and heavy appliances, so a fault trips the breaker instead of burning wires — for AC, geyser, pump and kitchen lines.",
-    summaryBn: "ফ্ল্যাট ও ভারী যন্ত্রের জন্য সঠিক রেটিংয়ের এমসিবি — এসি, গিজার, পাম্প ও কিচেন লাইনের জন্য, যাতে সমস্যায় তার না পুড়ে ব্রেকার ট্রিপ করে।",
-    includes: ["Load check to choose the right rating", "MCB fitting (brand of your choice)", "Tight, labelled connections", "Trip test", "Advice on RCCB / earth leakage protection"],
-    includesBn: ["সঠিক রেটিং বাছতে লোড চেক", "পছন্দের ব্র্যান্ডের এমসিবি ফিটিং", "টাইট ও লেবেল করা সংযোগ", "ট্রিপ টেস্ট", "আরসিসিবি / আর্থ লিকেজ সুরক্ষার পরামর্শ"],
-    faqs: [
-      { q: "My MCB keeps tripping. Should I replace it?", a: "Not always. Tripping often means overload or a fault in the line. We find the cause first so the new breaker doesn't trip too." },
-      { q: "Which MCB rating do I need for a 1.5 ton AC?", a: "It depends on the AC and cable size. Usually 16–20A with a suitable cable; we confirm on site." },
-    ],
-    faqsBn: [
-      { q: "এমসিবি বারবার ট্রিপ করে, বদলাতে হবে?", a: "সবসময় না। ট্রিপ করা মানে প্রায়ই ওভারলোড বা লাইনে সমস্যা। আগে কারণ খুঁজি, যাতে নতুন ব্রেকারও ট্রিপ না করে।" },
-      { q: "১.৫ টন এসির জন্য কত অ্যাম্পিয়ারের এমসিবি লাগে?", a: "এসি ও তারের সাইজের উপর নির্ভর করে। সাধারণত উপযুক্ত তারের সাথে ১৬–২০A; সরেজমিনে নিশ্চিত করি।" },
-    ],
-    images: ["panel-5", "panel-7"], pairs: ["water-pump-installation"],
-  },
-  {
-    slug: "mdb-servicing", site: "electric", group: "residential",
-    name: "Main Distribution Board (MDB) Servicing", nameBn: "মেইন ডিস্ট্রিবিউশন বোর্ড (এমডিবি) সার্ভিসিং",
-    summary: "Servicing of apartment-building MDBs: cleaning, tightening, checking busbars and breakers, replacing burnt parts and balancing load between phases.",
-    summaryBn: "অ্যাপার্টমেন্ট বিল্ডিংয়ের এমডিবি সার্ভিসিং — পরিষ্কার, টাইটনিং, বাসবার ও ব্রেকার চেক, পোড়া পার্টস বদল এবং ফেজ লোড ব্যালান্স।",
-    includes: ["Dust cleaning", "Terminal and busbar tightening", "Burnt cable and breaker replacement", "Phase load balancing", "Service report for the building committee"],
-    includesBn: ["ধুলা পরিষ্কার", "টার্মিনাল ও বাসবার টাইটনিং", "পোড়া তার ও ব্রেকার বদল", "ফেজ লোড ব্যালান্সিং", "বিল্ডিং কমিটির জন্য সার্ভিস রিপোর্ট"],
-    faqs: [
-      { q: "How often should a building MDB be serviced?", a: "At least once a year, and before summer when AC load is highest." },
-      { q: "Will power be cut during servicing?", a: "A short shutdown is needed. We schedule it with the building committee, usually in the morning." },
-    ],
-    faqsBn: [
-      { q: "বিল্ডিংয়ের এমডিবি কতদিন পরপর সার্ভিস করা উচিত?", a: "অন্তত বছরে একবার, আর গরমের আগে যখন এসির লোড সবচেয়ে বেশি থাকে।" },
-      { q: "সার্ভিসিংয়ের সময় কি বিদ্যুৎ বন্ধ থাকবে?", a: "অল্প সময়ের জন্য বন্ধ রাখতে হয়। বিল্ডিং কমিটির সাথে মিলিয়ে সাধারণত সকালে করি।" },
-    ],
-    images: ["panel-room-2", "panel-1", "panel-3"], pairs: [],
-  },
-  {
     slug: "switch-socket-installation", site: "electric", group: "residential",
     name: "Switch, Socket & Power Point Installation", nameBn: "সুইচ, সকেট ও পাওয়ার পয়েন্ট লাগানো",
     summary: "New or replacement switches, switch boards, 2-pin/3-pin sockets and dedicated power points for fridge, washing machine, AC and microwave.",
@@ -163,23 +130,6 @@ export const services: Service[] = [
     images: ["electrical-fault", "panel-8", "panel-9"], pairs: ["water-leakage-detection-repair"],
   },
   {
-    slug: "ac-geyser-electrical-connection", site: "electric", group: "residential",
-    name: "AC & Geyser Electrical Connection Checkup", nameBn: "এসি ও গিজারের ইলেকট্রিক্যাল কানেকশন চেকআপ",
-    summary: "Safe power lines for AC and geyser: correct cable size, dedicated breaker, earthing and socket check, so heavy appliances don't overheat wires.",
-    summaryBn: "এসি ও গিজারের নিরাপদ পাওয়ার লাইন — সঠিক তারের সাইজ, আলাদা ব্রেকার, আর্থিং ও সকেট চেক, যাতে ভারী যন্ত্রে তার গরম না হয়।",
-    includes: ["Cable size check", "Dedicated breaker fitting", "Earthing test", "Socket / isolator check", "New line on request"],
-    includesBn: ["তারের সাইজ চেক", "আলাদা ব্রেকার ফিটিং", "আর্থিং টেস্ট", "সকেট / আইসোলেটর চেক", "চাইলে নতুন লাইন"],
-    faqs: [
-      { q: "Does a geyser need its own breaker?", a: "Yes. A geyser draws high current; a dedicated breaker and earthing are essential for safety." },
-      { q: "Do you install the geyser itself?", a: "Our plumbing division installs the geyser and water lines; we handle the electrical side in the same visit." },
-    ],
-    faqsBn: [
-      { q: "গিজারের কি আলাদা ব্রেকার লাগে?", a: "হ্যাঁ। গিজার বেশি কারেন্ট টানে; নিরাপত্তার জন্য আলাদা ব্রেকার ও আর্থিং জরুরি।" },
-      { q: "গিজার নিজে কি আপনারা লাগান?", a: "আমাদের প্লাম্বিং বিভাগ গিজার ও পানির লাইন লাগায়; একই ভিজিটে আমরা ইলেকট্রিক্যাল অংশ করি।" },
-    ],
-    images: ["ac-outdoor-wall", "water-heater", "panel-6"], pairs: ["geyser-installation"],
-  },
-  {
     slug: "ac-installation-servicing", site: "electric", group: "residential",
     name: "AC Installation & Servicing", nameBn: "এসি লাগানো ও সার্ভিসিং",
     summary: "Split AC installation, shifting and servicing: indoor and outdoor unit mounting, copper piping, gas check and refill, cleaning, and a safe power line with its own breaker.",
@@ -199,21 +149,21 @@ export const services: Service[] = [
     images: ["ac-indoor", "ac-outdoor-wall", "ac-outdoor-gas"], pairs: ["water-line-installation-repair"],
   },
   {
-    slug: "electrical-wiring-rewiring", site: "electric", group: "residential",
-    name: "Electrical Wiring & Rewiring", nameBn: "ইলেকট্রিক্যাল ওয়্যারিং ও রিওয়্যারিং",
-    summary: "New wiring for flats under construction and full or partial rewiring of old flats with quality cable, conduit, DB box and proper earthing.",
-    summaryBn: "নির্মাণাধীন ফ্ল্যাটে নতুন ওয়্যারিং এবং পুরোনো ফ্ল্যাটে পূর্ণ বা আংশিক রিওয়্যারিং — মানসম্মত তার, কন্ডুইট, ডিবি বক্স ও সঠিক আর্থিং সহ।",
-    includes: ["Site visit and written estimate", "Concealed or surface conduit", "Quality cable of your chosen brand", "DB box and breaker layout", "Earthing and final testing"],
-    includesBn: ["সাইট ভিজিট ও লিখিত এস্টিমেট", "কনসিল্ড বা সারফেস কন্ডুইট", "পছন্দের ব্র্যান্ডের মানসম্মত তার", "ডিবি বক্স ও ব্রেকার লেআউট", "আর্থিং ও চূড়ান্ত টেস্ট"],
+    slug: "ac-geyser-electrical-connection", site: "electric", group: "residential",
+    name: "AC & Geyser Electrical Connection Checkup", nameBn: "এসি ও গিজারের ইলেকট্রিক্যাল কানেকশন চেকআপ",
+    summary: "Safe power lines for AC and geyser: correct cable size, dedicated breaker, earthing and socket check, so heavy appliances don't overheat wires.",
+    summaryBn: "এসি ও গিজারের নিরাপদ পাওয়ার লাইন — সঠিক তারের সাইজ, আলাদা ব্রেকার, আর্থিং ও সকেট চেক, যাতে ভারী যন্ত্রে তার গরম না হয়।",
+    includes: ["Cable size check", "Dedicated breaker fitting", "Earthing test", "Socket / isolator check", "New line on request"],
+    includesBn: ["তারের সাইজ চেক", "আলাদা ব্রেকার ফিটিং", "আর্থিং টেস্ট", "সকেট / আইসোলেটর চেক", "চাইলে নতুন লাইন"],
     faqs: [
-      { q: "How is a rewiring job estimated?", a: "By flat size, number of points and cable brand. Send photos on WhatsApp or book a site visit for a written estimate." },
-      { q: "When does a flat need rewiring?", a: "If wiring is 20+ years old, cables heat up, breakers trip often, or you see burnt sockets." },
+      { q: "Does a geyser need its own breaker?", a: "Yes. A geyser draws high current; a dedicated breaker and earthing are essential for safety." },
+      { q: "Do you install the geyser itself?", a: "Our plumbing division installs the geyser and water lines; we handle the electrical side in the same visit." },
     ],
     faqsBn: [
-      { q: "রিওয়্যারিংয়ের এস্টিমেট কীভাবে হয়?", a: "ফ্ল্যাটের আকার, পয়েন্ট সংখ্যা ও তারের ব্র্যান্ড অনুযায়ী। হোয়াটসঅ্যাপে ছবি পাঠান বা সাইট ভিজিট বুক করুন, লিখিত এস্টিমেট দেব।" },
-      { q: "কখন ফ্ল্যাটে রিওয়্যারিং দরকার?", a: "ওয়্যারিং ২০ বছরের বেশি পুরোনো হলে, তার গরম হলে, ঘন ঘন ব্রেকার ট্রিপ করলে বা সকেট পুড়ে গেলে।" },
+      { q: "গিজারের কি আলাদা ব্রেকার লাগে?", a: "হ্যাঁ। গিজার বেশি কারেন্ট টানে; নিরাপত্তার জন্য আলাদা ব্রেকার ও আর্থিং জরুরি।" },
+      { q: "গিজার নিজে কি আপনারা লাগান?", a: "আমাদের প্লাম্বিং বিভাগ গিজার ও পানির লাইন লাগায়; একই ভিজিটে আমরা ইলেকট্রিক্যাল অংশ করি।" },
     ],
-    images: ["concealed-wiring", "panel-10", "drilling-1"], pairs: ["water-pump-installation"],
+    images: ["ac-outdoor-wall", "water-heater", "panel-6"], pairs: ["geyser-installation"],
   },
   {
     slug: "ips-installation", site: "electric", group: "residential",
@@ -233,6 +183,40 @@ export const services: Service[] = [
     images: ["panel-4", "socket-3"], pairs: ["water-purifier-installation-servicing"],
   },
   {
+    slug: "profile-light-installation", site: "electric", group: "residential",
+    name: "Profile Light Installation", nameBn: "প্রোফাইল লাইট লাগানো",
+    summary: "Modern aluminium profile and LED strip lighting for ceilings, walls, kitchens and wardrobes, with hidden drivers and neat finishing.",
+    summaryBn: "সিলিং, দেয়াল, কিচেন ও ওয়ার্ডরোবে আধুনিক অ্যালুমিনিয়াম প্রোফাইল ও এলইডি স্ট্রিপ লাইট — লুকানো ড্রাইভার ও পরিষ্কার ফিনিশিং সহ।",
+    includes: ["Layout planning", "Profile channel fitting", "LED strip and driver", "Switch / dimmer connection", "Neat finishing"],
+    includesBn: ["লেআউট পরিকল্পনা", "প্রোফাইল চ্যানেল ফিটিং", "এলইডি স্ট্রিপ ও ড্রাইভার", "সুইচ / ডিমার সংযোগ", "পরিষ্কার ফিনিশিং"],
+    faqs: [
+      { q: "How do I get an estimate for profile lighting?", a: "Send a photo of the room and the length you want on WhatsApp, and we'll reply with an estimate." },
+      { q: "Can profile lights be added to an existing ceiling?", a: "Yes, surface profiles work without cutting the ceiling. Recessed profiles need a false ceiling or groove." },
+    ],
+    faqsBn: [
+      { q: "প্রোফাইল লাইটের এস্টিমেট কীভাবে পাব?", a: "রুমের ছবি ও কত ফুট লাগাতে চান হোয়াটসঅ্যাপে পাঠান, আমরা এস্টিমেট জানিয়ে দেব।" },
+      { q: "বর্তমান সিলিংয়ে কি প্রোফাইল লাইট লাগানো যায়?", a: "হ্যাঁ, সারফেস প্রোফাইল সিলিং না কেটেই লাগে। রিসেসড প্রোফাইলের জন্য ফলস সিলিং বা খাঁজ লাগে।" },
+    ],
+    images: ["light-1", "chandelier-3"], pairs: [],
+  },
+  {
+    slug: "electrical-wiring-rewiring", site: "electric", group: "residential",
+    name: "Electrical Wiring & Rewiring", nameBn: "ইলেকট্রিক্যাল ওয়্যারিং ও রিওয়্যারিং",
+    summary: "New wiring for flats under construction and full or partial rewiring of old flats with quality cable, conduit, DB box and proper earthing.",
+    summaryBn: "নির্মাণাধীন ফ্ল্যাটে নতুন ওয়্যারিং এবং পুরোনো ফ্ল্যাটে পূর্ণ বা আংশিক রিওয়্যারিং — মানসম্মত তার, কন্ডুইট, ডিবি বক্স ও সঠিক আর্থিং সহ।",
+    includes: ["Site visit and written estimate", "Concealed or surface conduit", "Quality cable of your chosen brand", "DB box and breaker layout", "Earthing and final testing"],
+    includesBn: ["সাইট ভিজিট ও লিখিত এস্টিমেট", "কনসিল্ড বা সারফেস কন্ডুইট", "পছন্দের ব্র্যান্ডের মানসম্মত তার", "ডিবি বক্স ও ব্রেকার লেআউট", "আর্থিং ও চূড়ান্ত টেস্ট"],
+    faqs: [
+      { q: "How is a rewiring job estimated?", a: "By flat size, number of points and cable brand. Send photos on WhatsApp or book a site visit for a written estimate." },
+      { q: "When does a flat need rewiring?", a: "If wiring is 20+ years old, cables heat up, breakers trip often, or you see burnt sockets." },
+    ],
+    faqsBn: [
+      { q: "রিওয়্যারিংয়ের এস্টিমেট কীভাবে হয়?", a: "ফ্ল্যাটের আকার, পয়েন্ট সংখ্যা ও তারের ব্র্যান্ড অনুযায়ী। হোয়াটসঅ্যাপে ছবি পাঠান বা সাইট ভিজিট বুক করুন, লিখিত এস্টিমেট দেব।" },
+      { q: "কখন ফ্ল্যাটে রিওয়্যারিং দরকার?", a: "ওয়্যারিং ২০ বছরের বেশি পুরোনো হলে, তার গরম হলে, ঘন ঘন ব্রেকার ট্রিপ করলে বা সকেট পুড়ে গেলে।" },
+    ],
+    images: ["concealed-wiring", "panel-10", "drilling-1"], pairs: ["water-pump-installation"],
+  },
+  {
     slug: "db-servicing", site: "electric", group: "residential",
     name: "Distribution Board (DB) Servicing", nameBn: "ডিস্ট্রিবিউশন বোর্ড (ডিবি) সার্ভিসিং",
     summary: "Servicing of your flat's DB box: cleaning, tightening loose terminals, replacing faulty breakers, labelling circuits and testing earth leakage protection.",
@@ -250,24 +234,40 @@ export const services: Service[] = [
     images: ["panel-2", "panel-7"], pairs: [],
   },
   {
-    slug: "profile-light-installation", site: "electric", group: "residential",
-    name: "Profile Light Installation", nameBn: "প্রোফাইল লাইট লাগানো",
-    summary: "Modern aluminium profile and LED strip lighting for ceilings, walls, kitchens and wardrobes, with hidden drivers and neat finishing.",
-    summaryBn: "সিলিং, দেয়াল, কিচেন ও ওয়ার্ডরোবে আধুনিক অ্যালুমিনিয়াম প্রোফাইল ও এলইডি স্ট্রিপ লাইট — লুকানো ড্রাইভার ও পরিষ্কার ফিনিশিং সহ।",
-    includes: ["Layout planning", "Profile channel fitting", "LED strip and driver", "Switch / dimmer connection", "Neat finishing"],
-    includesBn: ["লেআউট পরিকল্পনা", "প্রোফাইল চ্যানেল ফিটিং", "এলইডি স্ট্রিপ ও ড্রাইভার", "সুইচ / ডিমার সংযোগ", "পরিষ্কার ফিনিশিং"],
+    slug: "mdb-servicing", site: "electric", group: "residential",
+    name: "Main Distribution Board (MDB) Servicing", nameBn: "মেইন ডিস্ট্রিবিউশন বোর্ড (এমডিবি) সার্ভিসিং",
+    summary: "Servicing of apartment-building MDBs: cleaning, tightening, checking busbars and breakers, replacing burnt parts and balancing load between phases.",
+    summaryBn: "অ্যাপার্টমেন্ট বিল্ডিংয়ের এমডিবি সার্ভিসিং — পরিষ্কার, টাইটনিং, বাসবার ও ব্রেকার চেক, পোড়া পার্টস বদল এবং ফেজ লোড ব্যালান্স।",
+    includes: ["Dust cleaning", "Terminal and busbar tightening", "Burnt cable and breaker replacement", "Phase load balancing", "Service report for the building committee"],
+    includesBn: ["ধুলা পরিষ্কার", "টার্মিনাল ও বাসবার টাইটনিং", "পোড়া তার ও ব্রেকার বদল", "ফেজ লোড ব্যালান্সিং", "বিল্ডিং কমিটির জন্য সার্ভিস রিপোর্ট"],
     faqs: [
-      { q: "How do I get an estimate for profile lighting?", a: "Send a photo of the room and the length you want on WhatsApp, and we'll reply with an estimate." },
-      { q: "Can profile lights be added to an existing ceiling?", a: "Yes, surface profiles work without cutting the ceiling. Recessed profiles need a false ceiling or groove." },
+      { q: "How often should a building MDB be serviced?", a: "At least once a year, and before summer when AC load is highest." },
+      { q: "Will power be cut during servicing?", a: "A short shutdown is needed. We schedule it with the building committee, usually in the morning." },
     ],
     faqsBn: [
-      { q: "প্রোফাইল লাইটের এস্টিমেট কীভাবে পাব?", a: "রুমের ছবি ও কত ফুট লাগাতে চান হোয়াটসঅ্যাপে পাঠান, আমরা এস্টিমেট জানিয়ে দেব।" },
-      { q: "বর্তমান সিলিংয়ে কি প্রোফাইল লাইট লাগানো যায়?", a: "হ্যাঁ, সারফেস প্রোফাইল সিলিং না কেটেই লাগে। রিসেসড প্রোফাইলের জন্য ফলস সিলিং বা খাঁজ লাগে।" },
+      { q: "বিল্ডিংয়ের এমডিবি কতদিন পরপর সার্ভিস করা উচিত?", a: "অন্তত বছরে একবার, আর গরমের আগে যখন এসির লোড সবচেয়ে বেশি থাকে।" },
+      { q: "সার্ভিসিংয়ের সময় কি বিদ্যুৎ বন্ধ থাকবে?", a: "অল্প সময়ের জন্য বন্ধ রাখতে হয়। বিল্ডিং কমিটির সাথে মিলিয়ে সাধারণত সকালে করি।" },
     ],
-    images: ["light-1", "chandelier-3"], pairs: [],
+    images: ["panel-room-2", "panel-1", "panel-3"], pairs: [],
   },
-
-  // ───────────── ELECTRIC · home services ─────────────
+  {
+    slug: "mcb-installation", site: "electric", group: "residential",
+    name: "Main Circuit Breaker (MCB) Installation", nameBn: "মেইন সার্কিট ব্রেকার (এমসিবি) লাগানো",
+    summary: "Correctly rated MCBs for your flat and heavy appliances, so a fault trips the breaker instead of burning wires — for AC, geyser, pump and kitchen lines.",
+    summaryBn: "ফ্ল্যাট ও ভারী যন্ত্রের জন্য সঠিক রেটিংয়ের এমসিবি — এসি, গিজার, পাম্প ও কিচেন লাইনের জন্য, যাতে সমস্যায় তার না পুড়ে ব্রেকার ট্রিপ করে।",
+    includes: ["Load check to choose the right rating", "MCB fitting (brand of your choice)", "Tight, labelled connections", "Trip test", "Advice on RCCB / earth leakage protection"],
+    includesBn: ["সঠিক রেটিং বাছতে লোড চেক", "পছন্দের ব্র্যান্ডের এমসিবি ফিটিং", "টাইট ও লেবেল করা সংযোগ", "ট্রিপ টেস্ট", "আরসিসিবি / আর্থ লিকেজ সুরক্ষার পরামর্শ"],
+    faqs: [
+      { q: "My MCB keeps tripping. Should I replace it?", a: "Not always. Tripping often means overload or a fault in the line. We find the cause first so the new breaker doesn't trip too." },
+      { q: "Which MCB rating do I need for a 1.5 ton AC?", a: "It depends on the AC and cable size. Usually 16–20A with a suitable cable; we confirm on site." },
+    ],
+    faqsBn: [
+      { q: "এমসিবি বারবার ট্রিপ করে, বদলাতে হবে?", a: "সবসময় না। ট্রিপ করা মানে প্রায়ই ওভারলোড বা লাইনে সমস্যা। আগে কারণ খুঁজি, যাতে নতুন ব্রেকারও ট্রিপ না করে।" },
+      { q: "১.৫ টন এসির জন্য কত অ্যাম্পিয়ারের এমসিবি লাগে?", a: "এসি ও তারের সাইজের উপর নির্ভর করে। সাধারণত উপযুক্ত তারের সাথে ১৬–২০A; সরেজমিনে নিশ্চিত করি।" },
+    ],
+    images: ["panel-5", "panel-7"], pairs: ["water-pump-installation"],
+  },
+  // ───────────── ELECTRIC · home ─────────────
   {
     slug: "tv-wall-mount-installation", site: "electric", group: "home",
     name: "TV Wall Mount Installation", nameBn: "টিভি ওয়াল মাউন্ট লাগানো",
@@ -284,6 +284,40 @@ export const services: Service[] = [
       { q: "পার্টিশন দেয়ালে কি টিভি লাগানো যায়?", a: "ইটের দেয়ালে সমস্যা নেই। বোর্ড/পার্টিশন দেয়ালে শক্তি চেক করে বিশেষ অ্যাংকর ব্যবহার করি।" },
     ],
     images: ["tv-wall-mount", "drilling-2", "drilling-3"], pairs: ["wall-mirror-installation"],
+  },
+  {
+    slug: "door-lock-installation", site: "electric", group: "home",
+    name: "Door Lock Installation & Replacement", nameBn: "দরজার লক লাগানো ও বদল",
+    summary: "Installation and replacement of mortise locks, door handles, cylinder locks, tower bolts and door closers on wooden and steel doors.",
+    summaryBn: "কাঠ ও স্টিলের দরজায় মর্টিস লক, হ্যান্ডেল, সিলিন্ডার লক, টাওয়ার বোল্ট ও ডোর ক্লোজার লাগানো ও বদল।",
+    includes: ["Old lock removal", "New lock fitting", "Door alignment", "Key test", "Tower bolt / closer fitting"],
+    includesBn: ["পুরোনো লক খোলা", "নতুন লক ফিটিং", "দরজা ঠিকমতো বসানো", "চাবি টেস্ট", "টাওয়ার বোল্ট / ক্লোজার ফিটিং"],
+    faqs: [
+      { q: "Can you change only the cylinder after losing keys?", a: "Yes, for most cylinder locks we replace just the cylinder." },
+      { q: "Do you supply locks?", a: "You can buy your preferred brand, or we can bring one." },
+    ],
+    faqsBn: [
+      { q: "চাবি হারালে কি শুধু সিলিন্ডার বদলানো যায়?", a: "হ্যাঁ, বেশিরভাগ সিলিন্ডার লকে শুধু সিলিন্ডার বদলাই।" },
+      { q: "লক কি আপনারা আনেন?", a: "পছন্দের ব্র্যান্ড আপনি কিনতে পারেন, অথবা আমরা এনে দিতে পারি।" },
+    ],
+    images: ["door-lock"], pairs: [],
+  },
+  {
+    slug: "thai-glass-lock-installation-repair", site: "electric", group: "home",
+    name: "Thai Glass Lock Installation & Repair", nameBn: "থাই গ্লাস লক লাগানো ও মেরামত",
+    summary: "Repair and replacement of Thai aluminium window and sliding door locks, handles and rollers so windows close and lock properly.",
+    summaryBn: "থাই অ্যালুমিনিয়াম জানালা ও স্লাইডিং দরজার লক, হ্যান্ডেল ও রোলার মেরামত ও বদল — যাতে ঠিকমতো বন্ধ ও লক হয়।",
+    includes: ["Lock and handle replacement", "Roller check", "Track cleaning", "Alignment", "Smooth sliding test"],
+    includesBn: ["লক ও হ্যান্ডেল বদল", "রোলার চেক", "ট্র্যাক পরিষ্কার", "সঠিকভাবে বসানো", "মসৃণ স্লাইডিং টেস্ট"],
+    faqs: [
+      { q: "My Thai window won't lock. Can it be fixed?", a: "Usually yes — it's often a broken lock, worn roller or misaligned frame." },
+      { q: "Do you replace Thai glass panels?", a: "We handle locks, handles and rollers. Ask us on WhatsApp about glass replacement." },
+    ],
+    faqsBn: [
+      { q: "থাই জানালা লক হচ্ছে না, ঠিক করা যাবে?", a: "সাধারণত যায় — প্রায়ই ভাঙা লক, ক্ষয়ে যাওয়া রোলার বা ফ্রেম সরে যাওয়ার কারণে হয়।" },
+      { q: "থাই গ্লাস কি বদলে দেন?", a: "আমরা লক, হ্যান্ডেল ও রোলারের কাজ করি। গ্লাস বদলের জন্য হোয়াটসঅ্যাপে জিজ্ঞেস করুন।" },
+    ],
+    images: ["thai-glass"], pairs: [],
   },
   {
     slug: "kitchen-hood-installation-cleaning", site: "electric", group: "home",
@@ -320,23 +354,6 @@ export const services: Service[] = [
     images: ["drilling-3", "drilling-2"], pairs: ["bathroom-accessories-installation"],
   },
   {
-    slug: "picture-frame-installation", site: "electric", group: "home",
-    name: "Picture Frame Installation", nameBn: "ছবির ফ্রেম লাগানো",
-    summary: "Neat hanging of picture frames, wall clocks and calligraphy at the right height, level and secure.",
-    summaryBn: "ছবির ফ্রেম, ওয়াল ক্লক ও ক্যালিগ্রাফি সঠিক উচ্চতায়, সমানভাবে ও শক্ত করে লাগানো।",
-    includes: ["Height and layout advice", "Level marking", "Drilling and anchors", "Gallery wall layouts", "Clean-up"],
-    includesBn: ["উচ্চতা ও সাজানোর পরামর্শ", "লেভেল মার্কিং", "ড্রিলিং ও অ্যাংকর", "গ্যালারি ওয়াল সাজানো", "কাজ শেষে পরিষ্কার"],
-    faqs: [
-      { q: "Can you hang several frames in one visit?", a: "Yes — send us the list on WhatsApp and we'll do them all in one visit." },
-      { q: "Can you hang heavy calligraphy frames?", a: "Yes, we use heavy-duty anchors for large frames." },
-    ],
-    faqsBn: [
-      { q: "এক ভিজিটে কি অনেকগুলো ফ্রেম লাগানো যায়?", a: "হ্যাঁ — হোয়াটসঅ্যাপে তালিকা পাঠান, এক ভিজিটেই সব লাগিয়ে দেব।" },
-      { q: "ভারী ক্যালিগ্রাফি ফ্রেম কি লাগান?", a: "হ্যাঁ, বড় ফ্রেমের জন্য হেভি-ডিউটি অ্যাংকর ব্যবহার করি।" },
-    ],
-    images: ["wall-clock-1", "wall-clock-2"], pairs: ["wall-mirror-installation"],
-  },
-  {
     slug: "furniture-assembly", site: "electric", group: "home",
     name: "Furniture Assembly & Installation", nameBn: "ফার্নিচার অ্যাসেম্বলি ও লাগানো",
     summary: "Assembly of flat-pack beds, wardrobes, tables and cabinets, and wall-fixing of tall furniture so it can't tip over.",
@@ -354,40 +371,22 @@ export const services: Service[] = [
     images: ["drilling-2"], pairs: [],
   },
   {
-    slug: "door-lock-installation", site: "electric", group: "home",
-    name: "Door Lock Installation & Replacement", nameBn: "দরজার লক লাগানো ও বদল",
-    summary: "Installation and replacement of mortise locks, door handles, cylinder locks, tower bolts and door closers on wooden and steel doors.",
-    summaryBn: "কাঠ ও স্টিলের দরজায় মর্টিস লক, হ্যান্ডেল, সিলিন্ডার লক, টাওয়ার বোল্ট ও ডোর ক্লোজার লাগানো ও বদল।",
-    includes: ["Old lock removal", "New lock fitting", "Door alignment", "Key test", "Tower bolt / closer fitting"],
-    includesBn: ["পুরোনো লক খোলা", "নতুন লক ফিটিং", "দরজা ঠিকমতো বসানো", "চাবি টেস্ট", "টাওয়ার বোল্ট / ক্লোজার ফিটিং"],
+    slug: "picture-frame-installation", site: "electric", group: "home",
+    name: "Picture Frame Installation", nameBn: "ছবির ফ্রেম লাগানো",
+    summary: "Neat hanging of picture frames, wall clocks and calligraphy at the right height, level and secure.",
+    summaryBn: "ছবির ফ্রেম, ওয়াল ক্লক ও ক্যালিগ্রাফি সঠিক উচ্চতায়, সমানভাবে ও শক্ত করে লাগানো।",
+    includes: ["Height and layout advice", "Level marking", "Drilling and anchors", "Gallery wall layouts", "Clean-up"],
+    includesBn: ["উচ্চতা ও সাজানোর পরামর্শ", "লেভেল মার্কিং", "ড্রিলিং ও অ্যাংকর", "গ্যালারি ওয়াল সাজানো", "কাজ শেষে পরিষ্কার"],
     faqs: [
-      { q: "Can you change only the cylinder after losing keys?", a: "Yes, for most cylinder locks we replace just the cylinder." },
-      { q: "Do you supply locks?", a: "You can buy your preferred brand, or we can bring one." },
+      { q: "Can you hang several frames in one visit?", a: "Yes — send us the list on WhatsApp and we'll do them all in one visit." },
+      { q: "Can you hang heavy calligraphy frames?", a: "Yes, we use heavy-duty anchors for large frames." },
     ],
     faqsBn: [
-      { q: "চাবি হারালে কি শুধু সিলিন্ডার বদলানো যায়?", a: "হ্যাঁ, বেশিরভাগ সিলিন্ডার লকে শুধু সিলিন্ডার বদলাই।" },
-      { q: "লক কি আপনারা আনেন?", a: "পছন্দের ব্র্যান্ড আপনি কিনতে পারেন, অথবা আমরা এনে দিতে পারি।" },
+      { q: "এক ভিজিটে কি অনেকগুলো ফ্রেম লাগানো যায়?", a: "হ্যাঁ — হোয়াটসঅ্যাপে তালিকা পাঠান, এক ভিজিটেই সব লাগিয়ে দেব।" },
+      { q: "ভারী ক্যালিগ্রাফি ফ্রেম কি লাগান?", a: "হ্যাঁ, বড় ফ্রেমের জন্য হেভি-ডিউটি অ্যাংকর ব্যবহার করি।" },
     ],
-    images: ["door-lock"], pairs: [],
+    images: ["wall-clock-1", "wall-clock-2"], pairs: ["wall-mirror-installation"],
   },
-  {
-    slug: "thai-glass-lock-installation-repair", site: "electric", group: "home",
-    name: "Thai Glass Lock Installation & Repair", nameBn: "থাই গ্লাস লক লাগানো ও মেরামত",
-    summary: "Repair and replacement of Thai aluminium window and sliding door locks, handles and rollers so windows close and lock properly.",
-    summaryBn: "থাই অ্যালুমিনিয়াম জানালা ও স্লাইডিং দরজার লক, হ্যান্ডেল ও রোলার মেরামত ও বদল — যাতে ঠিকমতো বন্ধ ও লক হয়।",
-    includes: ["Lock and handle replacement", "Roller check", "Track cleaning", "Alignment", "Smooth sliding test"],
-    includesBn: ["লক ও হ্যান্ডেল বদল", "রোলার চেক", "ট্র্যাক পরিষ্কার", "সঠিকভাবে বসানো", "মসৃণ স্লাইডিং টেস্ট"],
-    faqs: [
-      { q: "My Thai window won't lock. Can it be fixed?", a: "Usually yes — it's often a broken lock, worn roller or misaligned frame." },
-      { q: "Do you replace Thai glass panels?", a: "We handle locks, handles and rollers. Ask us on WhatsApp about glass replacement." },
-    ],
-    faqsBn: [
-      { q: "থাই জানালা লক হচ্ছে না, ঠিক করা যাবে?", a: "সাধারণত যায় — প্রায়ই ভাঙা লক, ক্ষয়ে যাওয়া রোলার বা ফ্রেম সরে যাওয়ার কারণে হয়।" },
-      { q: "থাই গ্লাস কি বদলে দেন?", a: "আমরা লক, হ্যান্ডেল ও রোলারের কাজ করি। গ্লাস বদলের জন্য হোয়াটসঅ্যাপে জিজ্ঞেস করুন।" },
-    ],
-    images: ["thai-glass"], pairs: [],
-  },
-
   // ───────────── ELECTRIC · commercial ─────────────
   {
     slug: "commercial-electrical-checkup", site: "electric", group: "commercial",
@@ -407,74 +406,6 @@ export const services: Service[] = [
     images: ["project-visit", "panel-room-1", "panel-3"], pairs: ["commercial-plumbing-checkup"],
   },
   {
-    slug: "office-electrical-wiring", site: "electric", group: "commercial",
-    name: "Office Electrical Wiring & Rewiring", nameBn: "অফিস ইলেকট্রিক্যাল ওয়্যারিং ও রিওয়্যারিং",
-    summary: "Complete office wiring: workstation power, lighting circuits, AC lines, UPS/IPS lines, tidy cable routing and DB layout.",
-    summaryBn: "সম্পূর্ণ অফিস ওয়্যারিং — ওয়ার্কস্টেশন পাওয়ার, লাইটিং সার্কিট, এসি লাইন, ইউপিএস/আইপিএস লাইন, গোছানো তার ও ডিবি লেআউট।",
-    includes: ["Site survey and written proposal", "Workstation power points", "Lighting and AC circuits", "UPS / IPS backup lines", "Testing and handover drawing"],
-    includesBn: ["সাইট সার্ভে ও লিখিত প্রস্তাব", "ওয়ার্কস্টেশন পাওয়ার পয়েন্ট", "লাইটিং ও এসি সার্কিট", "ইউপিএস / আইপিএস ব্যাকআপ লাইন", "টেস্টিং ও হস্তান্তর ড্রয়িং"],
-    faqs: [
-      { q: "Can you work on a running office?", a: "Yes, in phases or after hours to avoid disturbing work." },
-      { q: "Do you provide a wiring diagram?", a: "Yes, a simple circuit and DB layout is handed over at the end." },
-    ],
-    faqsBn: [
-      { q: "চালু অফিসে কি কাজ করতে পারবেন?", a: "হ্যাঁ, ধাপে ধাপে বা অফিস সময়ের পরে, যাতে কাজে ব্যাঘাত না হয়।" },
-      { q: "ওয়্যারিং ডায়াগ্রাম কি দেন?", a: "হ্যাঁ, শেষে সহজ সার্কিট ও ডিবি লেআউট হস্তান্তর করি।" },
-    ],
-    images: ["electrical-drawing", "concealed-wiring", "panel-10"], pairs: ["commercial-plumbing-installation-repair"],
-  },
-  {
-    slug: "commercial-lighting-installation", site: "electric", group: "commercial",
-    name: "Commercial Lighting Installation", nameBn: "কমার্শিয়াল লাইটিং লাগানো",
-    summary: "Bright, energy-saving LED lighting for offices, showrooms, super shops and restaurants — panel lights, track lights, signboard and outdoor lighting.",
-    summaryBn: "অফিস, শোরুম, সুপার শপ ও রেস্টুরেন্টের জন্য উজ্জ্বল ও বিদ্যুৎ-সাশ্রয়ী এলইডি লাইটিং — প্যানেল, ট্র্যাক, সাইনবোর্ড ও বাইরের লাইট।",
-    includes: ["Lighting layout", "LED panel and track lights", "Signboard lighting", "Separate lighting circuits", "Timer / switching setup"],
-    includesBn: ["লাইটিং লেআউট", "এলইডি প্যানেল ও ট্র্যাক লাইট", "সাইনবোর্ড লাইটিং", "আলাদা লাইটিং সার্কিট", "টাইমার / সুইচিং সেটআপ"],
-    faqs: [
-      { q: "Will LED lights reduce my electricity bill?", a: "Yes, replacing tube lights and halogens with LEDs cuts lighting power use substantially." },
-      { q: "Can you light a super shop?", a: "Yes, we have worked on super shops in Uttara — shelf, ceiling and signboard lighting." },
-    ],
-    faqsBn: [
-      { q: "এলইডি লাইটে কি বিদ্যুৎ বিল কমবে?", a: "হ্যাঁ, টিউব লাইট ও হ্যালোজেনের বদলে এলইডি লাগালে লাইটিংয়ের বিদ্যুৎ খরচ অনেক কমে।" },
-      { q: "সুপার শপের লাইটিং কি করেন?", a: "হ্যাঁ, উত্তরার সুপার শপে কাজ করেছি — শেলফ, সিলিং ও সাইনবোর্ড লাইটিং।" },
-    ],
-    images: ["restaurant-electrical", "supershop-2", "light-1"], pairs: [],
-  },
-  {
-    slug: "mdb-db-sdb-installation-servicing", site: "electric", group: "commercial",
-    name: "MDB, DB & SDB Installation and Servicing", nameBn: "এমডিবি, ডিবি ও এসডিবি লাগানো ও সার্ভিসিং",
-    summary: "Design, installation and servicing of main, distribution and sub-distribution boards for commercial buildings, offices, shops and light industry.",
-    summaryBn: "কমার্শিয়াল বিল্ডিং, অফিস, দোকান ও ছোট কারখানার জন্য মেইন, ডিস্ট্রিবিউশন ও সাব-ডিস্ট্রিবিউশন বোর্ড ডিজাইন, লাগানো ও সার্ভিসিং।",
-    includes: ["Panel design to load", "MCCB / MCB / busbar fitting", "Cable dressing and labelling", "Phase balancing", "Preventive servicing plan"],
-    includesBn: ["লোড অনুযায়ী প্যানেল ডিজাইন", "এমসিসিবি / এমসিবি / বাসবার ফিটিং", "কেবল ড্রেসিং ও লেবেলিং", "ফেজ ব্যালান্সিং", "নিয়মিত সার্ভিসিং পরিকল্পনা"],
-    faqs: [
-      { q: "Do you build new panels or only service them?", a: "Both — new MDB/DB/SDB installation and servicing of existing boards." },
-      { q: "Can you take over an existing building's panel maintenance?", a: "Yes, under a monthly or yearly maintenance contract." },
-    ],
-    faqsBn: [
-      { q: "নতুন প্যানেল বানান নাকি শুধু সার্ভিস করেন?", a: "দুটোই — নতুন এমডিবি/ডিবি/এসডিবি লাগানো এবং পুরোনো বোর্ড সার্ভিসিং।" },
-      { q: "বিল্ডিংয়ের প্যানেল রক্ষণাবেক্ষণের দায়িত্ব কি নেন?", a: "হ্যাঁ, মাসিক বা বার্ষিক রক্ষণাবেক্ষণ চুক্তিতে।" },
-    ],
-    images: ["panel-room-3", "panel-1", "panel-3", "panel-4"], pairs: [],
-  },
-  {
-    slug: "mcb-mccb-circuit-breaker-installation", site: "electric", group: "commercial",
-    name: "MCB, MCCB & Circuit Breaker Installation", nameBn: "এমসিবি, এমসিসিবি ও সার্কিট ব্রেকার লাগানো",
-    summary: "Selection and installation of MCBs, MCCBs, RCCBs and changeover switches rated for your commercial load.",
-    summaryBn: "কমার্শিয়াল লোড অনুযায়ী এমসিবি, এমসিসিবি, আরসিসিবি ও চেঞ্জওভার সুইচ নির্বাচন ও লাগানো।",
-    includes: ["Load calculation", "MCCB / MCB / RCCB fitting", "Changeover switch", "Termination with lugs", "Trip testing"],
-    includesBn: ["লোড হিসাব", "এমসিসিবি / এমসিবি / আরসিসিবি ফিটিং", "চেঞ্জওভার সুইচ", "লাগ দিয়ে টার্মিনেশন", "ট্রিপ টেস্ট"],
-    faqs: [
-      { q: "What is the difference between MCB and MCCB?", a: "MCBs are for smaller currents (up to about 63–100A); MCCBs handle higher currents and are used on main and sub-main lines." },
-      { q: "Do you supply breakers?", a: "Yes, from reputable brands, or we fit breakers you provide." },
-    ],
-    faqsBn: [
-      { q: "এমসিবি আর এমসিসিবির পার্থক্য কী?", a: "এমসিবি কম কারেন্টের জন্য (প্রায় ৬৩–১০০A পর্যন্ত); এমসিসিবি বেশি কারেন্টের জন্য, মেইন ও সাব-মেইন লাইনে ব্যবহার হয়।" },
-      { q: "ব্রেকার কি আপনারা সরবরাহ করেন?", a: "হ্যাঁ, ভালো ব্র্যান্ডের; অথবা আপনার দেওয়া ব্রেকার লাগিয়ে দিই।" },
-    ],
-    images: ["panel-6", "panel-5"], pairs: [],
-  },
-  {
     slug: "commercial-electrical-fault-repair", site: "electric", group: "commercial",
     name: "Commercial Electrical Fault Finding & Repair", nameBn: "কমার্শিয়াল ইলেকট্রিক্যাল ফল্ট খোঁজা ও মেরামত",
     summary: "Fast fault finding for power cuts, tripping, burnt cables and phase problems in offices, shops and buildings — to get you running again quickly.",
@@ -492,21 +423,21 @@ export const services: Service[] = [
     images: ["electrical-fault", "panel-8", "panel-9"], pairs: [],
   },
   {
-    slug: "power-distribution-cable-management", site: "electric", group: "commercial",
-    name: "Power Distribution & Cable Management", nameBn: "পাওয়ার ডিস্ট্রিবিউশন ও কেবল ম্যানেজমেন্ট",
-    summary: "Planned power distribution and tidy cable management — trays, trunking, labelling and dressing — for safe, easy-to-maintain commercial installations.",
-    summaryBn: "পরিকল্পিত পাওয়ার ডিস্ট্রিবিউশন ও গোছানো কেবল ম্যানেজমেন্ট — ট্রে, ট্রাংকিং, লেবেলিং ও ড্রেসিং।",
-    includes: ["Distribution planning", "Cable tray and trunking", "Cable dressing", "Labelling", "As-built documentation"],
-    includesBn: ["ডিস্ট্রিবিউশন পরিকল্পনা", "কেবল ট্রে ও ট্রাংকিং", "কেবল ড্রেসিং", "লেবেলিং", "কাজের পর ডকুমেন্টেশন"],
+    slug: "commercial-lighting-installation", site: "electric", group: "commercial",
+    name: "Commercial Lighting Installation", nameBn: "কমার্শিয়াল লাইটিং লাগানো",
+    summary: "Bright, energy-saving LED lighting for offices, showrooms, super shops and restaurants — panel lights, track lights, signboard and outdoor lighting.",
+    summaryBn: "অফিস, শোরুম, সুপার শপ ও রেস্টুরেন্টের জন্য উজ্জ্বল ও বিদ্যুৎ-সাশ্রয়ী এলইডি লাইটিং — প্যানেল, ট্র্যাক, সাইনবোর্ড ও বাইরের লাইট।",
+    includes: ["Lighting layout", "LED panel and track lights", "Signboard lighting", "Separate lighting circuits", "Timer / switching setup"],
+    includesBn: ["লাইটিং লেআউট", "এলইডি প্যানেল ও ট্র্যাক লাইট", "সাইনবোর্ড লাইটিং", "আলাদা লাইটিং সার্কিট", "টাইমার / সুইচিং সেটআপ"],
     faqs: [
-      { q: "Why does cable dressing matter?", a: "Tidy, labelled cables run cooler, are safer and make future repairs much faster." },
-      { q: "Can you tidy an existing messy panel?", a: "Yes — re-dressing and labelling old panels is a common job for us." },
+      { q: "Will LED lights reduce my electricity bill?", a: "Yes, replacing tube lights and halogens with LEDs cuts lighting power use substantially." },
+      { q: "Can you light a super shop?", a: "Yes, we have worked on super shops in Uttara — shelf, ceiling and signboard lighting." },
     ],
     faqsBn: [
-      { q: "কেবল ড্রেসিং কেন জরুরি?", a: "গোছানো ও লেবেল করা তার কম গরম হয়, বেশি নিরাপদ এবং পরে মেরামত অনেক দ্রুত হয়।" },
-      { q: "এলোমেলো পুরোনো প্যানেল কি গুছিয়ে দেন?", a: "হ্যাঁ — পুরোনো প্যানেল নতুন করে ড্রেসিং ও লেবেলিং আমাদের নিয়মিত কাজ।" },
+      { q: "এলইডি লাইটে কি বিদ্যুৎ বিল কমবে?", a: "হ্যাঁ, টিউব লাইট ও হ্যালোজেনের বদলে এলইডি লাগালে লাইটিংয়ের বিদ্যুৎ খরচ অনেক কমে।" },
+      { q: "সুপার শপের লাইটিং কি করেন?", a: "হ্যাঁ, উত্তরার সুপার শপে কাজ করেছি — শেলফ, সিলিং ও সাইনবোর্ড লাইটিং।" },
     ],
-    images: ["panel-10", "panel-2"], pairs: [],
+    images: ["restaurant-electrical", "supershop-2", "light-1"], pairs: [],
   },
   {
     slug: "office-shop-lighting-maintenance", site: "electric", group: "commercial",
@@ -543,6 +474,23 @@ export const services: Service[] = [
     images: ["ac-outdoor-wall", "ac-indoor", "ac-outdoor-gas", "panel-6"], pairs: [],
   },
   {
+    slug: "office-building-maintenance", site: "electric", group: "commercial",
+    name: "Office & Commercial Building Maintenance", nameBn: "অফিস ও কমার্শিয়াল বিল্ডিং রক্ষণাবেক্ষণ",
+    summary: "One team for your building's electrical and plumbing maintenance — scheduled checks, emergency call-outs and a maintenance log.",
+    summaryBn: "বিল্ডিংয়ের ইলেকট্রিক্যাল ও প্লাম্বিং রক্ষণাবেক্ষণে এক টিম — নির্ধারিত চেক, জরুরি কল ও মেইনটেন্যান্স লগ।",
+    includes: ["Scheduled monthly checks", "Priority emergency response", "Electrical + plumbing in one contract", "Maintenance log", "Fixed monthly fee"],
+    includesBn: ["নির্ধারিত মাসিক চেক", "জরুরি কলে অগ্রাধিকার", "এক চুক্তিতে ইলেকট্রিক্যাল + প্লাম্বিং", "রক্ষণাবেক্ষণ লগ", "নির্দিষ্ট মাসিক ফি"],
+    faqs: [
+      { q: "Do you cover plumbing too?", a: "Yes. Our plumbing division covers water lines, pumps and drains under the same contract." },
+      { q: "How is the monthly fee set?", a: "By building size and number of visits. Message us on WhatsApp to book a survey and get a written proposal." },
+    ],
+    faqsBn: [
+      { q: "প্লাম্বিংও কি এর মধ্যে আছে?", a: "হ্যাঁ। একই চুক্তিতে আমাদের প্লাম্বিং বিভাগ পানির লাইন, পাম্প ও ড্রেন দেখে।" },
+      { q: "মাসিক ফি কীভাবে ঠিক হয়?", a: "বিল্ডিংয়ের আকার ও ভিজিট সংখ্যা অনুযায়ী। হোয়াটসঅ্যাপে সার্ভে বুক করুন, লিখিত প্রস্তাব দেব।" },
+    ],
+    images: ["panel-room-4", "supershop-2"], pairs: ["shop-restaurant-supershop-maintenance"],
+  },
+  {
     slug: "electrical-load-assessment", site: "electric", group: "commercial",
     name: "Electrical Load Assessment & Distribution", nameBn: "ইলেকট্রিক্যাল লোড অ্যাসেসমেন্ট ও ডিস্ট্রিবিউশন",
     summary: "We measure and calculate your total load, balance it across phases and recommend breaker, cable and meter upgrades before you add ACs or machines.",
@@ -560,23 +508,73 @@ export const services: Service[] = [
     images: ["electrical-drawing", "panel-7", "panel-room-4"], pairs: [],
   },
   {
-    slug: "office-building-maintenance", site: "electric", group: "commercial",
-    name: "Office & Commercial Building Maintenance", nameBn: "অফিস ও কমার্শিয়াল বিল্ডিং রক্ষণাবেক্ষণ",
-    summary: "One team for your building's electrical and plumbing maintenance — scheduled checks, emergency call-outs and a maintenance log.",
-    summaryBn: "বিল্ডিংয়ের ইলেকট্রিক্যাল ও প্লাম্বিং রক্ষণাবেক্ষণে এক টিম — নির্ধারিত চেক, জরুরি কল ও মেইনটেন্যান্স লগ।",
-    includes: ["Scheduled monthly checks", "Priority emergency response", "Electrical + plumbing in one contract", "Maintenance log", "Fixed monthly fee"],
-    includesBn: ["নির্ধারিত মাসিক চেক", "জরুরি কলে অগ্রাধিকার", "এক চুক্তিতে ইলেকট্রিক্যাল + প্লাম্বিং", "রক্ষণাবেক্ষণ লগ", "নির্দিষ্ট মাসিক ফি"],
+    slug: "power-distribution-cable-management", site: "electric", group: "commercial",
+    name: "Power Distribution & Cable Management", nameBn: "পাওয়ার ডিস্ট্রিবিউশন ও কেবল ম্যানেজমেন্ট",
+    summary: "Planned power distribution and tidy cable management — trays, trunking, labelling and dressing — for safe, easy-to-maintain commercial installations.",
+    summaryBn: "পরিকল্পিত পাওয়ার ডিস্ট্রিবিউশন ও গোছানো কেবল ম্যানেজমেন্ট — ট্রে, ট্রাংকিং, লেবেলিং ও ড্রেসিং।",
+    includes: ["Distribution planning", "Cable tray and trunking", "Cable dressing", "Labelling", "As-built documentation"],
+    includesBn: ["ডিস্ট্রিবিউশন পরিকল্পনা", "কেবল ট্রে ও ট্রাংকিং", "কেবল ড্রেসিং", "লেবেলিং", "কাজের পর ডকুমেন্টেশন"],
     faqs: [
-      { q: "Do you cover plumbing too?", a: "Yes. Our plumbing division covers water lines, pumps and drains under the same contract." },
-      { q: "How is the monthly fee set?", a: "By building size and number of visits. Message us on WhatsApp to book a survey and get a written proposal." },
+      { q: "Why does cable dressing matter?", a: "Tidy, labelled cables run cooler, are safer and make future repairs much faster." },
+      { q: "Can you tidy an existing messy panel?", a: "Yes — re-dressing and labelling old panels is a common job for us." },
     ],
     faqsBn: [
-      { q: "প্লাম্বিংও কি এর মধ্যে আছে?", a: "হ্যাঁ। একই চুক্তিতে আমাদের প্লাম্বিং বিভাগ পানির লাইন, পাম্প ও ড্রেন দেখে।" },
-      { q: "মাসিক ফি কীভাবে ঠিক হয়?", a: "বিল্ডিংয়ের আকার ও ভিজিট সংখ্যা অনুযায়ী। হোয়াটসঅ্যাপে সার্ভে বুক করুন, লিখিত প্রস্তাব দেব।" },
+      { q: "কেবল ড্রেসিং কেন জরুরি?", a: "গোছানো ও লেবেল করা তার কম গরম হয়, বেশি নিরাপদ এবং পরে মেরামত অনেক দ্রুত হয়।" },
+      { q: "এলোমেলো পুরোনো প্যানেল কি গুছিয়ে দেন?", a: "হ্যাঁ — পুরোনো প্যানেল নতুন করে ড্রেসিং ও লেবেলিং আমাদের নিয়মিত কাজ।" },
     ],
-    images: ["panel-room-4", "supershop-2"], pairs: ["shop-restaurant-supershop-maintenance"],
+    images: ["panel-10", "panel-2"], pairs: [],
   },
-
+  {
+    slug: "office-electrical-wiring", site: "electric", group: "commercial",
+    name: "Office Electrical Wiring & Rewiring", nameBn: "অফিস ইলেকট্রিক্যাল ওয়্যারিং ও রিওয়্যারিং",
+    summary: "Complete office wiring: workstation power, lighting circuits, AC lines, UPS/IPS lines, tidy cable routing and DB layout.",
+    summaryBn: "সম্পূর্ণ অফিস ওয়্যারিং — ওয়ার্কস্টেশন পাওয়ার, লাইটিং সার্কিট, এসি লাইন, ইউপিএস/আইপিএস লাইন, গোছানো তার ও ডিবি লেআউট।",
+    includes: ["Site survey and written proposal", "Workstation power points", "Lighting and AC circuits", "UPS / IPS backup lines", "Testing and handover drawing"],
+    includesBn: ["সাইট সার্ভে ও লিখিত প্রস্তাব", "ওয়ার্কস্টেশন পাওয়ার পয়েন্ট", "লাইটিং ও এসি সার্কিট", "ইউপিএস / আইপিএস ব্যাকআপ লাইন", "টেস্টিং ও হস্তান্তর ড্রয়িং"],
+    faqs: [
+      { q: "Can you work on a running office?", a: "Yes, in phases or after hours to avoid disturbing work." },
+      { q: "Do you provide a wiring diagram?", a: "Yes, a simple circuit and DB layout is handed over at the end." },
+    ],
+    faqsBn: [
+      { q: "চালু অফিসে কি কাজ করতে পারবেন?", a: "হ্যাঁ, ধাপে ধাপে বা অফিস সময়ের পরে, যাতে কাজে ব্যাঘাত না হয়।" },
+      { q: "ওয়্যারিং ডায়াগ্রাম কি দেন?", a: "হ্যাঁ, শেষে সহজ সার্কিট ও ডিবি লেআউট হস্তান্তর করি।" },
+    ],
+    images: ["electrical-drawing", "concealed-wiring", "panel-10"], pairs: ["commercial-plumbing-installation-repair"],
+  },
+  {
+    slug: "mdb-db-sdb-installation-servicing", site: "electric", group: "commercial",
+    name: "MDB, DB & SDB Installation and Servicing", nameBn: "এমডিবি, ডিবি ও এসডিবি লাগানো ও সার্ভিসিং",
+    summary: "Design, installation and servicing of main, distribution and sub-distribution boards for commercial buildings, offices, shops and light industry.",
+    summaryBn: "কমার্শিয়াল বিল্ডিং, অফিস, দোকান ও ছোট কারখানার জন্য মেইন, ডিস্ট্রিবিউশন ও সাব-ডিস্ট্রিবিউশন বোর্ড ডিজাইন, লাগানো ও সার্ভিসিং।",
+    includes: ["Panel design to load", "MCCB / MCB / busbar fitting", "Cable dressing and labelling", "Phase balancing", "Preventive servicing plan"],
+    includesBn: ["লোড অনুযায়ী প্যানেল ডিজাইন", "এমসিসিবি / এমসিবি / বাসবার ফিটিং", "কেবল ড্রেসিং ও লেবেলিং", "ফেজ ব্যালান্সিং", "নিয়মিত সার্ভিসিং পরিকল্পনা"],
+    faqs: [
+      { q: "Do you build new panels or only service them?", a: "Both — new MDB/DB/SDB installation and servicing of existing boards." },
+      { q: "Can you take over an existing building's panel maintenance?", a: "Yes, under a monthly or yearly maintenance contract." },
+    ],
+    faqsBn: [
+      { q: "নতুন প্যানেল বানান নাকি শুধু সার্ভিস করেন?", a: "দুটোই — নতুন এমডিবি/ডিবি/এসডিবি লাগানো এবং পুরোনো বোর্ড সার্ভিসিং।" },
+      { q: "বিল্ডিংয়ের প্যানেল রক্ষণাবেক্ষণের দায়িত্ব কি নেন?", a: "হ্যাঁ, মাসিক বা বার্ষিক রক্ষণাবেক্ষণ চুক্তিতে।" },
+    ],
+    images: ["panel-room-3", "panel-1", "panel-3", "panel-4"], pairs: [],
+  },
+  {
+    slug: "mcb-mccb-circuit-breaker-installation", site: "electric", group: "commercial",
+    name: "MCB, MCCB & Circuit Breaker Installation", nameBn: "এমসিবি, এমসিসিবি ও সার্কিট ব্রেকার লাগানো",
+    summary: "Selection and installation of MCBs, MCCBs, RCCBs and changeover switches rated for your commercial load.",
+    summaryBn: "কমার্শিয়াল লোড অনুযায়ী এমসিবি, এমসিসিবি, আরসিসিবি ও চেঞ্জওভার সুইচ নির্বাচন ও লাগানো।",
+    includes: ["Load calculation", "MCCB / MCB / RCCB fitting", "Changeover switch", "Termination with lugs", "Trip testing"],
+    includesBn: ["লোড হিসাব", "এমসিসিবি / এমসিবি / আরসিসিবি ফিটিং", "চেঞ্জওভার সুইচ", "লাগ দিয়ে টার্মিনেশন", "ট্রিপ টেস্ট"],
+    faqs: [
+      { q: "What is the difference between MCB and MCCB?", a: "MCBs are for smaller currents (up to about 63–100A); MCCBs handle higher currents and are used on main and sub-main lines." },
+      { q: "Do you supply breakers?", a: "Yes, from reputable brands, or we fit breakers you provide." },
+    ],
+    faqsBn: [
+      { q: "এমসিবি আর এমসিসিবির পার্থক্য কী?", a: "এমসিবি কম কারেন্টের জন্য (প্রায় ৬৩–১০০A পর্যন্ত); এমসিসিবি বেশি কারেন্টের জন্য, মেইন ও সাব-মেইন লাইনে ব্যবহার হয়।" },
+      { q: "ব্রেকার কি আপনারা সরবরাহ করেন?", a: "হ্যাঁ, ভালো ব্র্যান্ডের; অথবা আপনার দেওয়া ব্রেকার লাগিয়ে দিই।" },
+    ],
+    images: ["panel-6", "panel-5"], pairs: [],
+  },
   // ───────────── PLUMBING · residential ─────────────
   {
     slug: "plumbing-checkup-inspection", site: "plumbing", group: "residential",
@@ -594,6 +592,23 @@ export const services: Service[] = [
       { q: "একই ভিজিটে কি মেরামত হয়?", a: "সাধারণ ফিটিংয়ে সাধারণত হয়। বড় কাজ আপনার সম্মতির পর সময় ঠিক করে করি।" },
     ],
     images: ["kitchen-sink", "pipe-1"], pairs: ["electrical-checkup-inspection"],
+  },
+  {
+    slug: "geyser-installation", site: "plumbing", group: "residential",
+    name: "Geyser Installation & Water Line Connection", nameBn: "গিজার লাগানো ও পানির লাইন সংযোগ",
+    summary: "Safe geyser installation with strong wall mounting, hot and cold water lines, safety valve and connection to shower and basin.",
+    summaryBn: "নিরাপদ গিজার লাগানো — শক্ত দেয়াল মাউন্টিং, গরম-ঠান্ডা পানির লাইন, সেফটি ভালভ এবং শাওয়ার ও বেসিনে সংযোগ সহ।",
+    includes: ["Wall mounting", "Hot and cold line connection", "Safety / pressure valve", "Connection to shower and basin", "Leak test"],
+    includesBn: ["দেয়ালে মাউন্টিং", "গরম ও ঠান্ডা লাইন সংযোগ", "সেফটি / প্রেশার ভালভ", "শাওয়ার ও বেসিনে সংযোগ", "লিক টেস্ট"],
+    faqs: [
+      { q: "Is the electrical connection included?", a: "Our electrical division checks the cable, breaker and earthing in the same visit — strongly recommended for safety." },
+      { q: "Can you move my geyser when I shift?", a: "Yes, we uninstall and re-install at your new flat." },
+    ],
+    faqsBn: [
+      { q: "ইলেকট্রিক সংযোগ কি এর মধ্যে আছে?", a: "একই ভিজিটে আমাদের ইলেকট্রিক্যাল বিভাগ তার, ব্রেকার ও আর্থিং চেক করে — নিরাপত্তার জন্য খুব জরুরি।" },
+      { q: "বাসা বদলালে কি গিজার সরিয়ে দেন?", a: "হ্যাঁ, খুলে নতুন ফ্ল্যাটে আবার লাগিয়ে দিই।" },
+    ],
+    images: ["water-heater", "pipe-1"], pairs: ["ac-geyser-electrical-connection"],
   },
   {
     slug: "water-leakage-detection-repair", site: "plumbing", group: "residential",
@@ -630,23 +645,6 @@ export const services: Service[] = [
     images: ["sink-mixer", "tap-1", "basin-mixer-drip"], pairs: [],
   },
   {
-    slug: "basin-installation-repair", site: "plumbing", group: "residential",
-    name: "Basin Installation & Repair", nameBn: "বেসিন লাগানো ও মেরামত",
-    summary: "Wall-hung, pedestal and counter basin installation, with tap, waste pipe and bottle trap — plus fixing loose or leaking basins.",
-    summaryBn: "ওয়াল-হ্যাং, পেডেস্টাল ও কাউন্টার বেসিন লাগানো — ট্যাপ, ওয়েস্ট পাইপ ও বোতল ট্র্যাপ সহ; ঢিলা বা লিক বেসিন মেরামত।",
-    includes: ["Basin and bracket fitting", "Tap and angle valve", "Waste pipe and trap", "Silicone sealing", "Leak test"],
-    includesBn: ["বেসিন ও ব্র্যাকেট ফিটিং", "ট্যাপ ও অ্যাঙ্গেল ভালভ", "ওয়েস্ট পাইপ ও ট্র্যাপ", "সিলিকন সিলিং", "লিক টেস্ট"],
-    faqs: [
-      { q: "Can you move a basin to a different wall?", a: "Yes, with new water and drain lines. Send a photo on WhatsApp and we'll advise." },
-      { q: "My basin is shaking. Is that dangerous?", a: "It can crack or fall. We re-fix it with proper brackets." },
-    ],
-    faqsBn: [
-      { q: "বেসিন কি অন্য দেয়ালে সরানো যায়?", a: "হ্যাঁ, নতুন পানি ও ড্রেন লাইন দিয়ে। হোয়াটসঅ্যাপে ছবি পাঠান, পরামর্শ দেব।" },
-      { q: "বেসিন নড়ছে, এটা কি বিপজ্জনক?", a: "ফেটে যেতে বা পড়ে যেতে পারে। সঠিক ব্র্যাকেট দিয়ে আবার শক্ত করে লাগাই।" },
-    ],
-    images: ["basin-install", "tap-1"], pairs: [],
-  },
-  {
     slug: "commode-installation-repair", site: "plumbing", group: "residential",
     name: "Commode Installation & Repair", nameBn: "কমোড লাগানো ও মেরামত",
     summary: "Installation of floor-mounted and wall-hung commodes, flush tank repair, seat replacement and fixing leaks at the base.",
@@ -664,21 +662,38 @@ export const services: Service[] = [
     images: ["commode-1", "commode-2", "commode-blockage"], pairs: [],
   },
   {
-    slug: "bathroom-kitchen-plumbing", site: "plumbing", group: "residential",
-    name: "Bathroom & Kitchen Plumbing", nameBn: "বাথরুম ও কিচেন প্লাম্বিং",
-    summary: "Complete bathroom and kitchen plumbing — new fittings, sink and basin lines, floor traps, renovations and leak repairs.",
-    summaryBn: "সম্পূর্ণ বাথরুম ও কিচেন প্লাম্বিং — নতুন ফিটিং, সিংক ও বেসিন লাইন, ফ্লোর ট্র্যাপ, রেনোভেশন ও লিক মেরামত।",
-    includes: ["Site visit and written estimate", "Water and drain line layout", "Sink, basin and shower fitting", "Floor trap work", "Testing before tiling"],
-    includesBn: ["সাইট ভিজিট ও লিখিত এস্টিমেট", "পানি ও ড্রেন লাইনের লেআউট", "সিংক, বেসিন ও শাওয়ার ফিটিং", "ফ্লোর ট্র্যাপের কাজ", "টাইলসের আগে টেস্ট"],
+    slug: "drain-blockage-removal", site: "plumbing", group: "residential",
+    name: "Drain / Pipe Blockage Removal", nameBn: "ড্রেন / পাইপ ব্লকেজ পরিষ্কার",
+    summary: "Clearing blocked floor traps, commode lines, bathroom drains and main sewer pipes with proper tools — no harsh chemicals.",
+    summaryBn: "ফ্লোর ট্র্যাপ, কমোড লাইন, বাথরুম ড্রেন ও মেইন স্যুয়ার পাইপের ব্লকেজ সঠিক যন্ত্রে পরিষ্কার — কড়া কেমিক্যাল ছাড়া।",
+    includes: ["Blockage location", "Spring / machine cleaning", "Floor trap cleaning", "Flow test", "Prevention tips"],
+    includesBn: ["ব্লকেজের জায়গা খোঁজা", "স্প্রিং / মেশিন দিয়ে পরিষ্কার", "ফ্লোর ট্র্যাপ পরিষ্কার", "পানি যাওয়ার টেস্ট", "আবার আটকানো রোধের টিপস"],
     faqs: [
-      { q: "Do you work with tile and renovation contractors?", a: "Yes. We do the plumbing before tiling and test the lines so nothing leaks later." },
-      { q: "Do you do bathroom electrical work too?", a: "Our electrical division handles bathroom lights, exhaust fan and geyser lines." },
+      { q: "Should I pour acid or chemicals into a blocked drain?", a: "No. Chemicals damage pipes and are dangerous. Mechanical cleaning is safer and lasts longer." },
+      { q: "Is this for basins and sinks too?", a: "For basins and kitchen sinks only, see Basin & Sink Drain Cleaning." },
     ],
     faqsBn: [
-      { q: "টাইলস ও রেনোভেশন কন্ট্রাক্টরের সাথে কি কাজ করেন?", a: "হ্যাঁ। টাইলসের আগে প্লাম্বিং করে লাইন টেস্ট করি, যাতে পরে লিক না হয়।" },
-      { q: "বাথরুমের ইলেকট্রিক কাজও কি করেন?", a: "আমাদের ইলেকট্রিক্যাল বিভাগ বাথরুমের লাইট, এগজস্ট ফ্যান ও গিজার লাইন করে।" },
+      { q: "আটকানো ড্রেনে কি অ্যাসিড বা কেমিক্যাল ঢালব?", a: "না। কেমিক্যাল পাইপ নষ্ট করে এবং বিপজ্জনক। যন্ত্র দিয়ে পরিষ্কার বেশি নিরাপদ ও টেকসই।" },
+      { q: "বেসিন ও সিংকের জন্যও কি এটা?", a: "শুধু বেসিন ও কিচেন সিংকের জন্য 'বেসিন ও সিংক ড্রেন পরিষ্কার' দেখুন।" },
     ],
-    images: ["sink-mixer", "basin-install", "kitchen-sink", "commode-1"], pairs: ["light-installation-repair"],
+    images: ["commode-blockage", "kitchen-sink"], pairs: [],
+  },
+  {
+    slug: "basin-installation-repair", site: "plumbing", group: "residential",
+    name: "Basin Installation & Repair", nameBn: "বেসিন লাগানো ও মেরামত",
+    summary: "Wall-hung, pedestal and counter basin installation, with tap, waste pipe and bottle trap — plus fixing loose or leaking basins.",
+    summaryBn: "ওয়াল-হ্যাং, পেডেস্টাল ও কাউন্টার বেসিন লাগানো — ট্যাপ, ওয়েস্ট পাইপ ও বোতল ট্র্যাপ সহ; ঢিলা বা লিক বেসিন মেরামত।",
+    includes: ["Basin and bracket fitting", "Tap and angle valve", "Waste pipe and trap", "Silicone sealing", "Leak test"],
+    includesBn: ["বেসিন ও ব্র্যাকেট ফিটিং", "ট্যাপ ও অ্যাঙ্গেল ভালভ", "ওয়েস্ট পাইপ ও ট্র্যাপ", "সিলিকন সিলিং", "লিক টেস্ট"],
+    faqs: [
+      { q: "Can you move a basin to a different wall?", a: "Yes, with new water and drain lines. Send a photo on WhatsApp and we'll advise." },
+      { q: "My basin is shaking. Is that dangerous?", a: "It can crack or fall. We re-fix it with proper brackets." },
+    ],
+    faqsBn: [
+      { q: "বেসিন কি অন্য দেয়ালে সরানো যায়?", a: "হ্যাঁ, নতুন পানি ও ড্রেন লাইন দিয়ে। হোয়াটসঅ্যাপে ছবি পাঠান, পরামর্শ দেব।" },
+      { q: "বেসিন নড়ছে, এটা কি বিপজ্জনক?", a: "ফেটে যেতে বা পড়ে যেতে পারে। সঠিক ব্র্যাকেট দিয়ে আবার শক্ত করে লাগাই।" },
+    ],
+    images: ["basin-install", "tap-1"], pairs: [],
   },
   {
     slug: "shower-installation-repair", site: "plumbing", group: "residential",
@@ -715,23 +730,6 @@ export const services: Service[] = [
     images: ["basin-mixer-drip", "sink-mixer", "tap-1"], pairs: [],
   },
   {
-    slug: "water-line-installation-repair", site: "plumbing", group: "residential",
-    name: "New Water Line Installation & Repair", nameBn: "নতুন পানির লাইন লাগানো ও মেরামত",
-    summary: "New water lines with quality PPR or uPVC pipes for flats, kitchens, bathrooms and rooftops, plus repair of old and rusted lines.",
-    summaryBn: "ফ্ল্যাট, কিচেন, বাথরুম ও ছাদের জন্য মানসম্মত পিপিআর বা ইউপিভিসি পাইপে নতুন পানির লাইন এবং পুরোনো-মরিচা ধরা লাইন মেরামত।",
-    includes: ["Site visit and written estimate", "PPR / uPVC pipe work", "Concealed or open lines", "Valves at key points", "Pressure test"],
-    includesBn: ["সাইট ভিজিট ও লিখিত এস্টিমেট", "পিপিআর / ইউপিভিসি পাইপের কাজ", "কনসিল্ড বা খোলা লাইন", "গুরুত্বপূর্ণ জায়গায় ভালভ", "প্রেশার টেস্ট"],
-    faqs: [
-      { q: "Which pipe is better, PPR or GI?", a: "PPR doesn't rust and is the common choice for new lines; old GI lines rust and reduce pressure over time." },
-      { q: "Can you replace lines without breaking all the tiles?", a: "Often we run new lines on a new route to minimise breaking. We explain options first." },
-    ],
-    faqsBn: [
-      { q: "পিপিআর না জিআই — কোন পাইপ ভালো?", a: "পিপিআরে মরিচা ধরে না, নতুন লাইনে এটিই বেশি ব্যবহৃত; পুরোনো জিআই লাইনে মরিচা ধরে সময়ের সাথে প্রেশার কমে।" },
-      { q: "সব টাইলস না ভেঙে কি লাইন বদলানো যায়?", a: "অনেক সময় নতুন পথে লাইন নিয়ে ভাঙচুর কমাই। আগে বিকল্পগুলো বুঝিয়ে বলি।" },
-    ],
-    images: ["pipe-1"], pairs: [],
-  },
-  {
     slug: "water-pipe-leakage-repair", site: "plumbing", group: "residential",
     name: "Water Pipe Leakage Repair", nameBn: "পানির পাইপ লিকেজ মেরামত",
     summary: "Fast repair of visible pipe leaks, burst pipes, leaking joints and valves — under sinks, in bathrooms, on rooftops and in pump rooms.",
@@ -747,23 +745,6 @@ export const services: Service[] = [
       { q: "এটা কি লিক শনাক্তকরণ থেকে আলাদা?", a: "হ্যাঁ — এটা চোখে দেখা যায় এমন লিকের জন্য। দেয়াল বা সিলিংয়ের লুকানো লিকের জন্য 'পানি লিকেজ শনাক্ত' দেখুন।" },
     ],
     images: ["pipe-1"], pairs: [],
-  },
-  {
-    slug: "drain-blockage-removal", site: "plumbing", group: "residential",
-    name: "Drain / Pipe Blockage Removal", nameBn: "ড্রেন / পাইপ ব্লকেজ পরিষ্কার",
-    summary: "Clearing blocked floor traps, commode lines, bathroom drains and main sewer pipes with proper tools — no harsh chemicals.",
-    summaryBn: "ফ্লোর ট্র্যাপ, কমোড লাইন, বাথরুম ড্রেন ও মেইন স্যুয়ার পাইপের ব্লকেজ সঠিক যন্ত্রে পরিষ্কার — কড়া কেমিক্যাল ছাড়া।",
-    includes: ["Blockage location", "Spring / machine cleaning", "Floor trap cleaning", "Flow test", "Prevention tips"],
-    includesBn: ["ব্লকেজের জায়গা খোঁজা", "স্প্রিং / মেশিন দিয়ে পরিষ্কার", "ফ্লোর ট্র্যাপ পরিষ্কার", "পানি যাওয়ার টেস্ট", "আবার আটকানো রোধের টিপস"],
-    faqs: [
-      { q: "Should I pour acid or chemicals into a blocked drain?", a: "No. Chemicals damage pipes and are dangerous. Mechanical cleaning is safer and lasts longer." },
-      { q: "Is this for basins and sinks too?", a: "For basins and kitchen sinks only, see Basin & Sink Drain Cleaning." },
-    ],
-    faqsBn: [
-      { q: "আটকানো ড্রেনে কি অ্যাসিড বা কেমিক্যাল ঢালব?", a: "না। কেমিক্যাল পাইপ নষ্ট করে এবং বিপজ্জনক। যন্ত্র দিয়ে পরিষ্কার বেশি নিরাপদ ও টেকসই।" },
-      { q: "বেসিন ও সিংকের জন্যও কি এটা?", a: "শুধু বেসিন ও কিচেন সিংকের জন্য 'বেসিন ও সিংক ড্রেন পরিষ্কার' দেখুন।" },
-    ],
-    images: ["commode-blockage", "kitchen-sink"], pairs: [],
   },
   {
     slug: "basin-sink-drain-cleaning", site: "plumbing", group: "residential",
@@ -783,21 +764,38 @@ export const services: Service[] = [
     images: ["kitchen-sink", "sink-mixer"], pairs: [],
   },
   {
-    slug: "geyser-installation", site: "plumbing", group: "residential",
-    name: "Geyser Installation & Water Line Connection", nameBn: "গিজার লাগানো ও পানির লাইন সংযোগ",
-    summary: "Safe geyser installation with strong wall mounting, hot and cold water lines, safety valve and connection to shower and basin.",
-    summaryBn: "নিরাপদ গিজার লাগানো — শক্ত দেয়াল মাউন্টিং, গরম-ঠান্ডা পানির লাইন, সেফটি ভালভ এবং শাওয়ার ও বেসিনে সংযোগ সহ।",
-    includes: ["Wall mounting", "Hot and cold line connection", "Safety / pressure valve", "Connection to shower and basin", "Leak test"],
-    includesBn: ["দেয়ালে মাউন্টিং", "গরম ও ঠান্ডা লাইন সংযোগ", "সেফটি / প্রেশার ভালভ", "শাওয়ার ও বেসিনে সংযোগ", "লিক টেস্ট"],
+    slug: "bathroom-kitchen-plumbing", site: "plumbing", group: "residential",
+    name: "Bathroom & Kitchen Plumbing", nameBn: "বাথরুম ও কিচেন প্লাম্বিং",
+    summary: "Complete bathroom and kitchen plumbing — new fittings, sink and basin lines, floor traps, renovations and leak repairs.",
+    summaryBn: "সম্পূর্ণ বাথরুম ও কিচেন প্লাম্বিং — নতুন ফিটিং, সিংক ও বেসিন লাইন, ফ্লোর ট্র্যাপ, রেনোভেশন ও লিক মেরামত।",
+    includes: ["Site visit and written estimate", "Water and drain line layout", "Sink, basin and shower fitting", "Floor trap work", "Testing before tiling"],
+    includesBn: ["সাইট ভিজিট ও লিখিত এস্টিমেট", "পানি ও ড্রেন লাইনের লেআউট", "সিংক, বেসিন ও শাওয়ার ফিটিং", "ফ্লোর ট্র্যাপের কাজ", "টাইলসের আগে টেস্ট"],
     faqs: [
-      { q: "Is the electrical connection included?", a: "Our electrical division checks the cable, breaker and earthing in the same visit — strongly recommended for safety." },
-      { q: "Can you move my geyser when I shift?", a: "Yes, we uninstall and re-install at your new flat." },
+      { q: "Do you work with tile and renovation contractors?", a: "Yes. We do the plumbing before tiling and test the lines so nothing leaks later." },
+      { q: "Do you do bathroom electrical work too?", a: "Our electrical division handles bathroom lights, exhaust fan and geyser lines." },
     ],
     faqsBn: [
-      { q: "ইলেকট্রিক সংযোগ কি এর মধ্যে আছে?", a: "একই ভিজিটে আমাদের ইলেকট্রিক্যাল বিভাগ তার, ব্রেকার ও আর্থিং চেক করে — নিরাপত্তার জন্য খুব জরুরি।" },
-      { q: "বাসা বদলালে কি গিজার সরিয়ে দেন?", a: "হ্যাঁ, খুলে নতুন ফ্ল্যাটে আবার লাগিয়ে দিই।" },
+      { q: "টাইলস ও রেনোভেশন কন্ট্রাক্টরের সাথে কি কাজ করেন?", a: "হ্যাঁ। টাইলসের আগে প্লাম্বিং করে লাইন টেস্ট করি, যাতে পরে লিক না হয়।" },
+      { q: "বাথরুমের ইলেকট্রিক কাজও কি করেন?", a: "আমাদের ইলেকট্রিক্যাল বিভাগ বাথরুমের লাইট, এগজস্ট ফ্যান ও গিজার লাইন করে।" },
     ],
-    images: ["water-heater", "pipe-1"], pairs: ["ac-geyser-electrical-connection"],
+    images: ["sink-mixer", "basin-install", "kitchen-sink", "commode-1"], pairs: ["light-installation-repair"],
+  },
+  {
+    slug: "water-line-installation-repair", site: "plumbing", group: "residential",
+    name: "New Water Line Installation & Repair", nameBn: "নতুন পানির লাইন লাগানো ও মেরামত",
+    summary: "New water lines with quality PPR or uPVC pipes for flats, kitchens, bathrooms and rooftops, plus repair of old and rusted lines.",
+    summaryBn: "ফ্ল্যাট, কিচেন, বাথরুম ও ছাদের জন্য মানসম্মত পিপিআর বা ইউপিভিসি পাইপে নতুন পানির লাইন এবং পুরোনো-মরিচা ধরা লাইন মেরামত।",
+    includes: ["Site visit and written estimate", "PPR / uPVC pipe work", "Concealed or open lines", "Valves at key points", "Pressure test"],
+    includesBn: ["সাইট ভিজিট ও লিখিত এস্টিমেট", "পিপিআর / ইউপিভিসি পাইপের কাজ", "কনসিল্ড বা খোলা লাইন", "গুরুত্বপূর্ণ জায়গায় ভালভ", "প্রেশার টেস্ট"],
+    faqs: [
+      { q: "Which pipe is better, PPR or GI?", a: "PPR doesn't rust and is the common choice for new lines; old GI lines rust and reduce pressure over time." },
+      { q: "Can you replace lines without breaking all the tiles?", a: "Often we run new lines on a new route to minimise breaking. We explain options first." },
+    ],
+    faqsBn: [
+      { q: "পিপিআর না জিআই — কোন পাইপ ভালো?", a: "পিপিআরে মরিচা ধরে না, নতুন লাইনে এটিই বেশি ব্যবহৃত; পুরোনো জিআই লাইনে মরিচা ধরে সময়ের সাথে প্রেশার কমে।" },
+      { q: "সব টাইলস না ভেঙে কি লাইন বদলানো যায়?", a: "অনেক সময় নতুন পথে লাইন নিয়ে ভাঙচুর কমাই। আগে বিকল্পগুলো বুঝিয়ে বলি।" },
+    ],
+    images: ["pipe-1"], pairs: [],
   },
   {
     slug: "water-pump-installation", site: "plumbing", group: "residential",
@@ -833,8 +831,24 @@ export const services: Service[] = [
     ],
     images: ["tap-1"], pairs: [],
   },
-
-  // ───────────── PLUMBING · home services ─────────────
+  // ───────────── PLUMBING · home ─────────────
+  {
+    slug: "gas-stove-installation-repair", site: "plumbing", group: "home",
+    name: "Gas Stove Installation & Repair", nameBn: "গ্যাসের চুলা লাগানো ও মেরামত",
+    summary: "Gas stove installation, burner and knob repair, gas pipe and regulator connection, and leak checks for line gas and cylinders.",
+    summaryBn: "গ্যাসের চুলা লাগানো, বার্নার ও নব মেরামত, গ্যাস পাইপ ও রেগুলেটর সংযোগ এবং লাইন গ্যাস ও সিলিন্ডারের লিক চেক।",
+    includes: ["Stove fitting", "Pipe and regulator connection", "Burner and knob repair", "Soap-bubble leak test", "Safety advice"],
+    includesBn: ["চুলা ফিটিং", "পাইপ ও রেগুলেটর সংযোগ", "বার্নার ও নব মেরামত", "সাবান-ফেনা দিয়ে লিক টেস্ট", "নিরাপত্তা পরামর্শ"],
+    faqs: [
+      { q: "I smell gas. What should I do?", a: "Turn off the stove and cylinder/regulator, open windows, don't switch lights on or off, and get help immediately." },
+      { q: "Do you install kitchen hoods too?", a: "Yes — our electrical division installs and cleans kitchen hoods." },
+    ],
+    faqsBn: [
+      { q: "গ্যাসের গন্ধ পাচ্ছি, কী করব?", a: "চুলা ও সিলিন্ডার/রেগুলেটর বন্ধ করুন, জানালা খুলে দিন, লাইটের সুইচ চালু-বন্ধ করবেন না, এবং দ্রুত সাহায্য নিন।" },
+      { q: "কিচেন হুডও কি লাগান?", a: "হ্যাঁ — আমাদের ইলেকট্রিক্যাল বিভাগ কিচেন হুড লাগায় ও পরিষ্কার করে।" },
+    ],
+    images: ["gas-stove", "kitchen-sink"], pairs: ["kitchen-hood-installation-cleaning"],
+  },
   {
     slug: "washing-machine-installation", site: "plumbing", group: "home",
     name: "Washing Machine Installation", nameBn: "ওয়াশিং মেশিন লাগানো",
@@ -870,21 +884,21 @@ export const services: Service[] = [
     images: ["water-filter", "kitchen-sink"], pairs: ["ips-installation"],
   },
   {
-    slug: "gas-stove-installation-repair", site: "plumbing", group: "home",
-    name: "Gas Stove Installation & Repair", nameBn: "গ্যাসের চুলা লাগানো ও মেরামত",
-    summary: "Gas stove installation, burner and knob repair, gas pipe and regulator connection, and leak checks for line gas and cylinders.",
-    summaryBn: "গ্যাসের চুলা লাগানো, বার্নার ও নব মেরামত, গ্যাস পাইপ ও রেগুলেটর সংযোগ এবং লাইন গ্যাস ও সিলিন্ডারের লিক চেক।",
-    includes: ["Stove fitting", "Pipe and regulator connection", "Burner and knob repair", "Soap-bubble leak test", "Safety advice"],
-    includesBn: ["চুলা ফিটিং", "পাইপ ও রেগুলেটর সংযোগ", "বার্নার ও নব মেরামত", "সাবান-ফেনা দিয়ে লিক টেস্ট", "নিরাপত্তা পরামর্শ"],
+    slug: "bathroom-accessories-installation", site: "plumbing", group: "home",
+    name: "Bathroom Accessories Installation (Towel Rack & Soap Holder)", nameBn: "বাথরুম অ্যাক্সেসরিজ লাগানো (টাওয়েল র‍্যাক ও সোপ হোল্ডার)",
+    summary: "Installation of towel racks, soap holders, tissue holders, shelves, hooks and grab bars — neatly fitted on tiles without cracks.",
+    summaryBn: "টাওয়েল র‍্যাক, সোপ হোল্ডার, টিস্যু হোল্ডার, শেলফ, হুক ও গ্র্যাব বার লাগানো — টাইলস না ফাটিয়ে গোছানোভাবে।",
+    includes: ["Towel rack and rail", "Soap and tissue holders", "Corner shelves and hooks", "Grab bars for elderly", "Tile-safe drilling"],
+    includesBn: ["টাওয়েল র‍্যাক ও রেল", "সোপ ও টিস্যু হোল্ডার", "কর্নার শেলফ ও হুক", "বয়স্কদের জন্য গ্র্যাব বার", "টাইলস-নিরাপদ ড্রিলিং"],
     faqs: [
-      { q: "I smell gas. What should I do?", a: "Turn off the stove and cylinder/regulator, open windows, don't switch lights on or off, and get help immediately." },
-      { q: "Do you install kitchen hoods too?", a: "Yes — our electrical division installs and cleans kitchen hoods." },
+      { q: "Can you fit a full bathroom accessory set in one visit?", a: "Yes, most sets take 1–2 hours." },
+      { q: "Do you fit grab bars for elderly family members?", a: "Yes, with strong anchors suitable for body weight." },
     ],
     faqsBn: [
-      { q: "গ্যাসের গন্ধ পাচ্ছি, কী করব?", a: "চুলা ও সিলিন্ডার/রেগুলেটর বন্ধ করুন, জানালা খুলে দিন, লাইটের সুইচ চালু-বন্ধ করবেন না, এবং দ্রুত সাহায্য নিন।" },
-      { q: "কিচেন হুডও কি লাগান?", a: "হ্যাঁ — আমাদের ইলেকট্রিক্যাল বিভাগ কিচেন হুড লাগায় ও পরিষ্কার করে।" },
+      { q: "এক ভিজিটে কি পুরো বাথরুম অ্যাক্সেসরিজ সেট লাগানো যায়?", a: "হ্যাঁ, বেশিরভাগ সেটে ১–২ ঘণ্টা লাগে।" },
+      { q: "বয়স্কদের জন্য গ্র্যাব বার কি লাগান?", a: "হ্যাঁ, শরীরের ভার বহনের উপযোগী শক্ত অ্যাংকর দিয়ে।" },
     ],
-    images: ["gas-stove", "kitchen-sink"], pairs: ["kitchen-hood-installation-cleaning"],
+    images: ["commode-2"], pairs: ["wall-shelf-installation"],
   },
   {
     slug: "wall-mirror-installation", site: "plumbing", group: "home",
@@ -904,23 +918,6 @@ export const services: Service[] = [
     images: ["tap-1"], pairs: ["tv-wall-mount-installation", "picture-frame-installation"],
   },
   {
-    slug: "bathroom-accessories-installation", site: "plumbing", group: "home",
-    name: "Bathroom Accessories Installation (Towel Rack & Soap Holder)", nameBn: "বাথরুম অ্যাক্সেসরিজ লাগানো (টাওয়েল র‍্যাক ও সোপ হোল্ডার)",
-    summary: "Installation of towel racks, soap holders, tissue holders, shelves, hooks and grab bars — neatly fitted on tiles without cracks.",
-    summaryBn: "টাওয়েল র‍্যাক, সোপ হোল্ডার, টিস্যু হোল্ডার, শেলফ, হুক ও গ্র্যাব বার লাগানো — টাইলস না ফাটিয়ে গোছানোভাবে।",
-    includes: ["Towel rack and rail", "Soap and tissue holders", "Corner shelves and hooks", "Grab bars for elderly", "Tile-safe drilling"],
-    includesBn: ["টাওয়েল র‍্যাক ও রেল", "সোপ ও টিস্যু হোল্ডার", "কর্নার শেলফ ও হুক", "বয়স্কদের জন্য গ্র্যাব বার", "টাইলস-নিরাপদ ড্রিলিং"],
-    faqs: [
-      { q: "Can you fit a full bathroom accessory set in one visit?", a: "Yes, most sets take 1–2 hours." },
-      { q: "Do you fit grab bars for elderly family members?", a: "Yes, with strong anchors suitable for body weight." },
-    ],
-    faqsBn: [
-      { q: "এক ভিজিটে কি পুরো বাথরুম অ্যাক্সেসরিজ সেট লাগানো যায়?", a: "হ্যাঁ, বেশিরভাগ সেটে ১–২ ঘণ্টা লাগে।" },
-      { q: "বয়স্কদের জন্য গ্র্যাব বার কি লাগান?", a: "হ্যাঁ, শরীরের ভার বহনের উপযোগী শক্ত অ্যাংকর দিয়ে।" },
-    ],
-    images: ["commode-2"], pairs: ["wall-shelf-installation"],
-  },
-  {
     slug: "minor-home-maintenance-repair", site: "plumbing", group: "home",
     name: "Minor Home Maintenance & Repair", nameBn: "ছোটখাটো ঘরোয়া রক্ষণাবেক্ষণ ও মেরামত",
     summary: "One visit for the small jobs list — dripping taps, loose fittings, door issues, small leaks and odd jobs around the flat.",
@@ -937,7 +934,6 @@ export const services: Service[] = [
     ],
     images: ["kitchen-sink", "tap-1"], pairs: ["electrical-checkup-inspection"],
   },
-
   // ───────────── PLUMBING · commercial ─────────────
   {
     slug: "commercial-plumbing-checkup", site: "plumbing", group: "commercial",
@@ -974,23 +970,6 @@ export const services: Service[] = [
     images: ["supershop-1"], pairs: ["office-electrical-wiring"],
   },
   {
-    slug: "water-supply-line-installation", site: "plumbing", group: "commercial",
-    name: "Water Supply Line Installation & Repair", nameBn: "পানি সরবরাহ লাইন লাগানো ও মেরামত",
-    summary: "Main water supply lines, riser pipes, overhead and underground tank connections for buildings, with valves for easy maintenance.",
-    summaryBn: "বিল্ডিংয়ের মেইন পানি সরবরাহ লাইন, রাইজার পাইপ, ছাদ ও মাটির নিচের ট্যাংক সংযোগ — সহজ রক্ষণাবেক্ষণের জন্য ভালভ সহ।",
-    includes: ["Line route planning", "Riser and main lines", "Tank connections", "Isolation valves", "Pressure test"],
-    includesBn: ["লাইনের পথ পরিকল্পনা", "রাইজার ও মেইন লাইন", "ট্যাংক সংযোগ", "আইসোলেশন ভালভ", "প্রেশার টেস্ট"],
-    faqs: [
-      { q: "Can you replace a building's old GI riser?", a: "Yes, floor by floor to keep water running for residents as much as possible." },
-      { q: "Do you clean water tanks?", a: "Ask us on WhatsApp — we can arrange tank cleaning with line work." },
-    ],
-    faqsBn: [
-      { q: "বিল্ডিংয়ের পুরোনো জিআই রাইজার কি বদলাতে পারবেন?", a: "হ্যাঁ, তলা ধরে ধরে, যাতে বাসিন্দাদের পানি যতটা সম্ভব চালু থাকে।" },
-      { q: "পানির ট্যাংক কি পরিষ্কার করেন?", a: "হোয়াটসঅ্যাপে জিজ্ঞেস করুন — লাইনের কাজের সাথে ট্যাংক পরিষ্কারের ব্যবস্থা করতে পারি।" },
-    ],
-    images: ["pipe-1"], pairs: [],
-  },
-  {
     slug: "commercial-drainage-blockage-removal", site: "plumbing", group: "commercial",
     name: "Commercial Drainage & Blockage Removal", nameBn: "কমার্শিয়াল ড্রেনেজ ও ব্লকেজ পরিষ্কার",
     summary: "Clearing blocked drains, sewer lines and grease-heavy restaurant kitchen drains for shops, restaurants and buildings.",
@@ -1006,6 +985,23 @@ export const services: Service[] = [
       { q: "বন্ধের পরে কি আসতে পারবেন?", a: "হ্যাঁ, রেস্টুরেন্ট ও দোকানের জন্য রাতে কাজ করি।" },
     ],
     images: ["commode-blockage", "supershop-1"], pairs: [],
+  },
+  {
+    slug: "water-supply-line-installation", site: "plumbing", group: "commercial",
+    name: "Water Supply Line Installation & Repair", nameBn: "পানি সরবরাহ লাইন লাগানো ও মেরামত",
+    summary: "Main water supply lines, riser pipes, overhead and underground tank connections for buildings, with valves for easy maintenance.",
+    summaryBn: "বিল্ডিংয়ের মেইন পানি সরবরাহ লাইন, রাইজার পাইপ, ছাদ ও মাটির নিচের ট্যাংক সংযোগ — সহজ রক্ষণাবেক্ষণের জন্য ভালভ সহ।",
+    includes: ["Line route planning", "Riser and main lines", "Tank connections", "Isolation valves", "Pressure test"],
+    includesBn: ["লাইনের পথ পরিকল্পনা", "রাইজার ও মেইন লাইন", "ট্যাংক সংযোগ", "আইসোলেশন ভালভ", "প্রেশার টেস্ট"],
+    faqs: [
+      { q: "Can you replace a building's old GI riser?", a: "Yes, floor by floor to keep water running for residents as much as possible." },
+      { q: "Do you clean water tanks?", a: "Ask us on WhatsApp — we can arrange tank cleaning with line work." },
+    ],
+    faqsBn: [
+      { q: "বিল্ডিংয়ের পুরোনো জিআই রাইজার কি বদলাতে পারবেন?", a: "হ্যাঁ, তলা ধরে ধরে, যাতে বাসিন্দাদের পানি যতটা সম্ভব চালু থাকে।" },
+      { q: "পানির ট্যাংক কি পরিষ্কার করেন?", a: "হোয়াটসঅ্যাপে জিজ্ঞেস করুন — লাইনের কাজের সাথে ট্যাংক পরিষ্কারের ব্যবস্থা করতে পারি।" },
+    ],
+    images: ["pipe-1"], pairs: [],
   },
   {
     slug: "shop-restaurant-supershop-maintenance", site: "plumbing", group: "commercial",

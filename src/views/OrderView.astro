@@ -20,7 +20,7 @@ const crumbs = [{ name: t(lang, "breadcrumbHome"), href: lp(lang, "/") }, { name
   <div class="wrap page-head"><Breadcrumbs items={crumbs} /></div>
   <section class="eps" style="padding-bottom:3rem">
     <div class="wrap">
-      <h1 style="font-size:clamp(1.7rem,5vw,2.4rem);font-weight:700">{T.chooseService}</h1>
+      <h1 style="font-size:clamp(1.7rem,5vw,2.4rem);font-weight:700" data-choose-title data-t-order={T.chooseService} data-t-enquiry={T.chooseEnquiry}>{T.chooseService}</h1>
       <p class="muted">{T.heroText}</p>
       <ServiceGrid lang={lang} />
     </div>

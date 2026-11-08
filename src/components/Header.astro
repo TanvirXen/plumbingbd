@@ -17,15 +17,16 @@ const links = [
   { href: lp(lang, "/about/"), label: t(lang, "about") },
   { href: lp(lang, "/contact/"), label: t(lang, "contact") },
 ];
+// Link to the sister site keeps an English visitor in English (?lang=en), since each site remembers the choice separately.
 const divisionLink = (key: "electric" | "plumbing") =>
-  site.key === key ? lp(lang, "/") : sites[key].url + lp(lang, "/");
+  site.key === key ? lp(lang, "/") : sites[key].url + lp(lang, "/") + (lang === "en" ? "?lang=en" : "");
 ---
 <a class="skip" href="#main">{t(lang, "skip")}</a>
 <div class="topbar">
   <div class="wrap">
     <nav class="switch" aria-label="Divisions">
-      <a href={divisionLink("electric")} aria-current={site.key === "electric" ? "true" : "false"}>⚡ {lang === "bn" ? sites.electric.tradeBn : sites.electric.trade}</a>
-      <a href={divisionLink("plumbing")} aria-current={site.key === "plumbing" ? "true" : "false"}>💧 {lang === "bn" ? sites.plumbing.tradeBn : sites.plumbing.trade}</a>
+      <a href={divisionLink("electric")} data-div="electric" aria-current={site.key === "electric" ? "true" : "false"}>⚡ {lang === "bn" ? sites.electric.tradeBn : sites.electric.trade}</a>
+      <a href={divisionLink("plumbing")} data-div="plumbing" aria-current={site.key === "plumbing" ? "true" : "false"}>💧 {lang === "bn" ? sites.plumbing.tradeBn : sites.plumbing.trade}</a>
     </nav>
     <div class="langswitch" role="group" aria-label={t(lang, "language")}>
       <a href={enHref} hreflang="en" lang="en" aria-current={lang === "en" ? "true" : "false"} data-lang="en">EN</a>
@@ -36,10 +37,9 @@ const divisionLink = (key: "electric" | "plumbing") =>
 <header class="header">
   <div class="wrap">
     <a class="brand" href={lp(lang, "/")}>
-      <img src="/logo-160.webp" width="44" height="44" alt="" />
+      <img src="/logo-160.webp" width="48" height="48" alt="" />
       <span>
         <b>{lang === "bn" ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`}</b>
-        <span>{lang === "bn" ? company.nameBn : company.name}</span>
       </span>
     </a>
     <nav class="nav" aria-label="Main">
@@ -47,7 +47,10 @@ const divisionLink = (key: "electric" | "plumbing") =>
     </nav>
     <a class="btn btn-wa header-call" href={bookHref(lang)} data-track="book"><Icon name="whatsapp" />{t(lang, "bookNow")}</a>
     <details class="menu">
-      <summary>{t(lang, "menu")}</summary>
+      <summary aria-label={t(lang, "menu")}>
+        <svg class="menu-ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        <span>{t(lang, "menu")}</span>
+      </summary>
       <nav class="menu-panel" aria-label="Mobile">
         {links.map((l) => <a href={l.href}>{l.label}</a>)}
         <a href={lp(lang, "/order/")}>{t(lang, "order")}</a>
@@ -59,13 +62,17 @@ const divisionLink = (key: "electric" | "plumbing") =>
   </div>
 </header>
 <script>
-  // Remember the visitor's language choice; next time they open the home page, show it in that language.
+  // Bangla is the default language. Remember the visitor's choice when they tap EN / বাংলা
+  // (localStorage for the browser, a cookie so the server-side redirect in vercel.json can see it too).
   document.querySelectorAll<HTMLAnchorElement>("[data-lang]").forEach((a) =>
-    a.addEventListener("click", () => { try { localStorage.setItem("lang", a.dataset.lang!); } catch {} }),
+    a.addEventListener("click", () => {
+      const lang = a.dataset.lang!;
+      try { localStorage.setItem("lang", lang); } catch {}
+      document.cookie = `lang=${lang}; path=/; max-age=31536000; samesite=lax`;
+    }),
   );
   try {
-    const saved = localStorage.getItem("lang");
-    if (location.pathname === "/" && saved === "bn") location.replace("/bn/");
-    if (location.pathname === "/bn/" && saved === "en") location.replace("/");
+    // someone who chose English and comes back to the Bangla home page gets the English one
+    if (location.pathname === "/bn/" && localStorage.getItem("lang") === "en") location.replace("/");
   } catch {}
 </script>

@@ -1,7 +1,9 @@
 ---
-// /order/<service>/ – exactly the emergencyeps.com order page (WhatsApp-Order-Flowchart-3):
-//   A: one tap on WhatsApp · B: order form (work chips, issue, details, date, time / Urgent, location)
-//   → live message preview → "Send order on WhatsApp".
+// /order/<service>/ – the order form (work chips, issue, details, date, time / Urgent, location)
+//   → live message preview → "Send order" or "Price Enquiry" (same form, message starts "I need Price Enquiry").
+//   Desktop: two columns (left = what & who, right = when & where + send, stays in view).
+//   Phone: one column, the send buttons stay pinned at the bottom of the screen.
+//   ?enquiry=1 (from the Price Enquiry button) makes Price Enquiry the main button.
 // src/scripts/order.ts saves every order in the Google Sheet first and adds the Order ID to the message.
 import Base from "../layouts/Base.astro";
 import EpsIcon from "../components/EpsIcon.astro";
@@ -28,7 +30,7 @@ const config = {
   cat: { letters: c.letters, name: c.name, options },
 };
 ---
-<Base lang={lang} title={`${c.name[lang]} | ${bn ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`}`}
+<Base lang={lang} callbar={false} title={`${c.name[lang]} | ${bn ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`}`}
   description={bn ? `${c.name.bn}: ${c.short.bn}। হোয়াটসঅ্যাপে অর্ডার করুন।` : `${c.name.en} in Uttara, Dhaka: ${c.short.en}. Order on WhatsApp.`}
   path={`/order/${c.key}/`} schema={[breadcrumbLd(crumbs.map((x) => ({ name: x.name, url: site.url + x.href })))]}>
   <div class="eps">
@@ -46,90 +48,89 @@ const config = {
     </section>
 
     <div class="wrap order-body">
-      <p class="order-choose">{T.twoWays}</p>
+      <p class="enquiry-note" id="enquiry-note" hidden><EpsIcon name="tag" /> <span>{T.enquiryNote}<small class="checkup-note">{T.checkupNote}</small></span></p>
+      <section class="card order-card" id="details">
+        <h2>{T.bTitle} <small class="opt">{T.optional}</small></h2>
 
-      <!-- A – one tap -->
-      <section class="card">
-        <h2><span class="letter">A</span> {T.aTitle}</h2>
-        <p class="muted">{T.aText}</p>
-        <p class="bubble">{c.message[lang]}</p>
-        <a class="btn btn-green btn-wide" href={waLink(c.message[lang])} target="_blank" rel="noopener" data-track="whatsapp_a"
-          data-order={JSON.stringify({ letters: c.letters, service: c.name.en, orderType: "WhatsApp (A)" })}>
-          <EpsIcon name="whatsapp" /> {T.aButton}
-        </a>
-      </section>
+        <form class="form order-form" id="order" novalidate>
+          <div class="order-col order-left">
+            <fieldset>
+              <legend>{T.workTitle} <small class="opt">{T.optional}</small></legend>
+              <div class="chips" id="work">
+                {options.map((o) => (
+                  <button type="button" class={o.others ? "chip chip-others" : "chip"} aria-pressed="false" data-work={o.en}><EpsIcon name="check" class="tick" />{o[lang]}</button>
+                ))}
+              </div>
+              <label class="field">
+                <span>{T.issueLabel} <small class="opt">{T.optional}</small></span>
+                <textarea name="issue" rows="2" maxlength="500" placeholder={T.issueHint}></textarea>
+              </label>
+            </fieldset>
 
-      <!-- B – order form -->
-      <section class="card" id="details">
-        <h2><span class="letter">B</span> {T.bTitle}</h2>
-        <p class="muted">{T.bText}</p>
-
-        <form class="form" id="order" novalidate>
-          <fieldset>
-            <legend>{T.workTitle}</legend>
-            <div class="chips" id="work">
-              {options.map((o) => (
-                <button type="button" class="chip" aria-pressed="false" data-work={o.en}><EpsIcon name="check" class="tick" />{o[lang]}</button>
-              ))}
-            </div>
-            <label class="field">
-              <span>{T.issueLabel}</span>
-              <textarea name="issue" rows="3" maxlength="500" placeholder={T.issueHint}></textarea>
-            </label>
-          </fieldset>
-
-          <fieldset>
-            <legend>{T.detailsTitle}</legend>
-            <label class="field"><span>{T.name}</span><input name="name" autocomplete="name" maxlength="80" /></label>
-            <label class="field"><span>{T.address}</span><input name="address" autocomplete="street-address" maxlength="200" placeholder={T.addressHint} /></label>
-            <label class="field">
-              <span>{T.contact}</span>
-              <input name="contact" id="contact" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="01XXXXXXXXX" />
-              <em class="error" id="contact-error" hidden>{T.contactError}</em>
-            </label>
-          </fieldset>
-
-          <fieldset>
-            <legend>{T.dateTitle}</legend>
-            <div class="chips" id="dates"></div>
-          </fieldset>
-
-          <fieldset>
-            <legend>{T.timeTitle}</legend>
-            <div class="chips" id="times">
-              <button type="button" class="chip chip-urgent" aria-pressed="false" data-time="urgent">{T.urgent}</button>
-              {timeSlots.map((s) => <button type="button" class="chip" aria-pressed="false" data-time={`${s.start}-${s.end}`}>{s[lang]}</button>)}
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>{T.locationTitle}</legend>
-            <div class="location-ok" id="loc-ok" hidden>
-              <EpsIcon name="check" />
-              <a id="loc-link" href="#" target="_blank" rel="noopener">{T.locationAdded}</a>
-              <button type="button" class="link-btn" id="loc-remove">{T.remove}</button>
-            </div>
-            <button type="button" class="btn btn-line" id="loc-add"><EpsIcon name="target" /> <span>{T.addLocation}</span></button>
-            <p class="error" id="loc-error" hidden></p>
-          </fieldset>
-
-          <div class="preview" aria-live="polite">
-            <p class="preview-title">{T.preview}</p>
-            <div class="preview-box" id="preview"></div>
-            <p class="muted small">{T.previewNote}</p>
+            <fieldset>
+              <legend>{T.detailsTitle} <small class="opt">{T.optional}</small></legend>
+              <div class="field-pair">
+                <label class="field"><span>{T.name}</span><input name="name" autocomplete="name" maxlength="80" /></label>
+                <label class="field">
+                  <span>{T.contact}</span>
+                  <input name="contact" id="contact" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="01XXXXXXXXX" />
+                  <em class="error" id="contact-error" hidden>{T.contactError}</em>
+                </label>
+              </div>
+              <label class="field"><span>{T.address}</span><input name="address" autocomplete="street-address" maxlength="200" placeholder={T.addressHint} /></label>
+            </fieldset>
           </div>
 
-          <a class="btn btn-green btn-wide btn-big" id="send" href="#" data-order="{}" data-track="whatsapp_b"><EpsIcon name="whatsapp" /> {T.send}</a>
-          <button type="button" class="link-btn center" id="clear">{T.clear}</button>
+          <div class="order-col order-right">
+            <fieldset id="when">
+              <legend>{T.dateTitle} <small class="opt">{T.optional}</small></legend>
+              <div class="chips" id="dates"></div>
+            </fieldset>
+
+            <fieldset>
+              <legend>{T.timeTitle} <small class="opt">{T.optional}</small></legend>
+              <div class="chips" id="times">
+                <button type="button" class="chip chip-urgent" aria-pressed="false" data-time="urgent">{T.urgent}</button>
+                {timeSlots.map((s) => <button type="button" class="chip" aria-pressed="false" data-time={`${s.start}-${s.end}`}>{s[lang]}</button>)}
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>{T.locationTitle} <small class="opt">{T.optional}</small></legend>
+              <div class="location-ok" id="loc-ok" hidden>
+                <EpsIcon name="check" />
+                <a id="loc-link" href="#" target="_blank" rel="noopener">{T.locationAdded}</a>
+                <button type="button" class="link-btn" id="loc-remove">{T.remove}</button>
+              </div>
+              <button type="button" class="btn btn-line btn-small" id="loc-add"><EpsIcon name="target" /> <span>{T.addLocation}</span></button>
+              <p class="error" id="loc-error" hidden></p>
+            </fieldset>
+
+            <details class="preview" id="preview-wrap">
+              <summary class="preview-title">{T.preview}</summary>
+              <div class="preview-box" id="preview" aria-live="polite"></div>
+              <p class="muted small">{T.previewNote}</p>
+            </details>
+
+            <!-- Send: pinned to the bottom of the screen on phones -->
+            <div class="send-dock">
+              <!-- Phones: "scroll down" hint until the customer reaches the end of the form -->
+              <button type="button" class="scroll-hint" id="scroll-hint" hidden>
+                <span>{lang === "bn" ? "নিচে: তারিখ, সময় ও লোকেশন" : "Scroll down: date, time & location"}</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13m0 0-6-6m6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <p class="send-summary" id="summary" aria-hidden="true"></p>
+              <div class="send-row">
+                <a class="btn btn-green" id="send" href="#" data-order="{}" data-track="whatsapp_b"><EpsIcon name="whatsapp" /> {T.send}</a>
+                <a class="btn btn-enquiry" id="send-enquiry" href="#" data-order="{}" data-track="price_enquiry_b"><EpsIcon name="tag" /> {T.priceEnquiry}</a>
+              </div>
+            </div>
+            <button type="button" class="link-btn center" id="clear">{T.clear}</button>
+          </div>
         </form>
       </section>
 
-      {c.fullList.length > 0 && (
-        <details class="card full-list">
-          <summary>{T.fullList}</summary>
-          <ul>{c.fullList.map((item) => <li>{item}</li>)}</ul>
-        </details>
-      )}
+      <!-- No "All work we do" list here: the order / Price Enquiry form stays short. -->
     </div>
   </div>
   <script type="application/json" id="order-config" set:html={JSON.stringify(config)} />
@@ -144,14 +145,19 @@ const config = {
   type Slot = { start: number; end: number } & Text;
   const cfg = JSON.parse(document.getElementById("order-config")!.textContent!);
 
-  // Home page "Order with details" opens this page at #details: jump straight to form B (no slow smooth scroll)
-  if (location.hash === "#details") document.getElementById("details")?.scrollIntoView({ behavior: "instant", block: "start" });
+  // Price Enquiry (?enquiry=1): note on top and Price Enquiry becomes the main button
+  const enquiry = new URLSearchParams(location.search).has("enquiry");
+  if (enquiry) {
+    document.getElementById("enquiry-note")!.hidden = false;
+    document.querySelector(".send-row")!.classList.add("enquiry-first");
+  }
   const lang: "en" | "bn" = cfg.lang;
   const T = cfg.T;
   const cat: { letters: string; name: Text; options: Text[] } = cfg.cat;
   const $ = <E extends HTMLElement>(id: string) => document.getElementById(id) as E;
   const form = $<HTMLFormElement>("order");
   const send = $<HTMLAnchorElement>("send");
+  const sendEnquiry = $<HTMLAnchorElement>("send-enquiry");
   const PHONE_RE = /^(?:\+?88)?01[3-9]\d{8}$/;
   const URGENT = "urgent";
 
@@ -162,19 +168,25 @@ const config = {
 
   // ---------- Dates (Dhaka time) ----------
   const TZ = "Asia/Dhaka";
-  const dayKey = (d: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+  // Dhaka is UTC+6 all year (no daylight saving): plain maths works in every browser
+  const two = (n: number) => (n < 10 ? "0" : "") + n;
+  const dayKey = (d: Date) => { const x = new Date(d.getTime() + 6 * 3_600_000); return `${x.getUTCFullYear()}-${two(x.getUTCMonth() + 1)}-${two(x.getUTCDate())}`; };
   const keyDate = (k: string) => new Date(`${k}T12:00:00+06:00`);
-  const hourNow = () => Number(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hourCycle: "h23" }).format(new Date()));
+  const hourNow = () => new Date(Date.now() + 6 * 3_600_000).getUTCHours();
+  // date labels; falls back to the phone's own time zone if a browser can't do "Asia/Dhaka"
+  const fmt = (d: Date, o: Intl.DateTimeFormatOptions) => {
+    try { return new Intl.DateTimeFormat(locale, { timeZone: TZ, ...o }).format(d); } catch { return new Intl.DateTimeFormat(locale, o).format(d); }
+  };
   const locale = lang === "bn" ? "bn-BD" : "en-GB";
   const today = dayKey(new Date());
   const dates = Array.from({ length: cfg.days }, (_, i) => dayKey(new Date(keyDate(today).getTime() + i * 86_400_000)));
   function dateLabel(k: string): string {
     const d = keyDate(k);
-    const dm = new Intl.DateTimeFormat(locale, { timeZone: TZ, day: "numeric", month: "short" }).format(d);
+    const dm = fmt(d, { day: "numeric", month: "short" });
     const i = dates.indexOf(k);
     if (i === 0) return `${T.today}, ${dm}`;
     if (i === 1) return `${T.tomorrow}, ${dm}`;
-    return `${new Intl.DateTimeFormat(locale, { timeZone: TZ, weekday: "short" }).format(d)}, ${dm}`;
+    return `${fmt(d, { weekday: "short" })}, ${dm}`;
   }
   const slot = (id?: string): Slot | undefined => cfg.slots.find((s: Slot) => `${s.start}-${s.end}` === id);
   const timeText = (id: string | undefined, l: "en" | "bn") => (id === URGENT ? (l === "en" ? "Urgent" : T.urgent) : slot(id)?.[l]);
@@ -252,14 +264,24 @@ const config = {
   function update() {
     drawWhen();
     const msg = build();
-    send.href = `https://wa.me/${cfg.wa}?text=${encodeURIComponent(msg)}`;
-    send.dataset.order = JSON.stringify({
-      letters: cat.letters, orderType: "Order form (B)", service: cat.name.en,
+    const wa = (text: string) => `https://wa.me/${cfg.wa}?text=${encodeURIComponent(text)}`;
+    const row = (orderType: string, enquiry = false) => JSON.stringify({
+      letters: cat.letters, orderType, service: cat.name.en, enquiry: enquiry || undefined,
       work: cat.options.filter((o) => work.includes(o.en)).map((o) => o.en).join(", ") || undefined,
       issue: val("issue"), name: val("name"), contact: val("contact"), address: val("address"),
       location: loc && `https://maps.google.com/?q=${loc}`,
       date: time === URGENT ? undefined : date, time: timeText(time, "en"), urgent: time === URGENT,
     });
+    send.href = wa(msg);
+    send.dataset.order = row("Order form (B)");
+    sendEnquiry.href = wa(`${T.msgEnquiry}\n${msg}`); // same message, first line "I need Price Enquiry"
+    sendEnquiry.dataset.order = row("Price enquiry (B)", true);
+    // one-line summary next to the send buttons (phone)
+    $("summary").textContent = [
+      cat.name[lang],
+      cat.options.filter((o) => work.includes(o.en)).map((o) => o[lang]).join(", "),
+      time === URGENT ? T.urgent : [date && dateLabel(date), timeText(time, lang)].filter(Boolean).join(" · "),
+    ].filter(Boolean).join(" · ");
     // Preview: *bold* like WhatsApp
     $("preview").replaceChildren(...msg.split("\n").map((line) => {
       const div = document.createElement("div");
@@ -275,14 +297,14 @@ const config = {
   const contact = $<HTMLInputElement>("contact");
   const phoneOk = () => !contact.value.trim() || PHONE_RE.test(contact.value.replace(/[\s-]/g, ""));
   contact.addEventListener("input", () => { $("contact-error").hidden = true; contact.removeAttribute("aria-invalid"); });
-  send.addEventListener("click", (e) => {
+  [send, sendEnquiry].forEach((btn) => btn.addEventListener("click", (e) => {
     if (phoneOk()) return;
     e.preventDefault();
     e.stopPropagation();
     $("contact-error").hidden = false;
     contact.setAttribute("aria-invalid", "true");
     contact.focus();
-  });
+  }));
 
   $("clear").addEventListener("click", () => {
     form.reset();
@@ -296,6 +318,27 @@ const config = {
   const params = new URLSearchParams(location.search);
   if (params.get("s")) (form.elements.namedItem("issue") as HTMLTextAreaElement).value = params.get("s")!.slice(0, 200);
   if (params.get("area")) (form.elements.namedItem("address") as HTMLInputElement).value = params.get("area")!.slice(0, 100);
+  // From Trending Services: ?work=Geyser|Leakage ticks those work chips
+  const want = (params.get("work") ?? "").split("|").filter(Boolean);
+  document.querySelectorAll<HTMLButtonElement>("#work .chip").forEach((b) => {
+    if (want.includes(b.dataset.work!) && !work.includes(b.dataset.work!)) { work.push(b.dataset.work!); press(b, true); }
+  });
+
+  // Phones: show the "scroll down" hint until the end of the form (Clear form) comes into view
+  const hint = $<HTMLButtonElement>("scroll-hint");
+  const phone = matchMedia("(max-width: 979px)");
+  let atEnd = false;
+  const showHint = () => (hint.hidden = !phone.matches || atEnd);
+  if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { if (e.isIntersecting) atEnd = true; showHint(); }).observe($("clear"));
+  else atEnd = true; // very old browser: no hint
+  phone.addEventListener?.("change", showHint);
+  hint.addEventListener("click", () => {
+    // go to the first part still below the screen: date & time, then location
+    const dock = hint.parentElement!.getBoundingClientRect().top;
+    const next = [$("when"), $("loc-add").closest("fieldset")!, $("clear")].find((el) => el.getBoundingClientRect().top > dock - 40) ?? $("clear");
+    next.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  showHint();
 
   drawLoc(); update();
   setInterval(drawWhen, 60_000); // hide slots as time passes

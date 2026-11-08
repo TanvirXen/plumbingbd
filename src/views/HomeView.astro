@@ -4,7 +4,7 @@ import WorkCarousel from "../components/WorkCarousel.astro";
 import EpsIcon from "../components/EpsIcon.astro";
 import ServiceGrid from "../components/ServiceGrid.astro";
 import { company, telLink, waLink } from "../data/company";
-import { orderNow, orderText } from "../data/order";
+import { orderNow, orderText, trendingItems } from "../data/order";
 import { site } from "../data/sites";
 import { lp, t, type Lang } from "../i18n";
 
@@ -17,39 +17,176 @@ const gallery = site.key === "electric"
   ? ["fan-install-1", "panel-3", "chandelier-1", "socket-2", "panel-room-1", "light-1", "panel-7", "drilling-2", "supershop-2"]
   : ["kitchen-sink", "commode-1", "tap-1", "pipe-1", "commode-2", "supershop-1", "socket-3", "supershop-3", "panel-room-2"];
 
+// Why choose us: six short reasons, from the company's real way of working.
+const why = bn
+  ? [
+      { icon: "clock", title: "দ্রুত পৌঁছাই", text: "উত্তরায় ৩০ মিনিট, মিরপুর ও বসুন্ধরায় ১ ঘণ্টা, ঢাকার অন্যান্য এলাকায় ২ ঘণ্টা।" },
+      { icon: "phone", title: "২৪ ঘণ্টা, ৭ দিন খোলা", text: "দিন-রাত যেকোনো সময় কল বা হোয়াটসঅ্যাপ করুন।" },
+      { icon: "user", title: "ইঞ্জিনিয়ারের নেতৃত্বে নিজস্ব টিম", text: "ইলেকট্রিক্যাল ইঞ্জিনিয়ারের নেতৃত্বে প্রশিক্ষিত টেকনিশিয়ান, কোম্পানির ইউনিফর্মে। আসার আগেই নাম ও নম্বর পাঠাই।" },
+      { icon: "tag", title: "আগে খরচ ঠিক", text: "কাজ শুরুর আগে খরচ জানাই ও কাজ ঠিক করে নিই। পরে কোনো চমক নেই।" },
+      { icon: "wallet", title: "কাজ শেষে পেমেন্ট", text: "কাজ সম্পূর্ণ হলে পেমেন্ট করুন: ক্যাশ, বিকাশ, নগদ বা NPSB ব্যাংক ট্রান্সফার।" },
+      { icon: "shield", title: "অর্ডার আইডিতে ভরসা", text: "প্রতিটি কাজের অর্ডার আইডি থাকে। আমাদের কাজের একই সমস্যা আবার হলে মেসেজ দিন, আমরা এসে দেখব।" },
+    ]
+  : [
+      { icon: "clock", title: "Fast arrival", text: "Uttara in 30 minutes, Mirpur and Bashundhara in 1 hour, other areas of Dhaka in 2 hours." },
+      { icon: "phone", title: "Open 24 hours, 7 days", text: "Call or WhatsApp us any time, day or night." },
+      { icon: "user", title: "Engineer-led, our own team", text: "Trained technicians in company uniform, led by an electrical engineer. You get their name and number before the visit." },
+      { icon: "tag", title: "Cost agreed first", text: "We tell you the cost and agree on the work before we start. No surprises later." },
+      { icon: "wallet", title: "Pay after completion of work", text: "Pay once the work is completed: cash, bKash, Nagad or NPSB bank transfer." },
+      { icon: "shield", title: "Backed by your Order ID", text: "Every job has an Order ID. If the same problem comes back from our work, message us and we come to check." },
+    ];
+
+// Arrival times: a slim ticker under the menu that scrolls right to left.
+const eta = bn
+  ? [
+      { area: "উত্তরা (সব সেক্টর)", time: "৩০ মিনিট", key: true },
+      { area: "বসুন্ধরা আ/এ (সব ব্লক)", time: "১ ঘণ্টা", key: true },
+      { area: "মিরপুর", time: "১ ঘণ্টা" },
+      { area: "ঢাকা শহরের অন্যান্য এলাকা", time: "২ ঘণ্টা" },
+    ]
+  : [
+      { area: "Uttara (all sectors)", time: "30 minutes", key: true },
+      { area: "Bashundhara R/A (all blocks)", time: "1 hour", key: true },
+      { area: "Mirpur", time: "1 hour" },
+      { area: "Other areas of Dhaka City", time: "2 hours" },
+    ];
+
+// Trending services: a ticker at the bottom of the hero, scrolling right to left (like the arrival-time bar).
+// All items look the same. The "Trending Services" and "Checkup" labels move with the text and open their own order forms.
+const showTrending = true;
+// The list lives in src/data/order.ts (trendingItems): winter jobs first, then everyday favourites, electric and plumbing balanced.
+const trending = trendingItems;
+const trendHref = (x: (typeof trending)[number]) =>
+  `${lp(lang, `/order/${x.cat}/`)}?${new URLSearchParams({ work: x.work.join("|"), s: x[lang] })}`;
+
 const title = bn
   ? `${site.tradeBn} উত্তরা ও বসুন্ধরা — বাসা ও অফিস | ${company.nameBn}`
   : `${site.trade} in Uttara & Bashundhara — Home & Corporate | ${company.name}`;
 const description = bn
   ? `উত্তরা, বসুন্ধরা ও আশেপাশে বাসা, অফিস ও প্রতিষ্ঠানের ${site.workBn} কাজ। হোয়াটসঅ্যাপে বুক করুন ${company.phone}।`
   : `${site.trade} for homes, offices and businesses in Uttara, Bashundhara and north Dhaka. Book on WhatsApp ${company.phone}.`;
+// Hero picture: electrician poster on the electric site, plumber poster on the plumber site.
+// Phones show it lower down (after the Trending and Checkup bars), desktops beside the hero text.
+const poster = site.key === "electric"
+  ? { src: "/img/hero-electric-800.webp", srcset: "/img/hero-electric-480.webp 480w, /img/hero-electric-800.webp 800w, /img/hero-electric-1200.webp 1200w",
+      sizes: "(max-width: 760px) 92vw, 500px", width: 800, height: 725,
+      alt: bn ? "ইমার্জেন্সি ইলেকট্রিক এন্ড প্লাম্বিং সার্ভিসের টেকনিশিয়ান, ইলেকট্রিক প্যানেলের সামনে — ২৪/৭ সেবা" : "Emergency Electric and Plumbing Service technician in front of an electrical panel — 24/7 service" }
+  : { src: "/img/hero-plumber-800.webp", srcset: "/img/hero-plumber-480.webp 480w, /img/hero-plumber-800.webp 800w, /img/hero-plumber-1200.webp 1200w",
+      sizes: "(max-width: 760px) 92vw, 500px", width: 800, height: 731,
+      alt: bn ? "ইমার্জেন্সি ইলেকট্রিক এন্ড প্লাম্বিং সার্ভিসের প্লাম্বার, প্যানেল শাওয়ার লাগাচ্ছেন — ২৪/৭ সেবা" : "Emergency Electric and Plumbing Service plumber installing a panel shower — 24/7 service" };
 ---
 <Base lang={lang} title={title} description={description} path="/">
+
+  <!-- Trending services ticker sits at the bottom of the hero; see showTrending above. -->
+  <!-- Arrival-time ticker (area — time only, no label), scrolling right to left (pauses on hover / focus). -->
+  <div class="eps eta-bar">
+    <div class="wrap eta-inner">
+      <div class="ticker" role="region" aria-label={bn ? "এলাকা অনুযায়ী পৌঁছানোর সময়" : "Arrival time by area"} tabindex="0">
+        <ul class="ticker-list">
+          {eta.map((a) => <li class={a.key ? "eta-key" : undefined}><EpsIcon name="clock" /> <span class="eta-area">{a.area}</span><span class="ticker-sep" aria-hidden="true">—</span><b>{a.time}</b></li>)}
+        </ul>
+        <!-- second copy makes the loop seamless; hidden from screen readers -->
+        <ul class="ticker-list" aria-hidden="true">
+          {eta.map((a) => <li class={a.key ? "eta-key" : undefined}><EpsIcon name="clock" /> <span class="eta-area">{a.area}</span><span class="ticker-sep">—</span><b>{a.time}</b></li>)}
+        </ul>
+      </div>
+    </div>
+  </div>
 
   <!-- First two sections: same format as emergencyeps.com (hero + "Choose a service") -->
   <section class="eps eps-hero">
     <div class="wrap hero-row">
       <div>
         <p class="tag"><EpsIcon name="clock" /> {T.open24}</p>
-        <h1>{bn ? `${site.workBn} সমস্যায়, যেকোনো সময়` : `${Work} help, any time`}</h1>
+        <h1 class="hero-name">{bn
+          ? <>ইমার্জেন্সি <span class="hn-yellow">ইলেকট্রিক</span> এন্ড <span class="hn-blue">প্লাম্বিং</span> সার্ভিস</>
+          : <>Emergency <span class="hn-yellow">Electric</span> and <span class="hn-blue">Plumbing</span> Service</>}</h1>
         <p class="lead">{T.heroText}</p>
         <div class="btn-row">
-          <a class="btn btn-green" href={waLink(orderNow.message[lang])} target="_blank" rel="noopener" data-track="whatsapp_order_now"
-            data-order={JSON.stringify({ letters: orderNow.letters, service: "Order now", orderType: "Order now" })}>
+          <a class="btn btn-green" href={`${lp(lang, "/services/")}#choose`} data-track="hero_order_now">
             <EpsIcon name="whatsapp" /> {T.orderNow}
           </a>
-          <a class="btn btn-line" href={telLink} data-track="call"><EpsIcon name="phone" /> {T.callUs}</a>
-          <a class="btn btn-line" href={lp(lang, `/order/${site.key}/#details`)} data-track="order_details"><EpsIcon name="form" /> {T.orderDetails}</a>
+          <a class="btn btn-call" href={telLink} data-track="call"><EpsIcon name="phone" /> {T.callUs}</a>
+          <a class="btn btn-enquiry" href="?enquiry=1#choose" data-enquiry data-track="price_enquiry"><EpsIcon name="tag" /> {T.priceEnquiry}</a>
+        </div>
+        <a class="choose-link" href="#choose" data-track="hero_choose_service">{T.chooseService} <span aria-hidden="true">↓</span></a>
+      </div>
+      <img class="hero-poster hero-poster-top" {...poster} fetchpriority="high" />
+    </div>
+
+    {showTrending && (
+      <div class="wrap">
+        <div class="promo promo-trend">
+          <div class="ticker" role="region" aria-label={bn ? "ট্রেন্ডিং সার্ভিস" : "Trending services"} tabindex="0">
+            {[0, 1].map((k) => (
+              <ul class="ticker-list trend-list" style={`--trend-dur:${trending.length * 4}s`} aria-hidden={k === 1 ? "true" : undefined}>
+                <li><a class="promo-tag" href={lp(lang, "/order/trending/")} data-trend-link data-track="trending_label" tabindex={k === 1 ? "-1" : undefined}><EpsIcon name="trend" /> {bn ? "ট্রেন্ডিং সার্ভিস" : "Trending Services"}</a></li>
+                {trending.map((x) => (
+                  <li>
+                    <a class="trend-link" href={trendHref(x)} data-trend-link data-track="trending_item" tabindex={k === 1 ? "-1" : undefined}>
+                      <span class="trend-dot" aria-hidden="true"></span><span>{x[lang]}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
         </div>
       </div>
-      <img class="hero-logo" src={company.logo} alt={bn ? company.nameBn : company.name} width="512" height="512" fetchpriority="high" />
-    </div>
+    )}
   </section>
+
+  <!-- Checkup offer: a slim right-to-left ticker; "Checkup" (and the text) open the Checkup order / Price Enquiry form -->
+  <div class="eps offer-wrap">
+    <div class="wrap">
+      <div class="offer-bar">
+        <div class="ticker offer-ticker" role="region" aria-label={T.checkupNote} tabindex="0">
+          {[0, 1].map((k) => (
+            <ul class="ticker-list offer-list" aria-hidden={k === 1 ? "true" : undefined}>
+              {[0, 1].map(() => (
+                <>
+                  <li><a class="offer-tag" href={lp(lang, "/order/checkup/")} data-trend-link data-track="checkup_label" tabindex={k === 1 ? "-1" : undefined}><EpsIcon name="check" /> {bn ? "চেকআপ" : "Checkup"}</a></li>
+                  <li><a class="trend-link" href={lp(lang, "/order/checkup/")} data-trend-link data-track="checkup_offer" tabindex="-1"><span class="trend-dot"></span>{T.checkupBar[0]}<b>{T.checkupBar[1]}</b>{T.checkupBar[2]}</a></li>
+                </>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phones: the hero picture sits here, under the Trending / Checkup bars -->
+  <div class="eps hero-poster-m"><div class="wrap"><img class="hero-poster" {...poster} alt="" loading="lazy" decoding="async" /></div></div>
 
   <section class="eps eps-section" id="choose">
     <div class="wrap">
-      <h2>{T.chooseService}</h2>
+      <h2 data-choose-title data-t-order={T.chooseService} data-t-enquiry={T.chooseEnquiry}>{T.chooseService}</h2>
       <ServiceGrid lang={lang} />
+    </div>
+  </section>
+
+  <!-- Why choose us: real company facts only (arrival times, 24/7, engineer-led team, cost first, pay after, Order ID) -->
+  <section class="eps eps-section why" aria-labelledby="why-title">
+    <div class="wrap">
+      <p class="why-eyebrow"><EpsIcon name="shield" /> {bn ? "আমাদের প্রতিশ্রুতি" : "Our promise"}</p>
+      <h2 id="why-title">{bn ? "কেন আমাদের বেছে নেবেন" : "Why Choose Us"}</h2>
+      <p class="why-sub">{bn ? "ইলেকট্রিক, প্লাম্বিং, এসি ও বাসার মেরামত — ঢাকায় এক বিশ্বস্ত টিম।" : "Electric, plumbing, AC and home repairs — one trusted team in Dhaka."}</p>
+      <ul class="why-grid">
+        {why.map((w) => (
+          <li class="why-card">
+            <span class="why-icon"><EpsIcon name={w.icon} /></span>
+            <div><h3>{w.title}</h3><p>{w.text}</p></div>
+          </li>
+        ))}
+      </ul>
+      <div class="why-cta">
+        <p>{bn ? "আজই সমস্যার সমাধান করুন।" : "Get it fixed today."}</p>
+        <div class="btn-row">
+          <a class="btn btn-green" href={lp(lang, "/services/")} data-track="why_order_now"><EpsIcon name="whatsapp" /> {T.orderNow}</a>
+          <a class="btn btn-enquiry" href="?enquiry=1#choose" data-enquiry data-track="why_price_enquiry"><EpsIcon name="tag" /> {T.priceEnquiry}</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -88,16 +225,18 @@ const description = bn
   <section class="section">
     <div class="wrap">
       <h2>{t(lang, "work")}</h2>
-      <WorkCarousel images={gallery} label={t(lang, "work")} lang={lang} />
+    </div>
+    <WorkCarousel images={gallery} label={t(lang, "work")} lang={lang} />
+    <div class="wrap">
       <p style="margin-top:16px"><a href={lp(lang, "/work/")}>{t(lang, "seeAll")} →</a></p>
     </div>
   </section>
 
-  {company.social.googleBusiness && (
+  {(company.social.googleReview || company.social.googleBusiness) && (
     <section class="section">
       <div class="wrap center">
         <h2>{t(lang, "reviewsTitle")}</h2>
-        <a class="btn btn-ghost" href={company.social.googleBusiness} rel="noopener">{t(lang, "reviewsCta")} ↗</a>
+        <a class="btn btn-ghost" href={company.social.googleReview || company.social.googleBusiness} target="_blank" rel="noopener">{t(lang, "reviewsCta")} ↗</a>
       </div>
     </section>
   )}

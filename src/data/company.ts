@@ -3,7 +3,7 @@
 
 export const company = {
   name: "Emergency Electric and Plumbing Service", // PLACEHOLDER: match trade license spelling exactly
-  nameBn: "ইমার্জেন্সি ইলেকট্রিক অ্যান্ড প্লাম্বিং সার্ভিস",
+  nameBn: "ইমার্জেন্সি ইলেকট্রিক এন্ড প্লাম্বিং সার্ভিস",
   shortName: "Emergency EPS",
   // Phone + WhatsApp come from .env (PHONE, PHONE_INTL, WHATSAPP_NUMBER); these are the fallbacks.
   phone: process.env.PHONE || "01609-993537",
@@ -30,8 +30,8 @@ export const company = {
     labelBn: "২৪ ঘণ্টা খোলা, প্রতিদিন",
   },
   responseMinutes: 60, // PLACEHOLDER: typical arrival time in Uttara
-  payments: ["Cash", "bKash", "Nagad"], // PLACEHOLDER
-  paymentsBn: ["নগদ টাকা", "বিকাশ", "নগদ (Nagad)"],
+  payments: ["Cash", "bKash", "Nagad", "NPSB bank transfer"],
+  paymentsBn: ["নগদ টাকা", "বিকাশ", "নগদ (Nagad)", "NPSB ব্যাংক ট্রান্সফার"],
   expert: {
     // Name taken from camera watermark on job photos. PLACEHOLDER: confirm name, title and experience.
     name: "Eng. Md Shakhawat",
@@ -41,7 +41,7 @@ export const company = {
   social: {
     // Empty values are hidden on the site. YouTube / Instagram / TikTok: PLACEHOLDER, add when available.
     googleBusiness: "https://share.google/0Q82bfZLFurpw6t36",
-    googleReview: "",
+    googleReview: "https://share.google/JTAvZSBxgQOCSbLlU", // Google reviews (5.0 ★)
     facebook: "https://www.facebook.com/profile.php?id=100095419443718",
     youtube: "",
     instagram: "",
