@@ -106,11 +106,18 @@ const config = {
               <p class="error" id="loc-error" hidden></p>
             </fieldset>
 
-            <details class="preview" id="preview-wrap">
+            <!-- Message preview is not shown (kept hidden: the script still builds the message here) -->
+            <details class="preview" id="preview-wrap" hidden>
               <summary class="preview-title">{T.preview}</summary>
               <div class="preview-box" id="preview" aria-live="polite"></div>
               <p class="muted small">{T.previewNote}</p>
             </details>
+
+            <!-- Phones: Send order / Price Enquiry also at the end of the form (they press the real buttons below) -->
+            <div class="send-row send-inline" id="send-inline">
+              <a class="btn btn-green" href="#" data-proxy="send"><EpsIcon name="whatsapp" /> {T.send}</a>
+              <a class="btn btn-enquiry" href="#" data-proxy="send-enquiry"><EpsIcon name="tag" /> {T.priceEnquiry}</a>
+            </div>
 
             <!-- Send: pinned to the bottom of the screen on phones -->
             <div class="send-dock">
@@ -297,6 +304,11 @@ const config = {
   const contact = $<HTMLInputElement>("contact");
   const phoneOk = () => !contact.value.trim() || PHONE_RE.test(contact.value.replace(/[\s-]/g, ""));
   contact.addEventListener("input", () => { $("contact-error").hidden = true; contact.removeAttribute("aria-invalid"); });
+  // end-of-form copies (phones) press the real buttons, so checks, Order ID and WhatsApp work the same
+  document.querySelectorAll<HTMLAnchorElement>("[data-proxy]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); $(a.dataset.proxy!).click(); }));
+  if (enquiry) $("send-inline").classList.add("enquiry-first");
+  // phones: hide the pinned bar while the end-of-form buttons are on screen (no double buttons)
+  if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => document.body.classList.toggle("inline-send-visible", e.isIntersecting)).observe($("send-inline"));
   [send, sendEnquiry].forEach((btn) => btn.addEventListener("click", (e) => {
     if (phoneOk()) return;
     e.preventDefault();

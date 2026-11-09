@@ -73,91 +73,44 @@ const poster = site.key === "electric"
       alt: bn ? "ইমার্জেন্সি ইলেকট্রিক এন্ড প্লাম্বিং সার্ভিসের টেকনিশিয়ান, ইলেকট্রিক প্যানেলের সামনে — ২৪/৭ সেবা" : "Emergency Electric and Plumbing Service technician in front of an electrical panel — 24/7 service" }
   : { src: "/img/hero-plumber-800.webp", srcset: "/img/hero-plumber-480.webp 480w, /img/hero-plumber-800.webp 800w, /img/hero-plumber-1200.webp 1200w",
       sizes: "(max-width: 760px) 92vw, 500px", width: 800, height: 731,
-      alt: bn ? "ইমার্জেন্সি ইলেকট্রিক এন্ড প্লাম্বিং সার্ভিসের প্লাম্বার, প্যানেল শাওয়ার লাগাচ্ছেন — ২৪/৭ সেবা" : "Emergency Electric and Plumbing Service plumber installing a panel shower — 24/7 service" };
+      alt: bn ? "ইমার্জেন্সি ইলেকট্রিক এন্ড প্লাম্বিং সার্ভিসের প্লাম্বার, রান্নাঘরের ট্যাপ লাগাচ্ছেন — ২৪/৭ সেবা" : "Emergency Electric and Plumbing Service plumber fitting a kitchen tap — 24/7 service" };
 ---
 <Base lang={lang} title={title} description={description} path="/">
 
-  <!-- Trending services ticker sits at the bottom of the hero; see showTrending above. -->
-  <!-- Arrival-time ticker (area — time only, no label), scrolling right to left (pauses on hover / focus). -->
-  <div class="eps eta-bar">
-    <div class="wrap eta-inner">
-      <div class="ticker" role="region" aria-label={bn ? "এলাকা অনুযায়ী পৌঁছানোর সময়" : "Arrival time by area"} tabindex="0">
-        <ul class="ticker-list">
-          {eta.map((a) => <li class={a.key ? "eta-key" : undefined}><EpsIcon name="clock" /> <span class="eta-area">{a.area}</span><span class="ticker-sep" aria-hidden="true">—</span><b>{a.time}</b></li>)}
-        </ul>
-        <!-- second copy makes the loop seamless; hidden from screen readers -->
-        <ul class="ticker-list" aria-hidden="true">
-          {eta.map((a) => <li class={a.key ? "eta-key" : undefined}><EpsIcon name="clock" /> <span class="eta-area">{a.area}</span><span class="ticker-sep">—</span><b>{a.time}</b></li>)}
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- First two sections: same format as emergencyeps.com (hero + "Choose a service") -->
-  <section class="eps eps-hero">
-    <div class="wrap hero-row">
-      <div>
-        <p class="tag"><EpsIcon name="clock" /> {T.open24}</p>
-        <h1 class="hero-name">{bn
-          ? <>ইমার্জেন্সি <span class="hn-yellow">ইলেকট্রিক</span> এন্ড <span class="hn-blue">প্লাম্বিং</span> সার্ভিস</>
-          : <>Emergency <span class="hn-yellow">Electric</span> and <span class="hn-blue">Plumbing</span> Service</>}</h1>
-        <p class="lead">{T.heroText}</p>
-        <div class="btn-row">
-          <a class="btn btn-green" href={`${lp(lang, "/services/")}#choose`} data-track="hero_order_now">
-            <EpsIcon name="whatsapp" /> {T.orderNow}
-          </a>
-          <a class="btn btn-call" href={telLink} data-track="call"><EpsIcon name="phone" /> {T.callUs}</a>
-          <a class="btn btn-enquiry" href="?enquiry=1#choose" data-enquiry data-track="price_enquiry"><EpsIcon name="tag" /> {T.priceEnquiry}</a>
-        </div>
-        <a class="choose-link" href="#choose" data-track="hero_choose_service">{T.chooseService} <span aria-hidden="true">↓</span></a>
-      </div>
-      <img class="hero-poster hero-poster-top" {...poster} fetchpriority="high" />
-    </div>
-
-    {showTrending && (
-      <div class="wrap">
-        <div class="promo promo-trend">
-          <div class="ticker" role="region" aria-label={bn ? "ট্রেন্ডিং সার্ভিস" : "Trending services"} tabindex="0">
-            {[0, 1].map((k) => (
-              <ul class="ticker-list trend-list" style={`--trend-dur:${trending.length * 4}s`} aria-hidden={k === 1 ? "true" : undefined}>
-                <li><a class="promo-tag" href={lp(lang, "/order/trending/")} data-trend-link data-track="trending_label" tabindex={k === 1 ? "-1" : undefined}><EpsIcon name="trend" /> {bn ? "ট্রেন্ডিং সার্ভিস" : "Trending Services"}</a></li>
-                {trending.map((x) => (
-                  <li>
-                    <a class="trend-link" href={trendHref(x)} data-trend-link data-track="trending_item" tabindex={k === 1 ? "-1" : undefined}>
-                      <span class="trend-dot" aria-hidden="true"></span><span>{x[lang]}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ))}
-          </div>
-        </div>
-      </div>
-    )}
-  </section>
-
-  <!-- Checkup offer: a slim right-to-left ticker; "Checkup" (and the text) open the Checkup order / Price Enquiry form -->
-  <div class="eps offer-wrap">
+  <!-- ONE moving bar under the menu: Checkup offer, Trending services, then arrival times -->
+  <div class="eps one-bar">
     <div class="wrap">
-      <div class="offer-bar">
-        <div class="ticker offer-ticker" role="region" aria-label={T.checkupNote} tabindex="0">
-          {[0, 1].map((k) => (
-            <ul class="ticker-list offer-list" aria-hidden={k === 1 ? "true" : undefined}>
-              {[0, 1].map(() => (
-                <>
-                  <li><a class="offer-tag" href={lp(lang, "/order/checkup/")} data-trend-link data-track="checkup_label" tabindex={k === 1 ? "-1" : undefined}><EpsIcon name="check" /> {bn ? "চেকআপ" : "Checkup"}</a></li>
-                  <li><a class="trend-link" href={lp(lang, "/order/checkup/")} data-trend-link data-track="checkup_offer" tabindex="-1"><span class="trend-dot"></span>{T.checkupBar[0]}<b>{T.checkupBar[1]}</b>{T.checkupBar[2]}</a></li>
-                </>
-              ))}
-            </ul>
-          ))}
-        </div>
+      <div class="ticker" role="region" aria-label={bn ? "অফার, ট্রেন্ডিং সার্ভিস ও পৌঁছানোর সময়" : "Offer, trending services and arrival times"} tabindex="0">
+        {[0, 1].map((k) => (
+          <ul class="ticker-list one-list" aria-hidden={k === 1 ? "true" : undefined}>
+            <li><a class="ob-tag ob-check" href={lp(lang, "/order/checkup/")} tabindex={k === 1 ? "-1" : undefined}><EpsIcon name="check" /> {bn ? "চেকআপ" : "Checkup"}</a></li>
+            <li><a class="ob-item" href={lp(lang, "/order/checkup/")} tabindex="-1">{T.checkupBar[0]}<b>{T.checkupBar[1]}</b></a></li>
+            <li><a class="ob-tag ob-trend" href={lp(lang, "/order/trending/")} tabindex={k === 1 ? "-1" : undefined}><EpsIcon name="trend" /> {bn ? "ট্রেন্ডিং" : "Trending"}</a></li>
+            {trending.slice(0, 8).map((x) => <li><a class="ob-item" href={trendHref(x)} tabindex="-1">{x[lang]}</a></li>)}
+            <li><span class="ob-tag ob-eta"><EpsIcon name="clock" /> {bn ? "পৌঁছাই" : "We reach"}</span></li>
+            {eta.map((a) => <li><a class={a.key ? "ob-item ob-key" : "ob-item"} href="#choose" tabindex="-1">{a.area} <b>{a.time}</b></a></li>)}
+          </ul>
+        ))}
       </div>
     </div>
   </div>
 
-  <!-- Phones: the hero picture sits here, under the Trending / Checkup bars -->
-  <div class="eps hero-poster-m"><div class="wrap"><img class="hero-poster" {...poster} alt="" loading="lazy" decoding="async" /></div></div>
+  <!-- Hero: photo as background, one main button -->
+  <section class="eps hero2" style={`--hero-img:url(${poster.src.replace("-800", "-1200")})`}>
+    <div class="wrap hero2-inner">
+      <a class="g-rating" href={company.social.googleReview} target="_blank" rel="noopener"><span class="stars">★★★★★</span> <b>5.0</b> · {bn ? "৯৮টি গুগল রিভিউ" : "98 Google reviews"}</a>
+      <h1 class="hero-name">{bn
+        ? <>ইমার্জেন্সি <span class="hn-yellow">ইলেকট্রিক</span> এন্ড <span class="hn-blue">প্লাম্বিং</span> সার্ভিস</>
+        : <>Emergency <span class="hn-yellow">Electric</span> and <span class="hn-blue">Plumbing</span> Service</>}</h1>
+      <p class="lead">{bn ? "২৪ ঘণ্টা সেবা · উত্তরা ৩০ মিনিট · বসুন্ধরা ১ ঘণ্টা · কাজ শেষে পেমেন্ট" : "Open 24 hours · Uttara 30 min · Bashundhara 1 hour · Pay after the work"}</p>
+      <a class="btn btn-main" href="#choose" data-track="hero_order_now"><EpsIcon name="whatsapp" /> {T.orderNow}</a>
+      <p class="hero2-links">
+        <a href="?enquiry=1#choose" data-enquiry><EpsIcon name="tag" /> {T.priceEnquiry}</a>
+        <span aria-hidden="true">·</span>
+        <a href={telLink}><EpsIcon name="phone" /> {T.callUs}</a>
+      </p>
+    </div>
+  </section>
 
   <section class="eps eps-section" id="choose">
     <div class="wrap">
