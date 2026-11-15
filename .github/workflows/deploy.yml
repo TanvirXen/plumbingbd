@@ -1,0 +1,74 @@
+# Builds the site and uploads it to the server on every push to main.
+# Secrets (set once by deploy/setup-cicd.sh): DEPLOY_SSH_KEY, DEPLOY_KNOWN_HOSTS, ENV_FILE.
+name: Deploy to server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DEPLOY_HOST: 89.116.121.51
+      DEPLOY_USER: deploy
+      DEPLOY_PATH: /var/www/eps-plumbingbd
+    steps:
+      - name: Check deploy secrets
+        id: check
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          if [ -z "$KEY" ] || [ -z "$ENV_FILE" ]; then
+            echo "::warning::Deploy secrets are not set yet; run deploy/setup-cicd.sh once. Skipping deploy."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.ready == 'true'
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        if: steps.check.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Build
+        if: steps.check.outputs.ready == 'true'
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          printf '%s\n' "$ENV_FILE" > .env
+          npm run build
+          test -f dist/index.html
+
+      - name: Upload and switch to the new build
+        if: steps.check.outputs.ready == 'true'
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          SSH="ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes -o BatchMode=yes"
+          RELEASE="$(date -u +%Y%m%d%H%M%S)-${GITHUB_SHA::7}"
+          # Upload into a new release folder (unchanged files are hard-linked from the live one).
+          rsync -a --delete -e "$SSH" --link-dest="$DEPLOY_PATH/current/" \
+            dist/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/releases/$RELEASE/"
+          # Switch the site to it in one step, then keep only the last 5 releases.
+          $SSH "$DEPLOY_USER@$DEPLOY_HOST" "set -e; cd '$DEPLOY_PATH'; ln -sfn 'releases/$RELEASE' current.tmp; mv -T current.tmp current; ls -1dt releases/*/ | tail -n +6 | xargs -r rm -rf"
+          echo "Deployed $RELEASE to $DEPLOY_PATH" >> "$GITHUB_STEP_SUMMARY"
