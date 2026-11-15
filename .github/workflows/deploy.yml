@@ -1,6 +1,8 @@
-# Builds the site and uploads it to the server on every push to main.
-# Secrets (set once by deploy/setup-cicd.sh): DEPLOY_SSH_KEY, DEPLOY_KNOWN_HOSTS, ENV_FILE.
-name: Deploy to server
+# Builds the site on every push to main and publishes the result to the "deploy" branch.
+# The server (89.116.121.51) checks that branch every minute and goes live with new builds
+# (deploy/eps-pull.sh). Nothing connects into the server, so its SSH can stay limited to your IP.
+# Secret (set once by deploy/setup-cicd.sh): ENV_FILE = the site's .env file.
+name: Build for server
 
 on:
   push:
@@ -8,26 +10,24 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: deploy-production
-  cancel-in-progress: false
+  group: build-deploy-branch
+  cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      DEPLOY_HOST: 89.116.121.51
-      DEPLOY_USER: deploy
-      DEPLOY_PATH: /var/www/eps-plumbingbd
     steps:
-      - name: Check deploy secrets
+      - name: Check ENV_FILE secret
         id: check
         env:
-          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
-          if [ -z "$KEY" ] || [ -z "$ENV_FILE" ]; then
-            echo "::warning::Deploy secrets are not set yet; run deploy/setup-cicd.sh once. Skipping deploy."
+          if [ -z "$ENV_FILE" ]; then
+            echo "::warning::ENV_FILE secret is not set yet; run deploy/setup-cicd.sh once. Skipping."
             echo "ready=false" >> "$GITHUB_OUTPUT"
           else
             echo "ready=true" >> "$GITHUB_OUTPUT"
@@ -55,20 +55,22 @@ jobs:
           npm run build
           test -f dist/index.html
 
-      - name: Upload and switch to the new build
+      - name: Publish to the deploy branch
         if: steps.check.outputs.ready == 'true'
         env:
-          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          install -m 700 -d ~/.ssh
-          printf '%s\n' "$KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
-          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
-          SSH="ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes -o BatchMode=yes"
-          RELEASE="$(date -u +%Y%m%d%H%M%S)-${GITHUB_SHA::7}"
-          # Upload into a new release folder (unchanged files are hard-linked from the live one).
-          rsync -a --delete -e "$SSH" --link-dest="$DEPLOY_PATH/current/" \
-            dist/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/releases/$RELEASE/"
-          # Switch the site to it in one step, then keep only the last 5 releases.
-          $SSH "$DEPLOY_USER@$DEPLOY_HOST" "set -e; cd '$DEPLOY_PATH'; ln -sfn 'releases/$RELEASE' current.tmp; mv -T current.tmp current; ls -1dt releases/*/ | tail -n +6 | xargs -r rm -rf"
-          echo "Deployed $RELEASE to $DEPLOY_PATH" >> "$GITHUB_STEP_SUMMARY"
+          out="$RUNNER_TEMP/deploy-branch"
+          mkdir -p "$out" && cp -a dist "$out/site"
+          # Stop Vercel from building this branch (it only holds built files).
+          echo '{ "git": { "deploymentEnabled": false } }' > "$out/vercel.json"
+          printf 'Built from %s (%s)\n' "$GITHUB_SHA" "$(date -u +%FT%TZ)" > "$out/BUILD.txt"
+          cd "$out"
+          git init -q -b deploy
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Build ${GITHUB_SHA::7}"
+          # One commit only: the branch never grows.
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" deploy
+          echo "Published build of ${GITHUB_SHA::7} to the deploy branch; the server goes live within about a minute." >> "$GITHUB_STEP_SUMMARY"
