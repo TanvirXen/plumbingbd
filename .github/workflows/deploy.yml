@@ -62,6 +62,11 @@ jobs:
         run: |
           out="$RUNNER_TEMP/deploy-branch"
           mkdir -p "$out" && cp -a dist "$out/site"
+          # Admin repo: the orders API (api/) goes along, with its node_modules, for the server to run
+          if [ -f api/package.json ]; then
+            (cd api && npm ci --omit=dev --no-audit --no-fund)
+            cp -a api "$out/api"
+          fi
           # Stop Vercel from building this branch (it only holds built files).
           echo '{ "git": { "deploymentEnabled": false } }' > "$out/vercel.json"
           printf 'Built from %s (%s)\n' "$GITHUB_SHA" "$(date -u +%FT%TZ)" > "$out/BUILD.txt"

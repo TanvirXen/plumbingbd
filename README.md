@@ -37,19 +37,17 @@ npm run build
 | `PHONE` / `PHONE_INTL` | `01609-993537` / `+8801609993537` | Shown number / tap-to-call number |
 | `GA_MEASUREMENT_ID` | `G-XXXXXXX` | Optional Google Analytics 4 |
 | `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION` | | Optional Search Console / Bing verification |
-| `SUPABASE_URL` | `https://abcd1234.supabase.co` | Orders database. Every WhatsApp order button saves the order and adds an Order ID (`ES-301026-1`) to the message; orders show on the admin website (`eps-admin` folder, e.g. admin.emergencyeps.com). Same project on both sites and emergencyeps.com. See **Orders database** below. Code: `src/scripts/order.ts` |
-| `SUPABASE_ANON_KEY` | `eyJhbGciOi…` | The "anon public" key from the same Supabase page (made to be public). |
-| `GOOGLE_SHEET_WEBHOOK_URL` | `https://script.google.com/macros/s/…/exec` | Optional, only used when Supabase is not set. Apps Script web app; setup in the emergency-eps `google-sheet` folder. |
+| `ORDERS_API` | *(empty)* | Leave empty: orders go to our server at `/api/order`. `off` = no API (backup Order IDs). |
+| `GOOGLE_SHEET_WEBHOOK_URL` | `https://script.google.com/macros/s/…/exec` | Optional, only used when `ORDERS_API=off`. Apps Script web app; setup in the emergency-eps `google-sheet` folder. |
 
 If there is no `.env`, the defaults in `astro.config.mjs` are used (the live domains above).
 
-## Orders database (Supabase)
+## Orders database (our server)
 
-No server needed: the pages call Supabase straight from the browser. The owner manages orders on the separate
-**admin website** (`eps-admin` folder next to this one, e.g. admin.emergencyeps.com); its README has the full setup.
-
-1. Set up the Supabase project once (see `eps-admin/README.md`; the database file is [`supabase/schema.sql`](supabase/schema.sql)).
-2. In this site's Vercel project add `SUPABASE_URL` and `SUPABASE_ANON_KEY` (Supabase → Project Settings → API) and redeploy.
+Every order button posts to `/api/order` on this same site. nginx on the server passes `/api/` to the
+orders API (eps-admin repo, `api/server.mjs`), which saves the order in PostgreSQL on the server and returns
+the Order ID. Other tracked buttons (Call, Book…) post to `/api/click`. The owner sees everything on the
+**admin website** (https://admin.electricservicebd.com). Setup and deploys: `deploy/README.md` in the parent folder.
 
 Order IDs: `LETTERS-ddmmyy-N`. GS Order now · ES Electric · PS Plumbing · AS AC · HS Home · CS Commercial.
 The date is the job date the customer picked (Urgent or no date = today). The number restarts each day per letters.

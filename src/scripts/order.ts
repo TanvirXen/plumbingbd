@@ -2,9 +2,10 @@
 // (ES-301026-1), which is added to the WhatsApp message. Price Enquiry gets a Price Enquiry ID (PE-ES-301026-1),
 // counted separately. Letters: ES Electric · PS Plumbing · AS AC · HS Home · CS Commercial · GS Order now.
 // Date = the job date picked (no date or Urgent = today); the number starts at 1 for each service and date.
-//   1. Supabase (SUPABASE_URL + SUPABASE_ANON_KEY): create_order() in supabase/schema.sql, no backend needed.
+//   1. The orders API on our own server: POST /api/order on this same site (PostgreSQL; code in the eps-admin
+//      repo, api/server.mjs). Set ORDERS_API=off to switch it off (e.g. for a local copy without the API).
 //   2. Otherwise the Google Sheet (GOOGLE_SHEET_WEBHOOK_URL, Apps Script web app).
-//   3. Neither set up or not reachable: a backup ID made here (ES-301026-K7Q2), so the message always has one.
+//   3. Not reachable: a backup ID made here (ES-301026-K7Q2), so the message always has one.
 //
 // data-order holds the order fields for that button (JSON). Forms update it while the customer types.
 // Config comes from <script id="sheet-cfg"> in Base.astro.
@@ -25,7 +26,7 @@ export interface OrderData {
   enquiry?: boolean; // Price Enquiry: PE- ID
 }
 
-interface SheetCfg { supabaseUrl: string; supabaseKey: string; url: string; website: string; letters: string; lang: "en" | "bn"; idLabel: string; idLabelEnquiry: string }
+interface SheetCfg { api: string; url: string; website: string; letters: string; lang: "en" | "bn"; idLabel: string; idLabelEnquiry: string }
 
 const cfgEl = document.getElementById("sheet-cfg");
 const cfg: SheetCfg | null = cfgEl ? JSON.parse(cfgEl.textContent || "null") : null;
@@ -64,14 +65,14 @@ async function saveOrder(o: OrderData, button: string): Promise<string | undefin
     website: cfg!.website,
   };
   try {
-    if (cfg!.supabaseUrl && cfg!.supabaseKey) {
-      const res = await fetch(`${cfg!.supabaseUrl}/rest/v1/rpc/create_order`, {
+    if (cfg!.api) {
+      const res = await fetch(`${cfg!.api}/order`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", apikey: cfg!.supabaseKey, Authorization: `Bearer ${cfg!.supabaseKey}` },
-        body: JSON.stringify({ o: body }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
         signal: AbortSignal.timeout(10000),
       });
-      const id = await res.json();
+      const id = (await res.json())?.orderId;
       if (res.ok && goodId(id, o)) return id;
     } else if (cfg!.url) {
       const res = await fetch(cfg!.url, {
@@ -115,12 +116,12 @@ function withOrderId(href: string, id: string, o: OrderData): string {
 // with data-track. Order buttons (data-order) are logged by create_order together with their Order ID.
 document.addEventListener("click", (e) => {
   const el = (e.target as HTMLElement).closest<HTMLElement>("[data-track]");
-  if (!el || !cfg?.supabaseUrl || !cfg.supabaseKey || el.matches("a[data-order]")) return;
-  fetch(`${cfg.supabaseUrl}/rest/v1/rpc/track_click`, {
+  if (!el || !cfg?.api || el.matches("a[data-order]")) return;
+  fetch(`${cfg.api}/click`, {
     method: "POST",
     keepalive: true, // still sent when the click leaves the page (tel:, links)
-    headers: { "Content-Type": "application/json", apikey: cfg.supabaseKey, Authorization: `Bearer ${cfg.supabaseKey}` },
-    body: JSON.stringify({ c: { button: el.dataset.track, page: location.pathname, language: cfg.lang === "bn" ? "Bangla" : "English", website: cfg.website } }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ button: el.dataset.track, page: location.pathname, language: cfg.lang === "bn" ? "Bangla" : "English" }),
   }).catch(() => {});
 }, true);
 

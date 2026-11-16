@@ -33,10 +33,10 @@ const ld = graph(organization(), website(lang), localBusiness(), ...schema);
 const gaId = process.env.GA_MEASUREMENT_ID?.trim();
 const googleVerify = process.env.GOOGLE_SITE_VERIFICATION?.trim();
 const bingVerify = process.env.BING_SITE_VERIFICATION?.trim();
-// Where orders are saved for the Order ID (src/scripts/order.ts): Supabase, else the Google Sheet.
+// Where orders are saved for the Order ID (src/scripts/order.ts): our orders API at /api/, else the Google Sheet.
 const sheetCfg = {
-  supabaseUrl: process.env.SUPABASE_URL?.trim().replace(/\/+$/, "") || "",
-  supabaseKey: process.env.SUPABASE_ANON_KEY?.trim() || "",
+  // Orders API on our server, same site (/api/order, /api/click). ORDERS_API=off switches it off.
+  api: process.env.ORDERS_API?.trim() === "off" ? "" : "/api",
   url: process.env.GOOGLE_SHEET_WEBHOOK_URL?.trim() || "",
   website: site.domain,
   letters: site.orderLetters,
