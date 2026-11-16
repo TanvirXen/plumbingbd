@@ -50,9 +50,11 @@ const isEnquiry = (o: OrderData) => !!o.enquiry || /^Price enquiry/i.test(o.orde
 const goodId = (id: unknown, o: OrderData): id is string =>
   typeof id === "string" && ID_RE.test(id) && id.startsWith("PE-") === isEnquiry(o);
 
-async function saveOrder(o: OrderData): Promise<string | undefined> {
+async function saveOrder(o: OrderData, button: string): Promise<string | undefined> {
   const body = {
     ...o,
+    button, // which button was clicked (data-track) and where: saved as a click linked to this Order ID
+    page: location.pathname,
     letters: o.letters || cfg!.letters,
     enquiry: isEnquiry(o),
     jobDate: jobDate(o),
@@ -109,6 +111,19 @@ function withOrderId(href: string, id: string, o: OrderData): string {
   return url.toString();
 }
 
+// Click tracking for buttons that don't make an order (Call, Book, Order now → services…): any element
+// with data-track. Order buttons (data-order) are logged by create_order together with their Order ID.
+document.addEventListener("click", (e) => {
+  const el = (e.target as HTMLElement).closest<HTMLElement>("[data-track]");
+  if (!el || !cfg?.supabaseUrl || !cfg.supabaseKey || el.matches("a[data-order]")) return;
+  fetch(`${cfg.supabaseUrl}/rest/v1/rpc/track_click`, {
+    method: "POST",
+    keepalive: true, // still sent when the click leaves the page (tel:, links)
+    headers: { "Content-Type": "application/json", apikey: cfg.supabaseKey, Authorization: `Bearer ${cfg.supabaseKey}` },
+    body: JSON.stringify({ c: { button: el.dataset.track, page: location.pathname, language: cfg.lang === "bn" ? "Bangla" : "English", website: cfg.website } }),
+  }).catch(() => {});
+}, true);
+
 const busy = new WeakSet<HTMLAnchorElement>();
 
 document.addEventListener("click", async (e) => {
@@ -122,7 +137,7 @@ document.addEventListener("click", async (e) => {
   // New tab must open now (inside the click), or the browser blocks it
   const tab = a.target === "_blank" ? window.open("about:blank", "_blank") : null;
   const order: OrderData = JSON.parse(a.dataset.order || "{}");
-  const id = (await saveOrder(order)) ?? backupId(order);
+  const id = (await saveOrder(order, a.dataset.track || "order")) ?? backupId(order);
   const url = withOrderId(a.href, id, order);
   if (tab) {
     tab.opener = null;

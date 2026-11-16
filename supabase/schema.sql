@@ -3,7 +3,8 @@
 --
 -- How it works (no backend server):
 --   • The websites call create_order() with the public anon key. It saves the order and returns the Order ID
---     (ES-301026-1 = letters - job date ddmmyy - number for that day). Visitors can't read or change any order.
+--     (ES-301026-1 = letters - job date ddmmyy - number for that service and day). Visitors can't read or change any order.
+--     Price Enquiry gets its own count with "PE-" in front: PE-ES-301026-1.
 --   • The /admin/ page signs in with Supabase Auth. Only users listed in public.admins can see and update orders.
 
 -- ── Tables ───────────────────────────────────────────────────────────────────
@@ -31,7 +32,7 @@ create table if not exists public.orders (
 );
 create index if not exists orders_created_at_idx on public.orders (created_at desc);
 
--- Last number used per "LETTERS-ddmmyy"
+-- Last number used per "LETTERS-ddmmyy" (and "PE-LETTERS-ddmmyy" for Price Enquiry)
 create table if not exists public.order_counters (
   prefix text primary key,
   last   int  not null default 0
@@ -83,6 +84,62 @@ revoke all on function public.touch_updated_at() from public, anon, authenticate
 drop trigger if exists orders_touch on public.orders;
 create trigger orders_touch before update on public.orders for each row execute function public.touch_updated_at();
 
+-- ── Click tracking ───────────────────────────────────────────────────────────
+-- Every tracked button on the websites (Order now, Send order, Price Enquiry, Call, Book…) adds a row.
+-- Order buttons also carry the Order ID they produced, so /admin/ can show which click became which order.
+create table if not exists public.clicks (
+  id         bigint generated always as identity primary key,
+  created_at timestamptz not null default now(),
+  website    text not null,
+  button     text not null,
+  page       text,
+  language   text,
+  order_id   text
+);
+create index if not exists clicks_created_at_idx on public.clicks (created_at desc);
+create index if not exists clicks_order_id_idx   on public.clicks (order_id) where order_id is not null;
+alter table public.clicks enable row level security;
+revoke all on public.clicks from anon, authenticated;
+grant select on public.clicks to authenticated;
+drop policy if exists "admins read clicks" on public.clicks;
+create policy "admins read clicks" on public.clicks for select to authenticated using ((select private.is_admin()));
+
+create or replace function private.log_click(c jsonb, p_site text, p_order_id text)
+returns void language plpgsql security definer set search_path = ''
+as $$
+begin
+  insert into public.clicks (website, button, page, language, order_id)
+  values (p_site,
+          left(coalesce(nullif(regexp_replace(lower(coalesce(c ->> 'button', '')), '[^a-z0-9_]', '', 'g'), ''), 'unknown'), 40),
+          left(nullif(trim(c ->> 'page'), ''), 200),
+          left(nullif(trim(c ->> 'language'), ''), 20),
+          p_order_id);
+end $$;
+revoke all on function private.log_click(jsonb, text, text) from public, anon, authenticated;
+
+-- Buttons that don't make an order (Call, Book…). Order buttons are logged by create_order below.
+create or replace function public.track_click(c jsonb)
+returns void language plpgsql security definer set search_path = ''
+as $$
+declare
+  v_site text := lower(regexp_replace(coalesce(c ->> 'website', ''), '^(https?://)?(www\.)?([^/]+).*$', '\3'));
+begin
+  if v_site not in ('emergencyeps.com', 'electricservicebd.com', 'plumbingservicebd.com') then
+    raise exception 'unknown website';
+  end if;
+  -- Flood guard: drop clicks beyond 300 a minute across all sites
+  if (select count(*) from public.clicks where created_at > now() - interval '1 minute') >= 300 then return; end if;
+  perform private.log_click(c, v_site, null);
+end $$;
+revoke all     on function public.track_click(jsonb) from public;
+grant  execute on function public.track_click(jsonb) to anon, authenticated;
+
+-- Keep-awake: a daily GitHub Actions job calls this so the free Supabase project is never paused.
+create or replace function public.ping()
+returns text language sql stable set search_path = '' as $$ select 'ok'::text $$;
+revoke all     on function public.ping() from public;
+grant  execute on function public.ping() to anon, authenticated;
+
 -- ── New order (called by the websites) ───────────────────────────────────────
 create or replace function public.create_order(o jsonb)
 returns text
@@ -92,6 +149,7 @@ declare
   v_letters text := upper(coalesce(nullif(o ->> 'letters', ''), 'GS'));
   v_site    text := lower(regexp_replace(coalesce(o ->> 'website', ''), '^(https?://)?(www\.)?([^/]+).*$', '\3'));
   v_urgent  boolean := coalesce((o ->> 'urgent')::boolean, false);
+  v_enquiry boolean := coalesce((o ->> 'enquiry')::boolean, false);
   v_day     date;
   v_pick    date;
   v_prefix  text;
@@ -116,7 +174,8 @@ begin
   end;
   if v_pick is not null and (v_pick < v_day - 1 or v_pick > v_day + 60) then v_pick := null; end if;
 
-  v_prefix := v_letters || '-' || to_char(case when v_urgent or v_pick is null then v_day else v_pick end, 'DDMMYY');
+  -- Price Enquiry: PE-ES-301026-1 (own counter); orders: ES-301026-1
+  v_prefix := case when v_enquiry then 'PE-' else '' end || v_letters || '-' || to_char(case when v_urgent or v_pick is null then v_day else v_pick end, 'DDMMYY');
   insert into public.order_counters as c (prefix, last) values (v_prefix, 1)
     on conflict (prefix) do update set last = c.last + 1
     returning c.last into v_n;
@@ -138,6 +197,8 @@ begin
           v_urgent,
           left(nullif(trim(o ->> 'language'), ''), 20),
           v_site);
+  -- The click that made this order (button + page), linked by Order ID
+  perform private.log_click(o, v_site, v_oid);
   return v_oid;
 end
 $$;
@@ -171,5 +232,7 @@ create trigger on_auth_user_created_add_admin after insert on auth.users
   for each row execute function private.add_listed_admin();
 
 -- Then: Authentication → Users → Add user → "Create new user" (email + password, tick Auto Confirm).
+-- After the first admin exists, add more admins and change passwords on the admin website (Admins tab,
+-- Edge Function supabase/functions/admin-users).
 -- For a login that already exists, run:
 -- insert into public.admins (user_id, email) select id, email from auth.users where email = 'owner@example.com' on conflict do nothing;
