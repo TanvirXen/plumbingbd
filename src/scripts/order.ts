@@ -104,10 +104,13 @@ function backupId(o: OrderData): string {
 function withOrderId(href: string, id: string, o: OrderData): string {
   const url = new URL(href);
   const lines = (url.searchParams.get("text") ?? "").split("\n");
-  // form messages: at the top (under "I need Price Enquiry" and the urgent line); one-line messages: at the end
-  const enquiryForm = o.orderType === "Price enquiry (B)";
-  const at = o.orderType === "Order form (B)" || enquiryForm ? (enquiryForm ? 1 : 0) + (o.urgent ? 1 : 0) : lines.length;
-  lines.splice(at, 0, `*${isEnquiry(o) ? cfg!.idLabelEnquiry : cfg!.idLabel}:* ${id}`);
+  // Every message starts with the Order ID / Price Enquiry ID.
+  // Form messages already begin with date/time; short direct messages get a blank line after the ID.
+  const form = o.orderType === "Order form (B)" || o.orderType === "Price enquiry (B)";
+  const idLine = `*${isEnquiry(o) ? cfg!.idLabelEnquiry : cfg!.idLabel}:* ${id}`;
+  // keep date/time right under the ID; otherwise leave a blank line before the greeting
+  if (form && lines[0]?.startsWith("*")) lines.splice(0, 0, idLine);
+  else lines.splice(0, 0, idLine, "");
   url.searchParams.set("text", lines.join("\n"));
   return url.toString();
 }

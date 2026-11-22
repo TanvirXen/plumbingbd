@@ -30,6 +30,7 @@ const links = [
         <p>
           {t(lang, "whatsapp")} / {t(lang, "phone")}: <a href={waLink(bn ? "হ্যালো" : "Hi")} target="_blank" rel="noopener">{company.phone}</a>
           {" · "}<a href={telLink}>{bn ? "কল" : "Call"}</a><br />
+          {bn ? "বিকল্প নম্বর" : "Alternative number"}: <a href={`tel:${company.phone2Intl}`}>{company.phone2}</a><br />
           {bn ? company.hours.labelBn : company.hours.label} · {bn ? `${company.address.localityBn}, ${company.address.regionBn}` : `${company.address.locality}, ${company.address.region}`}
         </p>
       </div>

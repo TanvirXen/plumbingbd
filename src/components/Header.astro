@@ -36,7 +36,8 @@ const divisionLink = (key: "electric" | "plumbing") =>
 </div>
 <header class="header">
   <div class="wrap">
-    <a class="brand" href={lp(lang, "/")}>
+    <!-- Logo + name: goes to the home page -->
+    <a class="brand" href={lp(lang, "/")} data-track="header_brand">
       <img src="/logo-160.webp" width="48" height="48" alt="" />
       <span>
         <b>{lang === "bn" ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`}</b>

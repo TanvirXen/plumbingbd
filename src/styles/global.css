@@ -400,3 +400,28 @@ body.no-callbar { padding-bottom: 0; }
   .switch a { padding: 3px 7px; font-size: .82rem; }
   .langswitch a { padding: 3px 9px; font-size: .8rem; }
 }
+
+/* Menu button: stands out (site-colour outline and icon), with a small "Menu" label under the icon on phones */
+.menu summary { border: 2px solid var(--accent); background: var(--glow); color: #fff; box-shadow: 0 0 14px -6px var(--accent); }
+.menu summary:hover, .menu[open] summary { background: var(--accent); color: var(--on-accent); }
+.menu summary .menu-ico { color: var(--accent); width: 22px; height: 22px; }
+.menu summary:hover .menu-ico, .menu[open] summary .menu-ico { color: var(--on-accent); }
+@media (max-width: 480px) {
+  .menu summary { width: 52px; min-height: 48px; padding: 4px 0 3px; flex-direction: column; justify-content: center; gap: 1px; }
+  .menu summary > span { position: static; width: auto; height: auto; overflow: visible; clip: auto; font-size: 0.66rem; font-weight: 800; letter-spacing: 0.02em; line-height: 1; }
+}
+
+/* Lists without an icon (How it works): title above the text, full width */
+.benefits.plain li { display: block; }
+.benefits.plain b { margin: 0 0 6px; font-size: 1.1rem; color: var(--text); }
+.benefits.plain p { line-height: 1.6; }
+
+.alt-phone { margin: -6px 0 16px; font-size: 1.05rem; color: var(--muted); }
+.alt-phone a { font-weight: 700; font-size: 1.15rem; }
+
+/* Desktop / tablet: the Electrician-Plumber + language bar also stays on screen while scrolling (header sits under it) */
+@media (min-width: 761px) {
+  .topbar { position: sticky; top: 0; z-index: 21; }
+  .header { top: 40px; }
+  .faq-group { scroll-margin-top: 124px; }
+}

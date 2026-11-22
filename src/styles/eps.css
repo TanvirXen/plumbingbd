@@ -717,3 +717,151 @@
   .eps.hero2::before { content: ""; position: absolute; inset: -12px; z-index: -2; background: var(--hero-img) center 30% / cover no-repeat; filter: blur(5px) saturate(1.1); }
   .eps.hero2::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(8,13,25,.84), rgba(8,13,25,.9) 70%, rgba(8,13,25,.97)); }
 }
+
+
+/* ===== Hero: Price Enquiry and Call us as two equal buttons under Order now ===== */
+.eps .hero2-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; margin-top: 0.8rem; max-width: 420px; }
+.eps .hero2-actions .btn { min-height: 50px; padding: 0 0.8rem; justify-content: center; gap: 0.45rem; font-size: 1rem; font-weight: 800; white-space: nowrap; }
+.eps .hero2-actions .btn svg { width: 19px; height: 19px; flex: none; }
+.eps .hero2-actions .btn-call { background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.75); color: #fff; }
+.eps .hero2-actions .btn-call:hover { background: rgba(255, 255, 255, 0.14); border-color: #fff; }
+.eps .hero2-actions .btn-enquiry { border-width: 2px; }
+@media (max-width: 760px) {
+  .eps .hero2-actions { max-width: none; }
+  .eps .hero2-actions .btn { min-height: 48px; font-size: 0.95rem; }
+}
+@media (max-width: 360px) { .eps .hero2-actions .btn { font-size: 0.85rem; padding: 0 0.4rem; } }
+
+/* ===== Order form: location is highly recommended ===== */
+.eps .loc-rec { display: inline-block; margin-left: 0.4rem; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 0.75rem; font-weight: 800;
+  background: var(--glow); color: #fff; border: 1px solid var(--accent); vertical-align: middle; }
+.eps .order-form .loc-add { border: 2px solid var(--accent); color: #fff; background: var(--glow); }
+.eps .order-form .loc-add svg { color: var(--accent); }
+.eps .loc-why { margin: 0.35rem 0 0; font-size: 0.85rem; color: var(--muted); }
+.eps .loc-why[hidden] { display: none; }
+
+/* ===== Price Enquiry banner: one slim line ===== */
+.eps .enquiry-banner { display: flex; align-items: center; gap: 0.5rem; flex-wrap: nowrap; padding: 0.5rem 0.8rem; font-size: 0.92rem; }
+.eps .enquiry-banner > span { flex: 1 1 auto; min-width: 0; }
+.eps .enquiry-banner svg { width: 18px; height: 18px; flex: none; }
+.eps .enquiry-banner .link-btn { flex: none; white-space: nowrap; margin: 0; }
+@media (max-width: 600px) { .eps .enquiry-banner { font-size: 0.85rem; padding: 0.45rem 0.65rem; } }
+@media (max-width: 600px) and (max-height: 620px) {
+  /* small phones in Price Enquiry mode: everything above the bottom bar */
+  .eps .enquiry-banner { padding: 0.3rem 0.55rem; font-size: 0.78rem; line-height: 1.3; margin-bottom: 0.45rem; }
+  .eps .enquiry-banner svg { width: 15px; height: 15px; }
+  .eps .service-grid .service-name { font-size: 0.92rem; }
+  .eps .service-grid { gap: 0.45rem; }
+}
+@media (min-width: 761px) { .eps .hero2 .btn-main { width: 100%; max-width: 420px; } }
+@media (max-width: 760px) and (max-height: 620px) {
+  .eps .hero2-inner { padding-block: 1rem 1.2rem; }
+  .eps .hero2 h1.hero-name { font-size: 1.6rem; margin: 0.6rem 0 0.4rem; }
+  .eps .hero2 .lead { font-size: 0.85rem; margin-bottom: 0.8rem; }
+  .eps .btn-main { min-height: 50px; }
+  .eps .hero2-actions { margin-top: 0.55rem; }
+  .eps .hero2-actions .btn { min-height: 44px; }
+}
+
+/* Hero facts line: link to "Choose a service" */
+.eps .lead-link { color: inherit; text-decoration: underline dotted rgba(255,255,255,.35); text-underline-offset: 5px; }
+.eps .lead-link:hover, .eps .lead-link:focus-visible { color: #fff; text-decoration-color: var(--accent); text-decoration-style: solid; }
+
+/* ===== Choose a service: point people to the service boxes ===== */
+.eps .choose-sub { display: flex; align-items: center; gap: 0.45rem; margin: -0.35rem 0 0.8rem; color: #c9d1de; font-size: 0.95rem; }
+.eps .choose-sub[hidden] { display: none; }
+.eps .choose-sub svg { width: 18px; height: 18px; color: var(--accent); flex: none; }
+/* service boxes: a little more presence */
+.eps .service-grid .service:not(.service-wa) { border-width: 1.5px; box-shadow: 0 8px 20px -14px var(--accent); }
+.eps .service-grid .service:not(.service-wa):hover { transform: translateY(-2px); box-shadow: 0 12px 26px -12px var(--accent); }
+.eps .service-grid .service:not(.service-wa) .service-arrow { color: var(--accent); }
+/* WhatsApp box: last and quiet (dashed, no fill) */
+.eps .service-grid .service-wa { background: transparent; border: 1.5px dashed rgba(127, 209, 160, 0.45); box-shadow: none; }
+.eps .service-grid .service-wa .service-name { color: #a9dcbd; }
+.eps .service-grid .service-wa .service-icon { background: rgba(52, 122, 82, 0.2); }
+.eps .service-grid .service-wa:hover { border-style: solid; background: rgba(52, 122, 82, 0.12); }
+.eps .service-grid.is-enquiry .service-wa { background: transparent; border: 1.5px dashed var(--accent); }
+@media (prefers-reduced-motion: reduce) { .eps .service-grid .service:hover { transform: none !important; } }
+@media (max-width: 600px) { .eps .choose-sub { font-size: 0.85rem; margin-bottom: 0.6rem; } }
+
+/* WhatsApp box: same solid outline as the other service boxes */
+.eps .service-grid .service-wa, .eps .service-grid.is-enquiry .service-wa { border: 1.5px solid var(--accent); border-style: solid; background: transparent; box-shadow: 0 8px 20px -14px var(--accent); }
+.eps .service-grid .service-wa:hover { border-color: var(--accent); background: rgba(255,255,255,0.03); transform: translateY(-2px); }
+.eps .service-grid .service-wa .service-arrow { color: var(--accent); }
+
+/* Hero title: link to "Choose a service" (looks the same) */
+.eps .title-link { color: inherit; text-decoration: none; }
+.eps .title-link:hover, .eps .title-link:focus-visible { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 8px; text-decoration-color: rgba(255,255,255,.35); }
+
+/* ===== Home first screen, cleaner ===== */
+/* facts line: plain text (still a link to Choose a service) */
+.eps .lead-link { text-decoration: none; }
+/* rating badge */
+.eps.hero2 a.g-rating { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 1rem 0.4rem 0.85rem; border-radius: 999px;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.28); font-size: 0.92rem; }
+.eps.hero2 .g-rating .star { color: #fbbc04; font-size: 1.15rem; line-height: 1; }
+.eps.hero2 .g-rating b { font-size: 1rem; }
+.eps.hero2 .g-rating .sep { opacity: .5; }
+/* Desktop: bigger "Tap your service…" guide line */
+@media (min-width: 761px) {
+  .eps .choose-sub { font-size: 1.2rem; font-weight: 600; color: #e1e7f0; gap: 0.6rem; margin: -0.2rem 0 1.1rem; }
+  .eps .choose-sub svg { width: 24px; height: 24px; }
+}
+/* Desktop: the guide line as a highlighted strip */
+@media (min-width: 761px) {
+  .eps .choose-sub { display: flex; width: fit-content; max-width: 100%; font-size: 1.35rem; font-weight: 700; color: #fff; gap: 0.75rem;
+    margin: 0 0 1.3rem; padding: 0.7rem 1.4rem 0.7rem 0.8rem; border-radius: 14px; background: var(--glow); border: 1px solid var(--accent);
+    border-left: 5px solid var(--accent); box-shadow: 0 10px 26px -16px var(--accent); }
+  .eps .choose-sub svg { width: 22px; height: 22px; padding: 7px; box-sizing: content-box; border-radius: 50%; background: var(--accent); color: var(--on-accent); }
+}
+/* Desktop: the guide strip runs the full width of the service boxes */
+@media (min-width: 761px) {
+  .eps .choose-sub { width: 100%; box-sizing: border-box; padding: 0.85rem 1.4rem 0.85rem 0.9rem;
+    background: linear-gradient(90deg, var(--glow), rgba(255,255,255,0.02)); }
+}
+
+/* Desktop: instruction as plain moving text (right to left), no box, so it doesn't look like a button */
+.eps .choose-move { display: none; }
+@media (min-width: 761px) {
+  .eps .choose-sub { display: none !important; }
+  .eps .choose-move { display: flex; overflow: hidden; margin: 0 0 1.2rem; padding: 0.35rem 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+  .eps .choose-move[hidden] { display: none; }
+  .eps .choose-move-list { gap: 4rem; padding-right: 4rem; animation-duration: 30s; }
+  .eps .choose-move-list li { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1.35rem; font-weight: 700; color: #fff; white-space: nowrap; }
+  .eps .choose-move-list svg { width: 24px; height: 24px; color: var(--accent); }
+  .eps .choose-move:hover .choose-move-list { animation-play-state: paused; }
+}
+@media (min-width: 761px) { .eps#choose, .eps #details { scroll-margin-top: 112px; } }
+/* Desktop (final): instruction is still, centred, plain text (no box, no movement) */
+@media (min-width: 761px) {
+  .eps .choose-move { display: none !important; }
+  .eps .choose-sub { display: flex !important; justify-content: center; width: 100%; margin: 0 0 1.2rem; padding: 0.3rem 0;
+    background: none; border: 0; border-left: 0; box-shadow: none; border-radius: 0;
+    font-size: 1.35rem; font-weight: 700; color: #fff; gap: 0.6rem; text-align: center; }
+  .eps .choose-sub[hidden] { display: none !important; }
+  .eps .choose-sub svg { width: 24px; height: 24px; padding: 0; background: none; color: var(--accent); }
+}
+/* Desktop: Price Enquiry instruction in the same style (centred plain text, no box); "Order instead" as a small link after it */
+@media (min-width: 761px) {
+  .eps .enquiry-banner { justify-content: center; width: 100%; margin: 0 0 1.2rem; padding: 0.3rem 0; background: none; border: 0; box-shadow: none; border-radius: 0;
+    font-size: 1.35rem; font-weight: 700; color: #fff; gap: 0.6rem; }
+  .eps .enquiry-banner > span { flex: 0 1 auto; }
+  .eps .enquiry-banner svg { width: 24px; height: 24px; color: var(--accent); }
+  .eps .enquiry-banner .link-btn { margin-left: 0.8rem; font-size: 1rem; font-weight: 700; }
+}
+@media (max-width: 600px) and (max-height: 620px) {
+  .eps .enquiry-banner { font-size: 0.72rem; line-height: 1.25; padding: 0.28rem 0.5rem; }
+  .eps#choose h2 { margin-bottom: 0.35rem; }
+}
+
+/* "Choose a service" heading + instruction: tappable (go to the service boxes) */
+.to-choose { cursor: pointer; }
+.to-choose:hover { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 5px; text-decoration-color: var(--accent); }
+.to-choose:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+/* Why Choose Us cards: whole card is a link to "Choose a service" */
+.eps .why-card { padding: 0; }
+.eps .why-link { display: flex; gap: 0.9rem; align-items: flex-start; padding: 1.15rem; height: 100%; box-sizing: border-box; color: inherit; text-decoration: none; border-radius: inherit; }
+.eps .why-link:hover h3, .eps .why-link:focus-visible h3 { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+.eps .why-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

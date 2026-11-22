@@ -8,6 +8,9 @@ export const company = {
   // Phone + WhatsApp come from .env (PHONE, PHONE_INTL, WHATSAPP_NUMBER); these are the fallbacks.
   phone: process.env.PHONE || "01609-993537",
   phoneIntl: process.env.PHONE_INTL || "+8801609993537",
+  // alternative number (calls)
+  phone2: "01990-683457",
+  phone2Intl: "+8801990683457",
   whatsapp: process.env.WHATSAPP_NUMBER || "8801609993537", // country code, no + or spaces
   email: "electricianandplumberbd@gmail.com", // optional
   address: {
@@ -42,6 +45,8 @@ export const company = {
     // Empty values are hidden on the site. YouTube / Instagram / TikTok: PLACEHOLDER, add when available.
     googleBusiness: "https://share.google/0Q82bfZLFurpw6t36",
     googleReview: "https://share.google/JTAvZSBxgQOCSbLlU", // Google reviews (5.0 ★)
+    reviewRating: "5.0", // update when Google changes
+    reviewCount: 99, // number of Google reviews: update when it grows
     facebook: "https://www.facebook.com/profile.php?id=100095419443718",
     youtube: "",
     instagram: "",

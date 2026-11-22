@@ -12,24 +12,35 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const T = orderText[lang];
 // Electrician site: Electric, Plumbing, AC, Home, Commercial.
-// Plumber site: Plumbing first, then AC, Home, Commercial, Electric last.
+// Plumber site: Plumbing first, then Electric, AC, Home, Commercial.
 const order = site.key === "electric"
   ? ["electric", "plumbing", "ac", "home", "commercial"]
-  : ["plumbing", "ac", "home", "commercial", "electric"];
+  : ["plumbing", "electric", "ac", "home", "commercial"];
 const cards = [...orderCategories].sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
 ---
+<p class="choose-sub" data-choose-sub><EpsIcon name="form" /> <span>{T.chooseSub}</span></p>
+<!-- Desktop: the same instruction as plain moving text (not a button) -->
+<div class="choose-move" data-choose-sub aria-hidden="true">
+  {[0, 1].map(() => (
+    <ul class="ticker-list choose-move-list">
+      {[0, 1, 2].map(() => <li><EpsIcon name="form" /> {T.chooseSub}</li>)}
+    </ul>
+  ))}
+</div>
 <p class="enquiry-banner" data-enquiry-banner hidden>
-  <EpsIcon name="tag" /> <span>{T.enquiryPick}<small class="checkup-note">{T.checkupNote}</small></span>
+  <EpsIcon name="tag" /> <span>{T.enquiryPick}</span>
   <button type="button" class="link-btn" data-enquiry-off>{T.enquiryOff}</button>
 </p>
 <div class="service-grid">
-  <a class="service service-wa" href={waLink(orderNow.message[lang])} target="_blank" rel="noopener" data-track="whatsapp_order_now"
+  <!-- WhatsApp Order: always the first box -->
+  <a class="service service-wa service-wa-first" href={waLink(orderNow.message[lang])} target="_blank" rel="noopener" data-track="whatsapp_order_now"
     data-order={JSON.stringify({ letters: orderNow.letters, service: "Order now", orderType: "Order now" })}
     data-letters={orderNow.letters}
     data-wa-order={waLink(orderNow.message[lang])} data-wa-enquiry={waLink(T.enquiryMessage)}>
     <span class="service-icon"><EpsIcon name="whatsapp" /></span>
-    <span class="service-name" data-name-order={T.orderNow} data-name-enquiry={T.enquiryNow}>{T.orderNow}</span>
-    <span class="service-short" data-short-order={T.orderNowShort} data-short-enquiry={T.enquiryWaShort}>{T.orderNowShort}</span>
+    <span class="service-name" data-name-order={T.waOrder} data-name-enquiry={T.enquiryNow}>{T.waOrder}</span>
+    <span class="service-short" data-short-order={T.waOrderShort} data-short-enquiry={T.waEnquiryShort}>{T.waOrderShort}</span>
+    <EpsIcon name="arrow" class="service-arrow" />
   </a>
   {cards.map((c) => (
     <a class={`service icon-${c.icon}`} href={lp(lang, `/order/${c.key}/`)} data-order-link>
@@ -41,6 +52,19 @@ const cards = [...orderCategories].sort((a, b) => order.indexOf(a.key) - order.i
   ))}
 </div>
 <script>
+  // "Choose a service" heading and the instruction line: tap to go to the service boxes
+  document.querySelectorAll<HTMLElement>("[data-choose-title], [data-choose-sub], [data-enquiry-banner] > span").forEach((el) => {
+    el.classList.add("to-choose");
+    el.setAttribute("role", "link");
+    el.tabIndex = 0;
+    const go = () => {
+      const target = document.getElementById("choose") ?? el.closest("section") ?? document.querySelector(".service-grid");
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (target?.id) history.replaceState(null, "", `#${target.id}`);
+    };
+    el.addEventListener("click", go);
+    el.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
+  });
   // Keep ?area=… / ?s=… (and ?enquiry=1) when going on to a service's order page
   const links = () => document.querySelectorAll<HTMLAnchorElement>("a[data-order-link], a[data-trend-link]");
   if (location.search) document.querySelectorAll<HTMLAnchorElement>("a[data-order-link]").forEach((a) => (a.search = location.search));
@@ -51,6 +75,7 @@ const cards = [...orderCategories].sort((a, b) => order.indexOf(a.key) - order.i
     // "Choose a service" <-> "Choose a service for Price Enquiry"
     document.querySelectorAll<HTMLElement>("[data-choose-title]").forEach((h) => (h.textContent = on ? h.dataset.tEnquiry! : h.dataset.tOrder!));
     document.querySelectorAll<HTMLElement>("[data-enquiry-banner]").forEach((b) => (b.hidden = !on));
+    document.querySelectorAll<HTMLElement>("[data-choose-sub]").forEach((b) => (b.hidden = on));
     document.querySelectorAll<HTMLElement>(".service-grid").forEach((g) => g.classList.toggle("is-enquiry", on));
     links().forEach((a) => {
       const q = new URLSearchParams(a.search);

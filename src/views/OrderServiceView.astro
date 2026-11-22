@@ -96,13 +96,14 @@ const config = {
             </fieldset>
 
             <fieldset>
-              <legend>{T.locationTitle} <small class="opt">{T.optional}</small></legend>
+              <legend>{T.locationTitle} <span class="loc-rec">{T.locRecommended}</span></legend>
               <div class="location-ok" id="loc-ok" hidden>
                 <EpsIcon name="check" />
                 <a id="loc-link" href="#" target="_blank" rel="noopener">{T.locationAdded}</a>
                 <button type="button" class="link-btn" id="loc-remove">{T.remove}</button>
               </div>
-              <button type="button" class="btn btn-line btn-small" id="loc-add"><EpsIcon name="target" /> <span>{T.addLocation}</span></button>
+              <button type="button" class="btn btn-line btn-small loc-add" id="loc-add"><EpsIcon name="target" /> <span>{T.addLocation}</span></button>
+              <p class="loc-why" id="loc-why">{T.locWhy}</p>
               <p class="error" id="loc-error" hidden></p>
             </fieldset>
 
@@ -233,6 +234,7 @@ const config = {
   function drawLoc(state: "idle" | "loading" | "denied" | "failed" = "idle") {
     $("loc-ok").hidden = !loc;
     locAdd.hidden = !!loc;
+    $("loc-why").hidden = !!loc;
     if (loc) $<HTMLAnchorElement>("loc-link").href = `https://maps.google.com/?q=${loc}`;
     locAdd.disabled = state === "loading";
     locText.textContent = state === "loading" ? T.gettingLocation : T.addLocation;
@@ -252,25 +254,38 @@ const config = {
 
   // ---------- Message (only filled fields) + sheet row ----------
   const val = (name: string) => String(new FormData(form).get(name) ?? "").replace(/\s+/g, " ").trim() || undefined;
-  function build(): string {
+  // WhatsApp message: Order ID (added on send) · date · time / greeting / work · issue / contact details / thanks
+  function build(enquiry = false): string {
     const lines: string[] = [];
     const add = (label: string, v?: string) => v && lines.push(`*${label}:* ${v}`);
-    if (time === URGENT) lines.push(T.msgUrgent);
-    add(T.msgService, cat.name[lang]);
+    const gap = () => lines.length && lines[lines.length - 1] !== "" && lines.push("");
+    // 1. when (the Order ID / Price Enquiry ID goes above this when sent)
+    if (time === URGENT) add(T.msgTime, T.msgUrgentTime);
+    else { if (date) add(T.msgDate, dateLabel(date)); add(T.msgTime, timeText(time, lang)); }
+    gap();
+    // 2. greeting
+    lines.push((enquiry ? T.msgHelloEnquiry : T.msgHello).replace("{s}", cat.name[lang]));
+    gap();
+    // 3. the job
     add(T.msgWork, cat.options.filter((o) => work.includes(o.en)).map((o) => o[lang]).join(", "));
     add(T.msgIssue, val("issue"));
-    add(T.msgName, val("name"));
-    add(T.msgContact, val("contact"));
-    add(T.msgAddress, val("address"));
-    if (loc) add(T.msgLocation, `https://maps.google.com/?q=${loc}`);
-    if (date) add(T.msgDate, dateLabel(date));
-    add(T.msgTime, timeText(time, lang));
-    lines.push(T.msgFooter);
+    gap();
+    // 4. contact details
+    if (val("name") || val("contact") || val("address") || loc) {
+      lines.push(T.msgContactTitle);
+      add(T.msgName, val("name"));
+      add(T.msgContact, val("contact"));
+      add(T.msgAddress, val("address"));
+      if (loc) add(T.msgLocation, `https://maps.google.com/?q=${loc}`);
+      gap();
+    }
+    while (lines.length && lines[lines.length - 1] === "") lines.pop(); // no empty line at the end
     return lines.join("\n");
   }
   function update() {
     drawWhen();
     const msg = build();
+    const msgEnq = build(true);
     const wa = (text: string) => `https://wa.me/${cfg.wa}?text=${encodeURIComponent(text)}`;
     const row = (orderType: string, enquiry = false) => JSON.stringify({
       letters: cat.letters, orderType, service: cat.name.en, enquiry: enquiry || undefined,
@@ -281,7 +296,7 @@ const config = {
     });
     send.href = wa(msg);
     send.dataset.order = row("Order form (B)");
-    sendEnquiry.href = wa(`${T.msgEnquiry}\n${msg}`); // same message, first line "I need Price Enquiry"
+    sendEnquiry.href = wa(msgEnq);
     sendEnquiry.dataset.order = row("Price enquiry (B)", true);
     // one-line summary next to the send buttons (phone)
     $("summary").textContent = [

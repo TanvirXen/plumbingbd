@@ -24,9 +24,11 @@ const description = bn
     <div>
       <h1>{t(lang, "contact")}</h1>
       <p class="lead"><a href={telLink} style="font-size:1.6rem;font-weight:700">{company.phone}</a></p>
+      <p class="alt-phone">{bn ? "বিকল্প নম্বর:" : "Alternative number:"} <a href={`tel:${company.phone2Intl}`} data-track="call_alt">{company.phone2}</a></p>
       <CallButtons lang={lang} />
       <table class="ptable info" style="margin-top:24px">
         <tbody>
+          <tr><td>{bn ? "ফোন" : "Phone"}</td><td><a href={telLink}>{company.phone}</a><br /><a href={`tel:${company.phone2Intl}`} data-track="call_alt">{company.phone2}</a> <small>({bn ? "বিকল্প" : "alternative"})</small></td></tr>
           <tr><td>{t(lang, "hours")}</td><td>{bn ? company.hours.labelBn : company.hours.label}</td></tr>
           <tr><td>{bn ? "ঠিকানা" : "Location"}</td><td>{company.address.street ? `${bn ? company.address.streetBn : company.address.street}, ` : ""}{bn ? `${company.address.localityBn}, ${company.address.regionBn}` : `${company.address.locality}, ${company.address.region}`}</td></tr>
           {company.email && <tr><td>{bn ? "ইমেইল" : "Email"}</td><td><a href={`mailto:${company.email}`}>{company.email}</a></td></tr>}
