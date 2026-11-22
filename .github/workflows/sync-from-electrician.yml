@@ -1,0 +1,124 @@
+# Keeps this site in step with the electrician site (TanvirXen/electricalbd), where most changes are made.
+# Every 15 minutes: fetch electricalbd (read-only deploy key), take the changes to the shared code since the
+# last sync (.sync/electricalbd), merge them here (3-way, so plumbing-only content is kept), build to check,
+# commit, and start the deploy. If a change clashes with plumbing-only content, nothing is changed: the run
+# fails and GitHub emails you, so it can be merged by hand.
+# Secret: ELEC_DEPLOY_KEY (private half of a read-only deploy key on TanvirXen/electricalbd).
+name: Sync from electrician site
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      from:
+        description: "Electrician commit to start from (empty = last synced)"
+        required: false
+      dry_run:
+        description: "Only show what would change (no commit, no deploy)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: sync-from-electrician
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: write
+
+env:
+  # Shared code. Site-only files (.env, README.md, scripts/local.mjs, scripts/check-links.mjs, .github) are left alone.
+  SHARED: src public scripts/process_images.py scripts/make_favicons.py scripts/serve.mjs astro.config.mjs package.json package-lock.json vercel.json tsconfig.json
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch the electrician site
+        env:
+          KEY: ${{ secrets.ELEC_DEPLOY_KEY }}
+        run: |
+          [ -n "$KEY" ] || { echo "::error::ELEC_DEPLOY_KEY secret is missing"; exit 1; }
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/elec && chmod 600 ~/.ssh/elec
+          ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts 2>/dev/null
+          GIT_SSH_COMMAND="ssh -i $HOME/.ssh/elec -o IdentitiesOnly=yes" \
+            git fetch -q git@github.com:TanvirXen/electricalbd.git +refs/heads/main:refs/elec/main
+          rm -f ~/.ssh/elec
+
+      - name: Merge new shared changes
+        id: merge
+        env:
+          FROM_INPUT: ${{ inputs.from }}
+        run: |
+          from="${FROM_INPUT:-$(cat .sync/electricalbd)}"
+          from=$(git rev-parse --verify "$from^{commit}")
+          to=$(git rev-parse refs/elec/main)
+          echo "to=$to" >> "$GITHUB_OUTPUT"
+          if [ "$from" = "$to" ]; then
+            echo "Up to date with electricalbd ${to::7}."
+            echo "changed=none" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "New on electricalbd since ${from::7}:"
+          git log --format='  %h %an: %s' "$from..$to" | cut -c1-120
+          git diff --binary --full-index "$from" "$to" -- $SHARED > "$RUNNER_TEMP/sync.patch"
+          if [ ! -s "$RUNNER_TEMP/sync.patch" ]; then
+            echo "No changes to shared code; only moving the sync point."
+            echo "changed=pointer" >> "$GITHUB_OUTPUT"
+          else
+            if ! git apply --3way "$RUNNER_TEMP/sync.patch" 2> "$RUNNER_TEMP/apply.log"; then
+              cat "$RUNNER_TEMP/apply.log"
+              echo "::error::These changes clash with plumbing-only content: $(git diff --name-only --diff-filter=U | tr '\n' ' '). Merge them by hand (see deploy/README.md), nothing was changed."
+              exit 1
+            fi
+            git diff --cached --stat | tail -20
+            echo "changed=code" >> "$GITHUB_OUTPUT"
+          fi
+          # Commit message: the electrician commits it brings over
+          {
+            echo "Sync from electrician site (${to::7})"
+            echo
+            git log --reverse --format='- %h %an: %s' "$from..$to" | cut -c1-100 | head -20
+          } > "$RUNNER_TEMP/msg.txt"
+
+      - uses: actions/setup-node@v4
+        if: steps.merge.outputs.changed == 'code'
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Build to check
+        if: steps.merge.outputs.changed == 'code'
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          npm run check:links
+
+      - name: Commit and deploy
+        if: steps.merge.outputs.changed != 'none' && !inputs.dry_run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TO: ${{ steps.merge.outputs.to }}
+          CHANGED: ${{ steps.merge.outputs.changed }}
+        run: |
+          echo "$TO" > .sync/electricalbd
+          git add -A -- $SHARED .sync/electricalbd
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -F "$RUNNER_TEMP/msg.txt"
+          git push -q origin HEAD:main
+          # Pushes made by this workflow don't start other workflows, so start the deploy by hand
+          if [ "$CHANGED" = code ]; then gh workflow run deploy.yml --ref main; fi
+          echo "Synced to electricalbd ${TO::7} ($CHANGED)." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Dry run result
+        if: steps.merge.outputs.changed != 'none' && inputs.dry_run
+        run: |
+          echo "Dry run: nothing committed. Would bring over:"
+          git diff --cached --stat | tail -30
