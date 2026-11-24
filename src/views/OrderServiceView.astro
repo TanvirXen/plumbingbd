@@ -29,6 +29,10 @@ const config = {
   lang, wa: company.whatsapp, days: bookingDays, slots: timeSlots, T,
   cat: { letters: c.letters, name: c.name, options },
 };
+const hints = { electric: ["Example: fan is making noise", "যেমন: ফ্যান থেকে শব্দ হচ্ছে"], plumbing: ["Example: kitchen tap is leaking", "যেমন: রান্নাঘরের ট্যাপ দিয়ে পানি পড়ছে"],
+  ac: ["Example: AC not cooling", "যেমন: এসি ঠান্ডা হচ্ছে না"], home: ["Example: gas stove not lighting", "যেমন: গ্যাস চুলা জ্বলছে না"],
+  commercial: ["Example: office lights keep tripping", "যেমন: অফিসের লাইট বারবার ট্রিপ করছে"] } as Record<string, string[]>;
+const hint = (hints[c.key] ?? ["Example: tell us the problem", "যেমন: সমস্যাটি লিখুন"])[lang === "bn" ? 1 : 0];
 ---
 <Base lang={lang} callbar={false} title={`${c.name[lang]} | ${bn ? `ইমার্জেন্সি ${site.tradeBn}` : `Emergency ${site.trade}`}`}
   description={bn ? `${c.name.bn}: ${c.short.bn}। হোয়াটসঅ্যাপে অর্ডার করুন।` : `${c.name.en} in Uttara, Dhaka: ${c.short.en}. Order on WhatsApp.`}
@@ -50,45 +54,43 @@ const config = {
     <div class="wrap order-body">
       <p class="enquiry-note" id="enquiry-note" hidden><EpsIcon name="tag" /> <span>{T.enquiryNote}<small class="checkup-note">{T.checkupNote}</small></span></p>
       <section class="card order-card" id="details">
-        <h2>{T.bTitle} <small class="opt">{T.optional}</small></h2>
+
 
         <form class="form order-form" id="order" novalidate>
           <div class="order-col order-left">
             <fieldset>
-              <legend>{T.workTitle} <small class="opt">{T.optional}</small></legend>
-              <div class="chips" id="work">
-                {options.map((o) => (
-                  <button type="button" class={o.others ? "chip chip-others" : "chip"} aria-pressed="false" data-work={o.en}><EpsIcon name="check" class="tick" />{o[lang]}</button>
-                ))}
+              <legend class="step"><span class="step-n">1</span>{lang === "bn" ? "কী কাজ প্রয়োজন?" : "What do you need?"}</legend>
+              <p class="hint-inline row-hint swipe-hint">{lang === "bn" ? "← সরিয়ে আরও দেখুন →" : "← swipe for more →"}</p>
+              <div id="work">
+                <div class="work-rows">
+                  <div class="work-grid">
+                    {options.filter((o) => !o.others).map((o) => (
+                      <button type="button" class="chip" aria-pressed="false" data-work={o.en}><EpsIcon name="check" class="tick" />{o[lang]}</button>
+                    ))}
+                  </div>
+                  {/* "Others / any kind of …": the 4th line of the swipe box, stays in view while swiping */}
+                  {options.filter((o) => o.others).map((o) => (
+                    <button type="button" class="chip chip-others" aria-pressed="false" data-work={o.en}><EpsIcon name="check" class="tick" />{o[lang]}</button>
+                  ))}
+                </div>
               </div>
               <label class="field">
-                <span>{T.issueLabel} <small class="opt">{T.optional}</small></span>
-                <textarea name="issue" rows="2" maxlength="500" placeholder={T.issueHint}></textarea>
+                <span>{lang === "bn" ? "সমস্যাটি লিখুন" : "Describe the problem"}</span>
+                <textarea name="issue" rows="2" maxlength="500" placeholder={hint}></textarea>
               </label>
             </fieldset>
 
-            <fieldset>
-              <legend>{T.detailsTitle} <small class="opt">{T.optional}</small></legend>
-              <div class="field-pair">
-                <label class="field"><span>{T.name}</span><input name="name" autocomplete="name" maxlength="80" /></label>
-                <label class="field">
-                  <span>{T.contact}</span>
-                  <input name="contact" id="contact" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="01XXXXXXXXX" />
-                  <em class="error" id="contact-error" hidden>{T.contactError}</em>
-                </label>
-              </div>
-              <label class="field"><span>{T.address}</span><input name="address" autocomplete="street-address" maxlength="200" placeholder={T.addressHint} /></label>
-            </fieldset>
           </div>
 
           <div class="order-col order-right">
             <fieldset id="when">
-              <legend>{T.dateTitle} <small class="opt">{T.optional}</small></legend>
+              <legend class="step"><span class="step-n">2</span>{lang === "bn" ? "কখন আসবো?" : "When should we come?"} </legend>
+              <p class="hint-inline row-hint">{lang === "bn" ? "না বাছলে: যত দ্রুত সম্ভব" : "Skip = as soon as possible"}<span class="swipe-hint">{lang === "bn" ? " · ← সরিয়ে আরও দেখুন →" : " · ← swipe for more →"}</span></p>
               <div class="chips" id="dates"></div>
             </fieldset>
 
             <fieldset>
-              <legend>{T.timeTitle} <small class="opt">{T.optional}</small></legend>
+              <legend class="sub">{lang === "bn" ? "সময়" : "Time"} <small class="hint-inline swipe-hint">{lang === "bn" ? "← সরিয়ে আরও দেখুন →" : "← swipe for more →"}</small></legend>
               <div class="chips" id="times">
                 <button type="button" class="chip chip-urgent" aria-pressed="false" data-time="urgent">{T.urgent}</button>
                 {timeSlots.map((s) => <button type="button" class="chip" aria-pressed="false" data-time={`${s.start}-${s.end}`}>{s[lang]}</button>)}
@@ -96,7 +98,18 @@ const config = {
             </fieldset>
 
             <fieldset>
-              <legend>{T.locationTitle} <span class="loc-rec">{T.locRecommended}</span></legend>
+              <legend class="step"><span class="step-n">3</span>{lang === "bn" ? "আপনার সাথে যোগাযোগ" : "How do we reach you?"}</legend>
+              <label class="field phone-first">
+                <span>{T.contact} <small class="opt">{T.optional}</small></span>
+                <input name="contact" id="contact" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="01XXXXXXXXX" />
+                <small class="muted">{lang === "bn" ? "হোয়াটসঅ্যাপ নম্বর আমরা এমনিই পাই। অন্য নম্বরে কল চাইলে লিখুন।" : "We get your WhatsApp number anyway. Add one only if we should call another number."}</small>
+                <em class="error" id="contact-error" hidden>{T.contactError}</em>
+              </label>
+              <div class="field-pair">
+                <label class="field"><span>{T.name}</span><input name="name" autocomplete="name" maxlength="80" /></label>
+                <label class="field"><span>{T.address}</span><input name="address" autocomplete="street-address" maxlength="200" placeholder={T.addressHint} /></label>
+              </div>
+              <p class="sub-label">{T.locationTitle} <span class="loc-rec">{T.locRecommended}</span></p>
               <div class="location-ok" id="loc-ok" hidden>
                 <EpsIcon name="check" />
                 <a id="loc-link" href="#" target="_blank" rel="noopener">{T.locationAdded}</a>
@@ -261,6 +274,7 @@ const config = {
     const gap = () => lines.length && lines[lines.length - 1] !== "" && lines.push("");
     // 1. when (the Order ID / Price Enquiry ID goes above this when sent)
     if (time === URGENT) add(T.msgTime, T.msgUrgentTime);
+    else if (!date && !time) add(T.msgTime, T.msgAsap);
     else { if (date) add(T.msgDate, dateLabel(date)); add(T.msgTime, timeText(time, lang)); }
     gap();
     // 2. greeting
@@ -299,10 +313,10 @@ const config = {
     sendEnquiry.href = wa(msgEnq);
     sendEnquiry.dataset.order = row("Price enquiry (B)", true);
     // one-line summary next to the send buttons (phone)
-    $("summary").textContent = [
+    $("summary").textContent = !work.length && !val("issue") ? "" : [
       cat.name[lang],
       cat.options.filter((o) => work.includes(o.en)).map((o) => o[lang]).join(", "),
-      time === URGENT ? T.urgent : [date && dateLabel(date), timeText(time, lang)].filter(Boolean).join(" · "),
+      time === URGENT ? T.urgent : (!date && !time ? T.msgAsap : [date && dateLabel(date), timeText(time, lang)].filter(Boolean).join(" · ")),
     ].filter(Boolean).join(" · ");
     // Preview: *bold* like WhatsApp
     $("preview").replaceChildren(...msg.split("\n").map((line) => {
@@ -345,6 +359,51 @@ const config = {
   const params = new URLSearchParams(location.search);
   if (params.get("s")) (form.elements.namedItem("issue") as HTMLTextAreaElement).value = params.get("s")!.slice(0, 200);
   if (params.get("area")) (form.elements.namedItem("address") as HTMLInputElement).value = params.get("area")!.slice(0, 100);
+  // Swipe rows (phones): arrow button + slim bar show there is more on the right
+  document.querySelectorAll<HTMLElement>(".work-rows, #dates, #times").forEach((row) => {
+    const wrap = document.createElement("div");
+    wrap.className = "swipe-wrap";
+    row.parentNode!.insertBefore(wrap, row);
+    wrap.appendChild(row);
+    const next = document.createElement("button");
+    next.type = "button";
+    next.className = "swipe-next";
+    next.setAttribute("aria-label", lang === "bn" ? "ডানে আরও দেখুন" : "See more on the right");
+    next.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
+    const bar = document.createElement("div");
+    bar.className = "swipe-bar";
+    const thumb = document.createElement("span");
+    bar.appendChild(thumb);
+    wrap.appendChild(next);
+    wrap.appendChild(bar);
+    const draw = () => {
+      const max = row.scrollWidth - row.clientWidth;
+      const more = max > 4;
+      wrap.classList.toggle("has-more", more);
+      wrap.classList.toggle("at-end", !more || row.scrollLeft >= max - 4);
+      thumb.style.width = (more ? Math.max(18, (row.clientWidth / row.scrollWidth) * 100) : 100) + "%";
+      thumb.style.left = (more ? (row.scrollLeft / row.scrollWidth) * 100 : 0) + "%";
+    };
+    next.addEventListener("click", () => {
+      const end = row.scrollLeft >= row.scrollWidth - row.clientWidth - 4;
+      const to = end ? 0 : row.scrollLeft + row.clientWidth * 0.7;
+      try { row.scrollTo({ left: to, behavior: "smooth" }); } catch (e) { row.scrollLeft = to; }
+    });
+    row.addEventListener("scroll", draw, { passive: true } as AddEventListenerOptions);
+    window.addEventListener("resize", draw);
+    if ("MutationObserver" in window) new MutationObserver(draw).observe(row, { childList: true });
+    draw();
+    // a small one-time nudge when the row first comes into view
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(([e]) => {
+        if (!e.isIntersecting || row.scrollLeft > 0 || !wrap.classList.contains("has-more")) return;
+        io.disconnect();
+        wrap.classList.add("nudge");
+        setTimeout(() => wrap.classList.remove("nudge"), 1300);
+      }, { threshold: 0.8 });
+      io.observe(row);
+    }
+  });
   // From Trending Services: ?work=Geyser|Leakage ticks those work chips
   const want = (params.get("work") ?? "").split("|").filter(Boolean);
   document.querySelectorAll<HTMLButtonElement>("#work .chip").forEach((b) => {

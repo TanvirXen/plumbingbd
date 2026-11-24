@@ -32,8 +32,8 @@ const cards = [...orderCategories].sort((a, b) => order.indexOf(a.key) - order.i
   <button type="button" class="link-btn" data-enquiry-off>{T.enquiryOff}</button>
 </p>
 <div class="service-grid">
-  <!-- WhatsApp Order: always the first box -->
-  <a class="service service-wa service-wa-first" href={waLink(orderNow.message[lang])} target="_blank" rel="noopener" data-track="whatsapp_order_now"
+  <!-- Main service first, WhatsApp Order second (CSS order) -->
+  <a class="service service-wa service-wa-first" style="order:1" href={waLink(orderNow.message[lang])} target="_blank" rel="noopener" data-track="whatsapp_order_now"
     data-order={JSON.stringify({ letters: orderNow.letters, service: "Order now", orderType: "Order now" })}
     data-letters={orderNow.letters}
     data-wa-order={waLink(orderNow.message[lang])} data-wa-enquiry={waLink(T.enquiryMessage)}>
@@ -42,8 +42,8 @@ const cards = [...orderCategories].sort((a, b) => order.indexOf(a.key) - order.i
     <span class="service-short" data-short-order={T.waOrderShort} data-short-enquiry={T.waEnquiryShort}>{T.waOrderShort}</span>
     <EpsIcon name="arrow" class="service-arrow" />
   </a>
-  {cards.map((c) => (
-    <a class={`service icon-${c.icon}`} href={lp(lang, `/order/${c.key}/`)} data-order-link>
+  {cards.map((c, i) => (
+    <a class={`service icon-${c.icon}`} style={`order:${i === 0 ? 0 : 2}`} href={lp(lang, `/order/${c.key}/`)} data-order-link>
       <span class="service-icon"><EpsIcon name={c.icon} /></span>
       <span class="service-name">{c.name[lang]}</span>
       <span class="service-short">{c.short[lang]}</span>

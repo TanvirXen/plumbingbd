@@ -16,7 +16,7 @@ export interface OrderCategory {
   message: Text; // "Order on WhatsApp" (A) message
   options: Text[]; // form chips, most popular first; "Checkup" first and "Others" are added automatically
   tail?: Text[]; // big jobs shown near the end (just before "Others")
-  others: Text; // the last chip: "Others or any kind of … service"
+  others: Text; // the last chip: "Others / any kind of … service"
   noCheckup?: boolean; // don't add the automatic "Checkup" chip first
   fullList: string[]; // "All work we do" on the service's order page
 }
@@ -33,7 +33,7 @@ export const orderCategories: OrderCategory[] = [
     name: { en: "Electric Service", bn: "ইলেকট্রিক সার্ভিস" },
     short: { en: "Wiring, board, lights, fans", bn: "ওয়্যারিং, বোর্ড, লাইট, ফ্যান" },
     message: { en: "Hi I need Electric Service", bn: "হ্যালো, আমার ইলেকট্রিক সার্ভিস প্রয়োজন" },
-    others: { en: "Others or any kind of electrical service", bn: "অন্যান্য বা যেকোনো ইলেকট্রিক্যাল সার্ভিস" },
+    others: { en: "Others / any kind of electrical service", bn: "অন্যান্য / যেকোনো ইলেকট্রিক্যাল সার্ভিস" },
     options: [
       { en: "Fans", bn: "ফ্যান" },
       { en: "Lights", bn: "লাইট" },
@@ -69,7 +69,7 @@ export const orderCategories: OrderCategory[] = [
     name: { en: "Plumbing Service", bn: "প্লাম্বিং সার্ভিস" },
     short: { en: "Geyser, leakage, lines, drain", bn: "গিজার, লিকেজ, লাইন, ড্রেন" },
     message: { en: "Hi I need plumbing service", bn: "হ্যালো, আমার প্লাম্বিং সার্ভিস প্রয়োজন" },
-    others: { en: "Others or any kind of plumbing service", bn: "অন্যান্য বা যেকোনো প্লাম্বিং সার্ভিস" },
+    others: { en: "Others / any kind of plumbing service", bn: "অন্যান্য / যেকোনো প্লাম্বিং সার্ভিস" },
     options: [
       { en: "Geyser", bn: "গিজার" }, // geyser always first (right after the automatic "Checkup")
       { en: "Leakage", bn: "লিকেজ" },
@@ -99,7 +99,7 @@ export const orderCategories: OrderCategory[] = [
     name: { en: "AC Service", bn: "এসি সার্ভিস" },
     short: { en: "Servicing, gas, install, repair", bn: "সার্ভিসিং, গ্যাস, ইনস্টল, মেরামত" },
     message: { en: "Hi I need AC service", bn: "হ্যালো, আমার এসি সার্ভিস প্রয়োজন" },
-    others: { en: "Others or any kind of AC service", bn: "অন্যান্য বা যেকোনো এসি সার্ভিস" },
+    others: { en: "Others / any kind of AC service", bn: "অন্যান্য / যেকোনো এসি সার্ভিস" },
     options: [
       { en: "Servicing", bn: "সার্ভিসিং" },
       { en: "Gas Refill", bn: "গ্যাস রিফিল" },
@@ -116,7 +116,7 @@ export const orderCategories: OrderCategory[] = [
     name: { en: "Home Service", bn: "হোম সার্ভিস" },
     short: { en: "Thai glass, IPS, gas stove, more", bn: "থাই গ্লাস, আইপিএস, গ্যাস চুলা, আরও" },
     message: { en: "Hi I need home service", bn: "হ্যালো, আমার হোম সার্ভিস প্রয়োজন" },
-    others: { en: "Others or any kind of home service", bn: "অন্যান্য বা যেকোনো হোম সার্ভিস" },
+    others: { en: "Others / any kind of home service", bn: "অন্যান্য / যেকোনো হোম সার্ভিস" },
     options: [
       { en: "Gas Stove", bn: "গ্যাস চুলা" },
       { en: "Washing Machine", bn: "ওয়াশিং মেশিন" },
@@ -151,7 +151,7 @@ export const orderCategories: OrderCategory[] = [
     name: { en: "Commercial Space Service", bn: "কমার্শিয়াল স্পেস সার্ভিস" },
     short: { en: "Offices, shops, restaurants", bn: "অফিস, দোকান, রেস্টুরেন্ট" },
     message: { en: "Hi I need commercial space service", bn: "হ্যালো, আমার কমার্শিয়াল স্পেস সার্ভিস প্রয়োজন" },
-    others: { en: "Others or any kind of commercial service", bn: "অন্যান্য বা যেকোনো কমার্শিয়াল সার্ভিস" },
+    others: { en: "Others / any kind of commercial service", bn: "অন্যান্য / যেকোনো কমার্শিয়াল সার্ভিস" },
     options: [
       { en: "Electrical", bn: "ইলেকট্রিক্যাল" },
       { en: "Plumbing", bn: "প্লাম্বিং" },
@@ -209,7 +209,7 @@ export const extraOrderForms: OrderCategory[] = [
     name: { en: "Trending Services", bn: "ট্রেন্ডিং সার্ভিস" },
     short: { en: "Most wanted jobs this season", bn: "এই মৌসুমে সবচেয়ে বেশি চাওয়া কাজ" },
     message: { en: "Hi, I need a trending service", bn: "হ্যালো, আমার একটি ট্রেন্ডিং সার্ভিস প্রয়োজন" },
-    others: { en: "Others or any kind of service", bn: "অন্যান্য বা যেকোনো সার্ভিস" },
+    others: { en: "Others / any kind of service", bn: "অন্যান্য / যেকোনো সার্ভিস" },
     options: trendingItems.map(({ en, bn }) => ({ en, bn })),
     fullList: [],
   },
@@ -218,7 +218,7 @@ export const extraOrderForms: OrderCategory[] = [
     name: { en: "Checkup Service", bn: "চেকআপ সার্ভিস" },
     short: { en: "Any kind of checkup only 350 Tk", bn: "যেকোনো চেকআপ মাত্র ৩৫০ টাকা" },
     message: { en: "Hi, I need a checkup", bn: "হ্যালো, আমার একটি চেকআপ প্রয়োজন" },
-    others: { en: "Others or any kind of checkup", bn: "অন্যান্য বা যেকোনো চেকআপ" },
+    others: { en: "Others / any kind of checkup", bn: "অন্যান্য / যেকোনো চেকআপ" },
     options: [
       { en: "Electrical Checkup", bn: "ইলেকট্রিক্যাল চেকআপ" },
       { en: "Plumbing Checkup", bn: "প্লাম্বিং চেকআপ" },
@@ -241,7 +241,7 @@ export const findCategory = (key: string) => allOrderForms.find((c) => c.key ===
 
 export const firstOption: Text = { en: "Checkup", bn: "চেকআপ" };
 
-/** Checkup first, then the popular jobs, then the "tail" big jobs, and "Others or any kind of …" always last */
+/** Checkup first, then the popular jobs, then the "tail" big jobs, and "Others / any kind of …" always last */
 export type Option = Text & { others?: boolean };
 export const categoryOptions = (c: OrderCategory): Option[] => [
   ...(c.noCheckup ? [] : [firstOption]), ...c.options, ...(c.tail ?? []), { ...c.others, others: true },
@@ -336,6 +336,7 @@ const en = {
   msgHelloEnquiry: "Hello, I'd like to know the cost of *{s}*.",
   msgContactTitle: "*My contact details*",
   msgUrgentTime: "Urgent (as soon as possible)",
+  msgAsap: "As soon as possible",
   msgThanks: "Thank you.",
 };
 const bn: typeof en = {
@@ -412,6 +413,7 @@ const bn: typeof en = {
   msgHelloEnquiry: "হ্যালো, আমি *{s}*-এর খরচ জানতে চাই।",
   msgContactTitle: "*আমার যোগাযোগের তথ্য*",
   msgUrgentTime: "জরুরি (যত দ্রুত সম্ভব)",
+  msgAsap: "যত দ্রুত সম্ভব",
   msgThanks: "ধন্যবাদ।",
 };
 export const orderText = { en, bn };
