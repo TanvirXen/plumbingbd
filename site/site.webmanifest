@@ -1,0 +1,29 @@
+{
+  "name": "Emergency Plumber — plumbingservicebd.com",
+  "short_name": "Emergency Plumber",
+  "description": "Plumber in Uttara & Bashundhara — home and office",
+  "lang": "en-BD",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0074FD",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
