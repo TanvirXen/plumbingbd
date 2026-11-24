@@ -1,0 +1,66 @@
+# plumbingservicebd.com is built in the electrician repo (TanvirXen/electricalbd): its "Build for server"
+# workflow builds both sites and puts the plumber site in the site-plumbing/ folder of its deploy branch.
+# This workflow copies that folder to THIS repo's deploy branch (as site/), which the server already pulls
+# every minute. So: push to electricalbd → both sites go live, the plumber site within about 5–10 minutes.
+# Code changes are no longer made here; this repo only carries the plumber site's deploy branch.
+# Secret: ELEC_DEPLOY_KEY (private half of a read-only deploy key on TanvirXen/electricalbd).
+name: Publish plumber site from electrician repo
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: publish-from-electrician
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch the electrician repo's deploy branch
+        env:
+          KEY: ${{ secrets.ELEC_DEPLOY_KEY }}
+        run: |
+          [ -n "$KEY" ] || { echo "::error::ELEC_DEPLOY_KEY secret is missing"; exit 1; }
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/elec && chmod 600 ~/.ssh/elec
+          ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts 2>/dev/null
+          GIT_SSH_COMMAND="ssh -i $HOME/.ssh/elec -o IdentitiesOnly=yes" \
+            git clone -q --depth 1 -b deploy git@github.com:TanvirXen/electricalbd.git "$RUNNER_TEMP/elec"
+          rm -f ~/.ssh/elec
+
+      - name: Publish if there is a new build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          src="$RUNNER_TEMP/elec"
+          built=$(sed -n 's/^Built from \([0-9a-f]*\).*/\1/p' "$src/BUILD.txt")
+          [ -n "$built" ] || { echo "::error::No BUILD.txt on electricalbd's deploy branch"; exit 1; }
+          # What is published here now?
+          current=$(gh api "repos/${GITHUB_REPOSITORY}/contents/BUILD.txt?ref=deploy" --jq .content 2>/dev/null \
+            | base64 -d 2>/dev/null | sed -n 's/^Plumber site from electricalbd \([0-9a-f]*\).*/\1/p' || true)
+          if [ "$current" = "$built" ]; then echo "Already published electricalbd ${built::7}."; exit 0; fi
+
+          # Safety checks: it must really be the plumber site
+          site="$src/site-plumbing"
+          [ -f "$site/index.html" ] || { echo "::error::electricalbd ${built::7} has no site-plumbing/ build"; exit 1; }
+          grep -q "plumbingservicebd" "$site/index.html" || { echo "::error::site-plumbing/ doesn't look like the plumber site"; exit 1; }
+
+          out="$RUNNER_TEMP/out"
+          mkdir -p "$out" && cp -a "$site" "$out/site"
+          echo '{ "git": { "deploymentEnabled": false } }' > "$out/vercel.json"
+          printf 'Plumber site from electricalbd %s (published %s)\n' "$built" "$(date -u +%FT%TZ)" > "$out/BUILD.txt"
+          cd "$out"
+          git init -q -b deploy
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Plumber site from electricalbd ${built::7}"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" deploy
+          echo "Published the plumber site from electricalbd ${built::7}; the server goes live within a minute." | tee -a "$GITHUB_STEP_SUMMARY"

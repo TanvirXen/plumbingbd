@@ -1,3 +1,7 @@
+> **Note:** plumbingservicebd.com is now built from the electrician repo (TanvirXen/electricalbd), which builds
+> both sites. Make code changes there, not here. This repo only publishes the plumber build to its `deploy`
+> branch for the server (`.github/workflows/publish-from-electrician.yml`).
+
 # plumbingservicebd.com
 
 **Emergency Electric and Plumbing Service — Plumbing Division** (blue theme)
