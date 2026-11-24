@@ -1,6 +1,6 @@
-> **Note:** plumbingservicebd.com is now built from the electrician repo (TanvirXen/electricalbd), which builds
-> both sites. Make code changes there, not here. This repo only publishes the plumber build to its `deploy`
-> branch for the server (`.github/workflows/publish-from-electrician.yml`).
+> **Note:** plumbingservicebd.com is now built and deployed from the electrician repo (TanvirXen/electricalbd),
+> which builds both sites (`site-plumbing/` in its deploy branch; the server reads it directly).
+> Make code changes there. This repo is kept only as history and is no longer deployed.
 
 # plumbingservicebd.com
 
